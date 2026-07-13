@@ -1,40 +1,17 @@
-# 📊 Sistema de Inteligencia de Campañas de Marketing en Redes Sociales
+# Sistema de Inteligencia de Campañas de Marketing en Redes Sociales
 ### Grupo 12 — Trabajo Práctico Integrador
 
 ---
 
-## 📋 Descripción
+## Descripción
 
-**Campaign Performance Intelligence System** es una plataforma web que centraliza el análisis de campañas de marketing en redes sociales. Permite a los usuarios conectar sus cuentas de Instagram y TikTok para obtener métricas de rendimiento, analizar el sentimiento de comentarios, detectar palabras clave relevantes y recibir recomendaciones automáticas generadas por inteligencia artificial para optimizar sus estrategias de contenido.
+**Campaign IQ** es una plataforma web que centraliza el análisis de campañas de marketing en redes sociales. Permite a los usuarios conectar sus cuentas de Instagram y YouTube para obtener métricas de rendimiento, analizar el sentimiento de comentarios, detectar palabras clave relevantes y recibir recomendaciones automáticas generadas por inteligencia artificial para optimizar sus estrategias de contenido.
 
 El sistema diferencia entre contenido orgánico y campañas pagas, permitiendo comparar el rendimiento de ambas estrategias dentro de un mismo panel. Los datos procesados se exportan a Power BI para la generación de reportes ejecutivos con evolución temporal y comparativas entre plataformas.
 
 ---
 
-## 🎯 Alcance
-
-El sistema contempla las siguientes funcionalidades principales:
-
-- Registro y autenticación de usuarios con gestión de múltiples cuentas sociales conectadas vía OAuth 2.0
-- Creación y administración de campañas asociando publicaciones de distintas plataformas
-- Ingesta automática de publicaciones, métricas e interacciones desde las APIs oficiales de Meta (Instagram) y TikTok
-- Análisis de sentimiento de comentarios clasificándolos como positivos, neutros o negativos
-- Extracción de palabras clave frecuentes con cálculo de engagement promedio por keyword
-- Detección de horarios óptimos de publicación basada en datos históricos
-- Clasificación automática de publicaciones según su rendimiento (buena / normal / mala)
-- Generación de recomendaciones en lenguaje natural mediante IA
-- Comparativa de rendimiento entre contenido orgánico y campañas pagas
-- Dashboard interactivo en React con gráficos en tiempo real
-- Exportación de datos a Power BI para reportes ejecutivos
-
-**Fuera de alcance:**
-- Publicación de contenido desde la plataforma
-- Análisis de cuentas ajenas (solo cuentas propias conectadas por el usuario)
-- Integración con X/Twitter (API sin tier gratuito desde 2026)
-
----
-
-## 🗂️ Modelo de Dominio
+## Modelo de Dominio
 
 <!-- Insertar imagen del diagrama aquí -->
 > 📌 *Imagen del modelo de dominio — subir diagrama*
@@ -54,14 +31,6 @@ El sistema contempla las siguientes funcionalidades principales:
 | Recomendación | Sugerencia generada automáticamente por el sistema para una campaña |
 | Historial de Métricas | Snapshot diario del estado general de una cuenta social |
 
-### Relaciones clave
-
-- Un **Usuario** puede tener múltiples **Cuentas Sociales** en distintas plataformas
-- Una **Campaña** puede incluir cuentas de múltiples plataformas simultáneamente
-- Cada **Publicación** genera **Métricas** históricas y recibe **Comentarios**
-- El sistema extrae **Keywords** a partir de los comentarios de cada campaña
-- Las **Recomendaciones** se generan automáticamente a partir del análisis de métricas y keywords
-
 ---
 
 ## 🛠️ Stack Tecnológico
@@ -80,11 +49,11 @@ El sistema contempla las siguientes funcionalidades principales:
 
 ---
 
-## 📖 Narrativa
+## Narrativa
 
 Una agencia de marketing digital o un creador de contenido independiente necesita evaluar el rendimiento de sus campañas en distintas redes sociales sin tener que revisar manualmente cada plataforma por separado. El proceso manual es lento, propenso a errores y no permite detectar patrones a lo largo del tiempo.
 
-**Campaign Performance Intelligence System** resuelve este problema centralizando toda la información en un único panel. El usuario crea una campaña, define su período y asocia sus cuentas de Instagram y TikTok. El sistema trae automáticamente todas las publicaciones del período, calcula métricas de engagement, analiza cada comentario para determinar si el sentimiento de la audiencia es positivo, neutro o negativo, y detecta qué palabras aparecen con más frecuencia en las interacciones.
+**Campaign Performance Intelligence System** resuelve este problema centralizando toda la información en un único panel. El usuario crea una campaña, define su período y asocia sus cuentas de Instagram y YouTube. El sistema trae automáticamente todas las publicaciones del período, calcula métricas de engagement, analiza cada comentario para determinar si el sentimiento de la audiencia es positivo, neutro o negativo, y detecta qué palabras aparecen con más frecuencia en las interacciones.
 
 Con esos datos, el sistema genera recomendaciones concretas y accionables: en qué horarios publicar, qué tipo de contenido genera más interacción, qué días de la semana tienen mejor rendimiento. Estas recomendaciones se presentan en lenguaje natural para que cualquier usuario pueda interpretarlas sin conocimientos técnicos.
 
@@ -92,7 +61,7 @@ Finalmente, toda la información procesada se exporta a Power BI donde el usuari
 
 ---
 
-## 📐 Reglas de Cálculo
+## Reglas de Cálculo
 
 ### Engagement Rate por publicación
 Mide el nivel de interacción relativo al alcance de cada publicación.
@@ -156,14 +125,13 @@ crecimiento = ((seguidores_fin - seguidores_inicio) / seguidores_inicio) * 100
   - `ads_read` — métricas de campañas publicitarias pagas
 - **Datos obtenidos:** publicaciones, likes, comentarios, alcance, impresiones, seguidores, métricas de anuncios
 
-### TikTok for Developers API
-- **Endpoint base:** `https://open.tiktokapis.com/v2`
-- **Autenticación:** OAuth 2.0
+### YouTube Data API v3 — Google
+- **Endpoint base:** `https://www.googleapis.com/youtube/v3`
+- **Autenticación:** API Key para datos públicos / OAuth 2.0 para datos de canal propio
 - **Permisos requeridos:**
-  - `user.info.basic` — información básica de la cuenta
-  - `video.list` — listado de videos publicados
-  - `video.insights` — vistas, likes, comentarios y shares por video
-- **Datos obtenidos:** videos, vistas, likes, comentarios, shares, métricas por video
+  - `youtube.readonly` — acceso de solo lectura a datos del canal
+- **Quota gratuita:** 10.000 unidades diarias (suficiente para uso académico)
+- **Datos obtenidos:** videos, vistas, likes, comentarios (texto y autor), suscriptores, duración, impresiones, métricas de canal
 
 ### Gemini API — Google AI Studio
 - **Uso:** generación de recomendaciones en lenguaje natural a partir de métricas calculadas
@@ -176,10 +144,10 @@ crecimiento = ((seguidores_fin - seguidores_inicio) / seguidores_inicio) * 100
 
 | Nombre | Legajo |
 |---|---|
-| | |
-| | |
+| Luhmann Emiliano | 53224 |
+| Lezcano Diego | 53215 |
 | | |
 
 ---
 
-*Trabajo Práctico Integrador — [Nombre de la materia] — [Año]*
+*Trabajo Práctico Integrador — Soporte — 2026*
