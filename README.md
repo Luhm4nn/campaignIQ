@@ -53,7 +53,7 @@ El sistema diferencia entre contenido orgánico y campañas pagas, permitiendo c
 
 Una agencia de marketing digital o un creador de contenido independiente necesita evaluar el rendimiento de sus campañas en distintas redes sociales sin tener que revisar manualmente cada plataforma por separado. El proceso manual es lento, propenso a errores y no permite detectar patrones a lo largo del tiempo.
 
-**Campaign Performance Intelligence System** resuelve este problema centralizando toda la información en un único panel. El usuario crea una campaña, define su período y asocia sus cuentas de Instagram y YouTube. El sistema trae automáticamente todas las publicaciones del período, calcula métricas de engagement, analiza cada comentario para determinar si el sentimiento de la audiencia es positivo, neutro o negativo, y detecta qué palabras aparecen con más frecuencia en las interacciones.
+**Campaign IQ** resuelve este problema centralizando toda la información en un único panel. El usuario crea una campaña, define su período y asocia sus cuentas de Instagram y YouTube. El sistema trae automáticamente todas las publicaciones del período, calcula métricas de engagement, analiza cada comentario para determinar si el sentimiento de la audiencia es positivo, neutro o negativo, y detecta qué palabras aparecen con más frecuencia en las interacciones.
 
 Con esos datos, el sistema genera recomendaciones concretas y accionables: en qué horarios publicar, qué tipo de contenido genera más interacción, qué días de la semana tienen mejor rendimiento. Estas recomendaciones se presentan en lenguaje natural para que cualquier usuario pueda interpretarlas sin conocimientos técnicos.
 
@@ -113,7 +113,7 @@ crecimiento = ((seguidores_fin - seguidores_inicio) / seguidores_inicio) * 100
 
 ---
 
-## 🔌 APIs Utilizadas
+## APIs Utilizadas
 
 ### Meta Graph API — Instagram
 - **Endpoint base:** `https://graph.facebook.com/v19.0`
