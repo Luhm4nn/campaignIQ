@@ -52,137 +52,106 @@ export function HourlyChart({
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-2xl border border-border/50 bg-card transition-all duration-500",
-        "hover:border-border",
+        "rounded-xl border border-border bg-card p-6",
         className
       )}
     >
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-success/10 via-success/5 to-transparent opacity-60" />
-
-      <div className="relative p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="text-lg font-semibold text-foreground">
-              Interactions by Hour
-            </h3>
-            <div className="flex items-center gap-2 mt-1">
-              <Clock className="h-3.5 w-3.5 text-success" />
-              <span className="text-xs text-muted-foreground">
-                Best time:{" "}
-                <span className="text-success font-semibold">
-                  {bestWindowLabel}
-                </span>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h3 className="text-base font-semibold text-foreground">
+            Interactions by Hour
+          </h3>
+          <div className="flex items-center gap-1.5 mt-1">
+            <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">
+              Optimal window:{" "}
+              <span className="text-foreground font-medium">
+                {bestWindowLabel}
               </span>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 text-xs">
-            <div className="flex items-center gap-2">
-              <div className="h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_8px_var(--primary)]" />
-              <span className="text-muted-foreground font-medium">Regular</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-2.5 w-2.5 rounded-full bg-success shadow-[0_0_8px_var(--success)]" />
-              <span className="text-muted-foreground font-medium">Peak</span>
-            </div>
+            </span>
           </div>
         </div>
+        <div className="flex items-center gap-3 text-xs">
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-primary/60" />
+            <span className="text-muted-foreground font-medium">Regular</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-success" />
+            <span className="text-muted-foreground font-medium">Peak</span>
+          </div>
+        </div>
+      </div>
 
-        <div className="h-[200px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={chartData}
-              margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
-            >
-              <defs>
-                <linearGradient id="hourlyGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop
-                    offset="0%"
-                    stopColor="oklch(0.78 0.14 190)"
-                    stopOpacity={1}
-                  />
-                  <stop
-                    offset="100%"
-                    stopColor="oklch(0.78 0.14 190)"
-                    stopOpacity={0.5}
-                  />
-                </linearGradient>
-                <linearGradient id="peakGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop
-                    offset="0%"
-                    stopColor="oklch(0.72 0.16 155)"
-                    stopOpacity={1}
-                  />
-                  <stop
-                    offset="100%"
-                    stopColor="oklch(0.72 0.16 155)"
-                    stopOpacity={0.5}
-                  />
-                </linearGradient>
-                <filter id="hourlyGlow">
-                  <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-                  <feMerge>
-                    <feMergeNode in="coloredBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-              <CartesianGrid
-                strokeDasharray="4 4"
-                stroke="oklch(0.22 0.02 250)"
-                vertical={false}
-              />
-              <XAxis
-                dataKey="hour"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "oklch(0.55 0.02 250)", fontSize: 10 }}
-                tickFormatter={(value) => `${value}h`}
-                interval={3}
-                dy={10}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "oklch(0.55 0.02 250)", fontSize: 10 }}
-                width={35}
-                dx={-5}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "oklch(0.14 0.015 250)",
-                  border: "1px solid oklch(0.22 0.02 250)",
-                  borderRadius: "12px",
-                  color: "oklch(0.95 0.01 250)",
-                  boxShadow: "0 8px 32px oklch(0 0 0 / 0.4)",
-                  padding: "12px 16px",
-                }}
-                labelStyle={{
-                  color: "oklch(0.55 0.02 250)",
-                  marginBottom: 8,
-                  fontWeight: 500,
-                }}
-                labelFormatter={(value) => `${value}:00`}
-                cursor={{ fill: "oklch(0.22 0.02 250 / 0.5)" }}
-              />
-              <Bar
-                dataKey="interactions"
-                radius={[4, 4, 0, 0]}
-                filter="url(#hourlyGlow)"
-              >
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={
-                      peakHours.includes(entry.hour)
-                        ? "url(#peakGradient)"
-                        : "url(#hourlyGradient)"
-                    }
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+      <div className="h-[220px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={chartData}
+            margin={{ top: 8, right: 8, left: -12, bottom: 0 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="rgba(255, 255, 255, 0.06)"
+              vertical={false}
+            />
+            <XAxis
+              dataKey="hour"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#8b95a5", fontSize: 11 }}
+              tickFormatter={(value) => `${value}h`}
+              interval={3}
+              dy={8}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#8b95a5", fontSize: 11 }}
+              width={35}
+              dx={-4}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#161b22",
+                border: "1px solid #30363d",
+                borderRadius: "8px",
+                color: "#f0f6fc",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.5)",
+                padding: "10px 14px",
+                fontSize: "12px",
+              }}
+              labelStyle={{
+                color: "#f0f6fc",
+                marginBottom: 6,
+                fontWeight: 600,
+                fontSize: "13px",
+              }}
+              itemStyle={{
+                color: "#58a6ff",
+                fontWeight: 500,
+                padding: "2px 0",
+              }}
+              formatter={(value: any) => [
+                Number(value).toLocaleString(),
+                "Interactions",
+              ]}
+              labelFormatter={(value) => `${value}:00 hs`}
+              cursor={{ fill: "rgba(255, 255, 255, 0.06)" }}
+            />
+            <Bar dataKey="interactions" radius={[3, 3, 0, 0]}>
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={
+                    peakHours.includes(entry.hour)
+                      ? "oklch(0.7 0.15 155)"
+                      : "oklch(0.68 0.14 250 / 0.55)"
+                  }
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

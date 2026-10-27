@@ -8,7 +8,7 @@ import { EngagementChart } from "@/components/dashboard/engagement-chart";
 import { HourlyChart } from "@/components/dashboard/hourly-chart";
 import { TopPosts } from "@/components/dashboard/top-posts";
 import { InsightCard } from "@/components/dashboard/insight-card";
-import { PostFormModal } from "@/components/dashboard/post-form-modal";
+import { CampaignDetailSkeleton } from "@/components/ui/skeleton";
 import type { CampaignDetail } from "@/lib/types";
 import {
   fetchCampaignDetail,
@@ -29,33 +29,22 @@ import {
   Calendar,
   Twitter,
   Instagram,
-  Linkedin,
-  Facebook,
-  Sparkles,
   ExternalLink,
   Plus,
   Trash2,
   RefreshCw,
+  Youtube,
 } from "lucide-react";
 
 const platformIcons: Record<string, React.ReactNode> = {
-  twitter: <Twitter className="h-5 w-5" />,
-  instagram: <Instagram className="h-5 w-5" />,
-  linkedin: <Linkedin className="h-5 w-5" />,
-  facebook: <Facebook className="h-5 w-5" />,
+  twitter: <Twitter className="h-3.5 w-3.5" />,
+  instagram: <Instagram className="h-3.5 w-3.5" />,
+  youtube: <Youtube className="h-3.5 w-3.5" />,
   tiktok: (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+    <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
       <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
     </svg>
   ),
-};
-
-const platformColors: Record<string, string> = {
-  twitter: "from-sky-500/20 to-sky-500/5 border-sky-500/30 text-sky-400",
-  instagram: "from-pink-500/20 to-pink-500/5 border-pink-500/30 text-pink-400",
-  linkedin: "from-blue-600/20 to-blue-600/5 border-blue-600/30 text-blue-400",
-  facebook: "from-blue-500/20 to-blue-500/5 border-blue-500/30 text-blue-400",
-  tiktok: "from-foreground/20 to-foreground/5 border-foreground/30 text-foreground",
 };
 
 export default function CampaignDetailPage({
@@ -68,7 +57,6 @@ export default function CampaignDetailPage({
   const campaignId = Number(id);
   const [detail, setDetail] = useState<CampaignDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [postModalOpen, setPostModalOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
 
@@ -93,17 +81,13 @@ export default function CampaignDetailPage({
   }, [loadDetail]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-muted-foreground">Loading campaign details...</p>
-      </div>
-    );
+    return <CampaignDetailSkeleton />;
   }
 
   if (!detail) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <p className="text-muted-foreground">Campaign not found</p>
+        <p className="text-sm text-muted-foreground">Campaign not found</p>
         <Link href="/campaigns" className="text-primary hover:underline text-sm">
           Back to Campaigns
         </Link>
@@ -148,37 +132,36 @@ export default function CampaignDetailPage({
     }
   };
 
-
   return (
-    <div className="space-y-8">
-      <div className="space-y-4">
+    <div className="space-y-6">
+      <div className="space-y-3 pb-3 border-b border-border">
         <Link
           href="/campaigns"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-3.5 w-3.5" />
           Back to Campaigns
         </Link>
 
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-4xl font-bold tracking-tight text-foreground">
+              <h1 className="text-2xl font-semibold tracking-tight text-foreground">
                 {campaign.name}
               </h1>
               <select
                 value={campaign.status}
                 onChange={(e) => handleStatusChange(e.target.value)}
                 className={cn(
-                  "px-3 py-1 rounded-xl text-xs font-semibold cursor-pointer focus:outline-none",
+                  "px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer focus:outline-none border",
                   campaign.status === "active" &&
-                    "bg-success/10 text-success border border-success/20",
+                    "bg-success/10 text-success border-success/20",
                   campaign.status === "completed" &&
-                    "bg-primary/10 text-primary border border-primary/20",
+                    "bg-primary/10 text-primary border-primary/20",
                   campaign.status === "paused" &&
-                    "bg-warning/10 text-warning border border-warning/20",
+                    "bg-warning/10 text-warning border-warning/20",
                   campaign.status === "draft" &&
-                    "bg-muted text-muted-foreground border border-border"
+                    "bg-secondary text-muted-foreground border-border"
                 )}
               >
                 <option value="active">Active</option>
@@ -187,24 +170,19 @@ export default function CampaignDetailPage({
                 <option value="draft">Draft</option>
               </select>
             </div>
-            <div className="flex items-center gap-4 text-sm flex-wrap">
-              <div
-                className={cn(
-                  "flex items-center gap-1.5 px-2.5 py-1 rounded-lg border bg-gradient-to-r",
-                  platformColors[campaign.platform] || platformColors.instagram
-                )}
-              >
+            <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-border bg-secondary text-foreground">
                 {platformIcons[campaign.platform] || platformIcons.instagram}
                 <span className="capitalize font-medium">
                   {campaign.platform}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Calendar className="h-4 w-4" />
+              <div className="flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5" />
                 <span>
                   Started{" "}
                   {new Date(campaign.startDate).toLocaleDateString("en-US", {
-                    month: "long",
+                    month: "short",
                     day: "numeric",
                     year: "numeric",
                   })}
@@ -212,53 +190,46 @@ export default function CampaignDetailPage({
               </div>
             </div>
           </div>
-          <div className="flex gap-3 flex-wrap">
+
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={handleDeleteCampaign}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-destructive/10 border border-destructive/20 text-sm font-medium text-destructive hover:bg-destructive/20 transition-all duration-300"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-destructive/10 border border-destructive/25 text-xs font-medium text-destructive hover:bg-destructive/20 transition-colors"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-3.5 w-3.5" />
               Delete
             </button>
             <button
               onClick={handleSyncFromMetaGraph}
               disabled={isSyncing}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/15 border border-primary/30 text-sm font-medium text-primary hover:bg-primary/25 transition-all duration-300"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               <RefreshCw
-                className={cn("h-4 w-4", isSyncing && "animate-spin")}
+                className={cn("h-3.5 w-3.5", isSyncing && "animate-spin")}
               />
-              {isSyncing ? "Scraping API..." : "Deep Sync API"}
+              {isSyncing ? "Syncing API..." : "Deep Sync API"}
             </button>
 
             <a
               href={getExportCsvUrl(campaign.id)}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm font-medium text-foreground hover:bg-secondary hover:border-border transition-all duration-300"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
-              <ExternalLink className="h-4 w-4" />
+              <ExternalLink className="h-3.5 w-3.5" />
               Export CSV
             </a>
-            <button
-              onClick={() => setPostModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-primary to-accent text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 hover:scale-[1.02]"
-            >
-              <Plus className="h-4 w-4" />
-              New Post
-            </button>
           </div>
         </div>
         {syncNotice && (
-          <div className="p-3 rounded-xl bg-success/15 border border-success/30 text-xs font-medium text-success">
+          <div className="p-3 rounded-lg bg-success/10 border border-success/25 text-xs font-medium text-success">
             {syncNotice}
           </div>
         )}
       </div>
 
-
       <div className="grid gap-4 grid-cols-12">
-        <div className="col-span-12 md:col-span-6 lg:col-span-2">
+        <div className="col-span-12 sm:col-span-6 lg:col-span-2">
           <StatsCard
             title="Likes"
             value={formatNumber(campaign.likes)}
@@ -266,7 +237,7 @@ export default function CampaignDetailPage({
             variant="primary"
           />
         </div>
-        <div className="col-span-12 md:col-span-6 lg:col-span-2">
+        <div className="col-span-12 sm:col-span-6 lg:col-span-2">
           <StatsCard
             title="Comments"
             value={formatNumber(campaign.comments)}
@@ -274,7 +245,7 @@ export default function CampaignDetailPage({
             variant="accent"
           />
         </div>
-        <div className="col-span-12 md:col-span-6 lg:col-span-2">
+        <div className="col-span-12 sm:col-span-6 lg:col-span-2">
           <StatsCard
             title="Shares"
             value={formatNumber(campaign.shares)}
@@ -282,7 +253,7 @@ export default function CampaignDetailPage({
             variant="warning"
           />
         </div>
-        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+        <div className="col-span-12 sm:col-span-6 lg:col-span-3">
           <StatsCard
             title="Reach"
             value={formatNumber(campaign.reach)}
@@ -290,7 +261,7 @@ export default function CampaignDetailPage({
             variant="success"
           />
         </div>
-        <div className="col-span-12 md:col-span-12 lg:col-span-3">
+        <div className="col-span-12 sm:col-span-12 lg:col-span-3">
           <StatsCard
             title="Engagement Rate"
             value={`${campaign.engagementRate}%`}
@@ -316,22 +287,15 @@ export default function CampaignDetailPage({
         <div className="col-span-12 lg:col-span-8">
           <TopPosts posts={posts} limit={10} />
         </div>
-        <div className="col-span-12 lg:col-span-4 space-y-4">
-          <div className="rounded-2xl border border-border/50 bg-card overflow-hidden">
-            <div className="p-5 border-b border-border/30 bg-primary/5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/20">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground">
-                    AI Recommendations
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    Computed from campaign posts
-                  </p>
-                </div>
-              </div>
+        <div className="col-span-12 lg:col-span-4 space-y-6">
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="px-5 py-4 border-b border-border">
+              <h3 className="text-base font-semibold text-foreground">
+                Recommendations
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Computed from campaign posts
+              </p>
             </div>
             <div className="p-4 space-y-3">
               {insights.length === 0 ? (
@@ -340,65 +304,63 @@ export default function CampaignDetailPage({
                 </p>
               ) : (
                 insights.slice(0, 3).map((insight) => (
-                  <InsightCard key={insight.id} insight={insight} />
+                  <InsightCard
+                    key={insight.id}
+                    insight={insight}
+                    onClick={() => router.push("/insights")}
+                  />
                 ))
               )}
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border/50 bg-card overflow-hidden">
-            <div className="p-5 border-b border-border/30">
-              <h3 className="font-semibold text-foreground">
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="px-5 py-4 border-b border-border">
+              <h3 className="text-base font-semibold text-foreground">
                 Campaign Summary
               </h3>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Quick overview of metrics
               </p>
             </div>
-            <div className="p-5 space-y-4">
+            <div className="p-5 space-y-3.5 text-sm">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  Total Posts
-                </span>
-                <span className="text-sm font-semibold text-foreground tabular-nums">
+                <span className="text-muted-foreground">Total Posts</span>
+                <span className="font-medium text-foreground tabular-nums">
                   {campaign.postsCount}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  Impressions
-                </span>
-                <span className="text-sm font-semibold text-foreground tabular-nums">
+                <span className="text-muted-foreground">Impressions</span>
+                <span className="font-medium text-foreground tabular-nums">
                   {formatNumber(campaign.impressions)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Budget</span>
-                <span className="text-sm font-semibold text-foreground tabular-nums">
+                <span className="text-muted-foreground">Budget</span>
+                <span className="font-medium text-foreground tabular-nums">
                   ${campaign.budget.toLocaleString()}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  Health Score
-                </span>
+                <span className="text-muted-foreground">Health Score</span>
                 <div className="flex items-center gap-2">
                   <div className="w-16 h-1.5 rounded-full bg-secondary overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
+                      className="h-full rounded-full bg-primary"
                       style={{ width: `${campaign.engagementScore}%` }}
                     />
                   </div>
-                  <span className="text-sm font-bold text-primary tabular-nums">
+                  <span className="font-semibold text-foreground tabular-nums">
                     {campaign.engagementScore}
                   </span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Growth</span>
+                <span className="text-muted-foreground">Growth</span>
                 <span
                   className={cn(
-                    "flex items-center gap-1 text-sm font-semibold",
+                    "inline-flex items-center gap-1 font-medium tabular-nums",
                     campaign.growth > 0
                       ? "text-success"
                       : campaign.growth < 0
@@ -416,13 +378,6 @@ export default function CampaignDetailPage({
         </div>
       </div>
 
-      <PostFormModal
-        open={postModalOpen}
-        onClose={() => setPostModalOpen(false)}
-        onSaved={loadDetail}
-        campaigns={[campaign]}
-        defaultCampaignId={campaign.id}
-      />
     </div>
   );
 }

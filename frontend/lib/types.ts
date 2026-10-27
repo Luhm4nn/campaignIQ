@@ -1,8 +1,7 @@
 export type PlatformType =
+  | "youtube"
   | "twitter"
   | "instagram"
-  | "linkedin"
-  | "facebook"
   | "tiktok";
 
 export type CampaignStatus =
@@ -38,6 +37,7 @@ export interface Campaign {
   shares: number;
   engagementRate: number;
   externalId?: string | null;
+  targetKeywords?: string | null;
 }
 
 export interface Post {
@@ -141,6 +141,8 @@ export interface CreateCampaignPayload {
   followersEnd?: number;
   status: string;
   externalId?: string;
+  targetHandle?: string;
+  targetKeywords?: string;
 }
 
 export interface UpdateCampaignPayload {
@@ -154,6 +156,7 @@ export interface UpdateCampaignPayload {
   followersStart?: number;
   followersEnd?: number;
   status?: string;
+  targetKeywords?: string;
 }
 
 export interface CreatePostPayload {

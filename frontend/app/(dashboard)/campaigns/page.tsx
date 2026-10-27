@@ -1,5 +1,6 @@
 "use client";
 
+import { CampaignsSkeleton } from "@/components/ui/skeleton";
 import { CampaignsTable } from "@/components/dashboard/campaigns-table";
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { useCampaignData } from "@/lib/api";
@@ -7,32 +8,32 @@ import {
   Megaphone,
   PlayCircle,
   CheckCircle2,
-  FileEdit,
-  Zap,
+  BarChart2,
 } from "lucide-react";
 
 export default function CampaignsPage() {
-  const { campaigns, stats } = useCampaignData();
+  const { campaigns, stats, isLoading } = useCampaignData();
+
+  if (isLoading) {
+    return <CampaignsSkeleton />;
+  }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-end justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Zap className="h-4 w-4 text-primary" />
-            <span>Campaign Management</span>
-          </div>
-          <h1 className="text-4xl font-bold tracking-tight text-foreground">
-            Campaigns
-          </h1>
-          <p className="text-muted-foreground">
-            Create, manage, and analyze all your marketing campaigns in one place.
-          </p>
-        </div>
+    <div className="space-y-6">
+      <div className="pb-2 border-b border-border">
+        <p className="text-xs font-medium text-muted-foreground mb-1">
+          Campaign Management
+        </p>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          Campaigns
+        </h1>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          Create, manage, and analyze all your marketing campaigns in one place.
+        </p>
       </div>
 
       <div className="grid gap-4 grid-cols-12">
-        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+        <div className="col-span-12 sm:col-span-6 lg:col-span-3">
           <StatsCard
             title="Total Campaigns"
             value={stats.totalCampaigns}
@@ -40,7 +41,7 @@ export default function CampaignsPage() {
             variant="primary"
           />
         </div>
-        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+        <div className="col-span-12 sm:col-span-6 lg:col-span-3">
           <StatsCard
             title="Active"
             value={stats.activeCampaigns}
@@ -48,7 +49,7 @@ export default function CampaignsPage() {
             variant="success"
           />
         </div>
-        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+        <div className="col-span-12 sm:col-span-6 lg:col-span-3">
           <StatsCard
             title="Completed"
             value={stats.completedCampaigns}
@@ -56,11 +57,11 @@ export default function CampaignsPage() {
             variant="accent"
           />
         </div>
-        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+        <div className="col-span-12 sm:col-span-6 lg:col-span-3">
           <StatsCard
             title="Avg. Score"
             value={stats.avgEngagementScore}
-            icon={FileEdit}
+            icon={BarChart2}
             variant="warning"
           />
         </div>

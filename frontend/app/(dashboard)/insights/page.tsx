@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { InsightCard } from "@/components/dashboard/insight-card";
+import { StatsCard } from "@/components/dashboard/stats-card";
+import { InsightsSkeleton } from "@/components/ui/skeleton";
 import { useCampaignData } from "@/lib/api";
 import {
   Lightbulb,
   TrendingUp,
   AlertTriangle,
   Target,
-  Zap,
-  Brain,
+  Activity,
   Calendar,
   Clock,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { Insight } from "@/lib/types";
 
 interface InsightModalProps {
@@ -23,57 +23,70 @@ interface InsightModalProps {
 }
 
 function InsightModal({ open, insight, onClose }: InsightModalProps) {
+  useEffect(() => {
+    if (open) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [open]);
   if (!open || !insight) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60 backdrop-blur-xs"
         onClick={onClose}
       />
-      <div className="relative glass rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 space-y-6">
+      <div className="relative rounded-xl bg-card border border-border max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-5 shadow-xl">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-foreground mb-2">
+            <h2 className="text-lg font-semibold text-foreground">
               {insight.title}
             </h2>
-            <p className="text-muted-foreground">{insight.description}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {insight.description}
+            </p>
           </div>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
+            className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 text-sm"
           >
             ✕
           </button>
         </div>
 
-        <div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
-          <p className="text-sm text-muted-foreground mb-2">Key Metric</p>
-          <p className="text-3xl font-bold text-primary">{insight.metric}</p>
+        <div className="bg-secondary/50 border border-border rounded-lg p-4">
+          <p className="text-xs text-muted-foreground mb-1">Key Metric</p>
+          <p className="text-2xl font-semibold text-primary tabular-nums">
+            {insight.metric}
+          </p>
         </div>
 
-        <div className="space-y-4 pt-4 border-t border-border/50">
+        <div className="space-y-4 pt-2 border-t border-border">
           <div>
-            <h3 className="font-semibold text-foreground mb-2">
+            <h3 className="text-sm font-semibold text-foreground mb-1.5">
               Detailed Analysis
             </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               {insight.detailedAnalysis}
             </p>
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-2">
+            <h3 className="text-sm font-semibold text-foreground mb-1.5">
               Recommendation
             </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               {insight.recommendation}
             </p>
           </div>
 
-          <div className="bg-secondary/50 border border-border/50 rounded-lg p-4 space-y-2">
-            <div className="flex items-center gap-2 text-sm">
-              <Clock className="h-4 w-4 text-muted-foreground" />
+          <div className="bg-secondary/30 border border-border rounded-lg p-3.5 space-y-1.5 text-xs">
+            <div className="flex items-center gap-2">
+              <Clock className="h-3.5 w-3.5 text-muted-foreground" />
               <span className="text-muted-foreground">
                 Last analysis:{" "}
                 <span className="text-foreground font-medium">
@@ -81,8 +94,8 @@ function InsightModal({ open, insight, onClose }: InsightModalProps) {
                 </span>
               </span>
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+            <div className="flex items-center gap-2">
+              <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
               <span className="text-muted-foreground">
                 Analysis frequency:{" "}
                 <span className="text-foreground font-medium">
@@ -93,10 +106,10 @@ function InsightModal({ open, insight, onClose }: InsightModalProps) {
           </div>
         </div>
 
-        <div className="flex gap-3 pt-4">
+        <div className="flex justify-end pt-2">
           <button
             onClick={onClose}
-            className="flex-1 py-3 px-4 rounded-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all"
+            className="py-2 px-5 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             Close
           </button>
@@ -107,152 +120,104 @@ function InsightModal({ open, insight, onClose }: InsightModalProps) {
 }
 
 export default function InsightsPage() {
-  const { insights: allInsights } = useCampaignData();
+  const { insights: allInsights, isLoading } = useCampaignData();
   const [selectedInsight, setSelectedInsight] = useState<Insight | null>(null);
+
+  if (isLoading) {
+    return <InsightsSkeleton />;
+  }
+
   const successInsights = allInsights.filter((i) => i.type === "success");
   const warningInsights = allInsights.filter((i) => i.type === "warning");
   const tipInsights = allInsights.filter((i) => i.type === "tip");
   const infoInsights = allInsights.filter((i) => i.type === "info");
 
-  const summaryCards = [
-    {
-      label: "Positive Trends",
-      count: successInsights.length,
-      icon: TrendingUp,
-      color: "success",
-    },
-    {
-      label: "Needs Attention",
-      count: warningInsights.length,
-      icon: Clock,
-      color: "warning",
-    },
-    {
-      label: "Tips",
-      count: tipInsights.length,
-      icon: Lightbulb,
-      color: "accent",
-    },
-    {
-      label: "Opportunities",
-      count: infoInsights.length,
-      icon: Target,
-      color: "primary",
-    },
-  ];
-
   return (
-    <div className="space-y-8">
-      <div className="flex items-end justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Zap className="h-4 w-4 text-primary" />
-            <span>AI & Statistical Analysis</span>
-          </div>
-          <h1 className="text-4xl font-bold tracking-tight text-foreground">
+    <div className="space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-border">
+        <div>
+          <p className="text-xs font-medium text-muted-foreground mb-1">
+            Statistical & NLP Engine
+          </p>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Insights
           </h1>
-          <p className="text-muted-foreground">
-            Recommendations dynamically computed from your campaigns and VADER sentiment analysis.
+          <p className="text-sm text-muted-foreground mt-0.5">
+            Actionable signals dynamically computed from your campaigns and VADER sentiment analysis.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20">
-          <Brain className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium text-foreground">
-            Live Engine Active
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary border border-border self-start sm:self-auto">
+          <Activity className="h-3.5 w-3.5 text-primary" />
+          <span className="text-xs font-medium text-foreground">
+            Engine Active
           </span>
-          <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
+          <span className="h-1.5 w-1.5 rounded-full bg-success" />
         </div>
       </div>
 
       <div className="grid gap-4 grid-cols-12">
-        {summaryCards.map((card) => (
-          <div
-            key={card.label}
-            className="col-span-12 md:col-span-6 lg:col-span-3"
-          >
-            <div
-              className={cn(
-                "group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 transition-all duration-500",
-                "hover:border-border hover:translate-y-[-2px]",
-                card.color === "success" &&
-                  "hover:shadow-[0_0_40px_-10px_var(--success)]",
-                card.color === "warning" &&
-                  "hover:shadow-[0_0_40px_-10px_var(--warning)]",
-                card.color === "accent" &&
-                  "hover:shadow-[0_0_40px_-10px_var(--accent)]",
-                card.color === "primary" &&
-                  "hover:shadow-[0_0_40px_-10px_var(--primary)]"
-              )}
-            >
-              <div
-                className={cn(
-                  "absolute inset-0 bg-gradient-to-br opacity-20 transition-opacity duration-300 group-hover:opacity-40",
-                  card.color === "success" && "from-success/40 to-transparent",
-                  card.color === "warning" && "from-warning/40 to-transparent",
-                  card.color === "accent" && "from-accent/40 to-transparent",
-                  card.color === "primary" && "from-primary/40 to-transparent"
-                )}
-              />
-
-              <div className="relative flex items-center gap-4">
-                <div
-                  className={cn(
-                    "flex h-14 w-14 items-center justify-center rounded-xl border transition-all duration-300 group-hover:scale-110",
-                    card.color === "success" &&
-                      "bg-success/10 border-success/30 text-success",
-                    card.color === "warning" &&
-                      "bg-warning/10 border-warning/30 text-warning",
-                    card.color === "accent" &&
-                      "bg-accent/10 border-accent/30 text-accent",
-                    card.color === "primary" &&
-                      "bg-primary/10 border-primary/30 text-primary"
-                  )}
-                >
-                  <card.icon className="h-7 w-7" />
-                </div>
-                <div>
-                  <p className="text-4xl font-bold text-foreground tabular-nums">
-                    {card.count}
-                  </p>
-                  <p className="text-sm text-muted-foreground">{card.label}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+        <div className="col-span-12 sm:col-span-6 lg:col-span-3">
+          <StatsCard
+            title="Positive Trends"
+            value={successInsights.length}
+            icon={TrendingUp}
+            variant="success"
+          />
+        </div>
+        <div className="col-span-12 sm:col-span-6 lg:col-span-3">
+          <StatsCard
+            title="Needs Attention"
+            value={warningInsights.length}
+            icon={AlertTriangle}
+            variant="warning"
+          />
+        </div>
+        <div className="col-span-12 sm:col-span-6 lg:col-span-3">
+          <StatsCard
+            title="Tips & Formats"
+            value={tipInsights.length}
+            icon={Lightbulb}
+            variant="accent"
+          />
+        </div>
+        <div className="col-span-12 sm:col-span-6 lg:col-span-3">
+          <StatsCard
+            title="Opportunities"
+            value={infoInsights.length}
+            icon={Target}
+            variant="primary"
+          />
+        </div>
       </div>
 
       {allInsights.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border/50 bg-card/50 py-16 px-4 text-center">
-          <p className="text-lg font-semibold text-foreground">
+        <div className="rounded-xl border border-dashed border-border bg-card py-14 px-4 text-center">
+          <p className="text-sm font-semibold text-foreground">
             No insights generated yet
           </p>
-          <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
+          <p className="text-xs text-muted-foreground mt-1 max-w-md mx-auto">
             Create campaigns and publish posts so the analytical engine can evaluate optimal posting hours, media format performance, and VADER sentiment trends.
           </p>
         </div>
       ) : (
         <div className="space-y-6">
           {successInsights.length > 0 && (
-            <div className="rounded-2xl border border-border/50 bg-card overflow-hidden">
-              <div className="flex items-center justify-between p-6 border-b border-border/30 bg-success/5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-success/10 border border-success/30">
-                    <TrendingUp className="h-5 w-5 text-success" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      Positive Trends
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      High-performing patterns detected in your data
-                    </p>
-                  </div>
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
+              <div className="px-5 py-4 border-b border-border flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10 border border-success/20">
+                  <TrendingUp className="h-4 w-4 text-success" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Positive Trends
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    High-performing patterns detected in your data
+                  </p>
                 </div>
               </div>
-              <div className="p-6 grid gap-4 md:grid-cols-2">
+              <div className="p-5 grid gap-3.5 md:grid-cols-2">
                 {successInsights.map((insight) => (
                   <InsightCard
                     key={insight.id}
@@ -265,23 +230,21 @@ export default function InsightsPage() {
           )}
 
           {warningInsights.length > 0 && (
-            <div className="rounded-2xl border border-border/50 bg-card overflow-hidden">
-              <div className="flex items-center justify-between p-6 border-b border-border/30 bg-warning/5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-warning/10 border border-warning/30">
-                    <AlertTriangle className="h-5 w-5 text-warning" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      Needs Attention
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Areas that require optimization
-                    </p>
-                  </div>
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
+              <div className="px-5 py-4 border-b border-border flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-warning/10 border border-warning/20">
+                  <AlertTriangle className="h-4 w-4 text-warning" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Needs Attention
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Areas that require optimization
+                  </p>
                 </div>
               </div>
-              <div className="p-6 grid gap-4 md:grid-cols-2">
+              <div className="p-5 grid gap-3.5 md:grid-cols-2">
                 {warningInsights.map((insight) => (
                   <InsightCard
                     key={insight.id}
@@ -294,23 +257,21 @@ export default function InsightsPage() {
           )}
 
           {tipInsights.length > 0 && (
-            <div className="rounded-2xl border border-border/50 bg-card overflow-hidden">
-              <div className="flex items-center justify-between p-6 border-b border-border/30 bg-accent/5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 border border-accent/30">
-                    <Lightbulb className="h-5 w-5 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      Tips & Recommendations
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Format and content suggestions
-                    </p>
-                  </div>
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
+              <div className="px-5 py-4 border-b border-border flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10 border border-accent/20">
+                  <Lightbulb className="h-4 w-4 text-accent" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Tips & Recommendations
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Format and content suggestions
+                  </p>
                 </div>
               </div>
-              <div className="p-6 grid gap-4 md:grid-cols-2">
+              <div className="p-5 grid gap-3.5 md:grid-cols-2">
                 {tipInsights.map((insight) => (
                   <InsightCard
                     key={insight.id}
@@ -323,23 +284,21 @@ export default function InsightsPage() {
           )}
 
           {infoInsights.length > 0 && (
-            <div className="rounded-2xl border border-border/50 bg-card overflow-hidden">
-              <div className="flex items-center justify-between p-6 border-b border-border/30 bg-primary/5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/30">
-                    <Target className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      Growth Opportunities
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Channel allocation insights
-                    </p>
-                  </div>
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
+              <div className="px-5 py-4 border-b border-border flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 border border-primary/20">
+                  <Target className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Growth Opportunities
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Channel allocation insights
+                  </p>
                 </div>
               </div>
-              <div className="p-6 grid gap-4 md:grid-cols-2">
+              <div className="p-5 grid gap-3.5 md:grid-cols-2">
                 {infoInsights.map((insight) => (
                   <InsightCard
                     key={insight.id}

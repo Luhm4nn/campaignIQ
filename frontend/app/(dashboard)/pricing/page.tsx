@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Check, Zap, Crown, Infinity } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Plan {
   name: string;
@@ -16,50 +16,47 @@ interface Plan {
 export default function PricingPage() {
   const [plans, setPlans] = useState<Plan[]>([
     {
-      name: 'Starter',
+      name: "Starter",
       price: 0,
-      description: 'Perfect for beginners exploring campaign analytics',
+      description: "Essential tracking for individual creators and small tests",
       features: [
-        'Up to 3 active campaigns',
-        'Basic analytics dashboard',
-        'Monthly performance reports',
-        'Email support',
-        '30-day data retention',
+        "Up to 3 active campaigns",
+        "Core analytics dashboard",
+        "Monthly performance reports",
+        "Standard email support",
+        "30-day data retention",
       ],
-      buttonText: 'Get Started',
+      buttonText: "Current Plan",
     },
     {
-      name: 'Pro',
+      name: "Pro",
       price: 49,
-      description: 'For growing teams managing multiple campaigns',
+      description: "Full analytical suite for growing marketing teams",
       features: [
-        'Unlimited active campaigns',
-        'Advanced AI insights',
-        'Real-time analytics',
-        'Custom reports',
-        'Competitor analysis',
-        'Priority email support',
-        '1-year data retention',
-        'API access',
+        "Unlimited active campaigns",
+        "VADER sentiment & optimal hour insights",
+        "Real-time RapidAPI deep scraping",
+        "CSV & PowerBI exports",
+        "Competitor benchmark tracking",
+        "Priority support",
+        "1-year data retention",
       ],
       popular: true,
-      buttonText: 'Upgrade to Pro',
+      buttonText: "Upgrade to Pro",
     },
     {
-      name: 'Enterprise',
+      name: "Enterprise",
       price: 299,
-      description: 'For large organizations with custom needs',
+      description: "Custom scale, dedicated infrastructure, and SLA",
       features: [
-        'Everything in Pro',
-        'Dedicated account manager',
-        'Custom integrations',
-        'Advanced security',
-        'SAML SSO',
-        'Unlimited data retention',
-        '24/7 phone support',
-        'SLA guarantee',
+        "Everything in Pro",
+        "Dedicated account engineer",
+        "Custom webhook integrations",
+        "SAML SSO & audit logs",
+        "Unlimited historical retention",
+        "24/7 priority SLA guarantee",
       ],
-      buttonText: 'Contact Sales',
+      buttonText: "Contact Sales",
     },
   ]);
 
@@ -82,77 +79,67 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="relative px-6 py-16 sm:px-12 lg:px-16 border-b border-border/50">
-        <div className="absolute inset-0 opacity-30 gradient-mesh" />
-        <div className="relative z-10 max-w-3xl">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <span className="text-xs font-semibold text-primary px-3 py-1 rounded-full bg-primary/10 border border-primary/30">
-              Flexible Plans
-            </span>
-          </div>
-          <h1 className="text-4xl font-bold text-foreground mb-4">
-            Plans and Pricing
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Choose the perfect plan for your campaign analytics needs. Upgrade or downgrade anytime.
-          </p>
-        </div>
+    <div className="space-y-8">
+      <div className="pb-4 border-b border-border">
+        <p className="text-xs font-medium text-muted-foreground mb-1">
+          Workspace Billing
+        </p>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          Plans & Pricing
+        </h1>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          Transparent tiers for campaign telemetry, sentiment analysis, and API sync.
+        </p>
       </div>
 
-      {/* Pricing Cards */}
-      <div className="px-6 py-16 sm:px-12 lg:px-16">
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={cn(
-                'glass glow-card rounded-2xl p-8 relative group transition-all duration-300',
-                plan.popular && 'md:scale-105 ring-2 ring-primary'
-              )}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary px-4 py-1.5 rounded-full bg-background border border-primary/50">
-                    <Zap className="h-3 w-3" />
-                    Most Popular
-                  </span>
-                </div>
-              )}
-
-              <div className="mb-8">
-                <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
-                  {plan.name === 'Starter' && <Check className="h-5 w-5 text-success" />}
-                  {plan.name === 'Pro' && <Crown className="h-5 w-5 text-primary" />}
-                  {plan.name === 'Enterprise' && <Infinity className="h-5 w-5 text-accent" />}
+      <div className="grid md:grid-cols-3 gap-6">
+        {plans.map((plan) => (
+          <div
+            key={plan.name}
+            className={cn(
+              "rounded-xl border bg-card p-6 flex flex-col justify-between",
+              plan.popular
+                ? "border-primary/60 ring-1 ring-primary/30"
+                : "border-border"
+            )}
+          >
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-lg font-semibold text-foreground">
                   {plan.name}
                 </h3>
-                <p className="text-sm text-muted-foreground">{plan.description}</p>
+                {plan.popular && (
+                  <span className="text-[11px] font-medium text-primary px-2.5 py-0.5 rounded-md bg-primary/10 border border-primary/20">
+                    Recommended
+                  </span>
+                )}
               </div>
+              <p className="text-xs text-muted-foreground min-h-[32px]">
+                {plan.description}
+              </p>
 
-              {/* Price Section */}
-              <div className="mb-8 pb-8 border-b border-border/50">
-                <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-5xl font-bold text-foreground">
-                    ${editingPrice === plan.name ? (
+              <div className="my-6 pb-6 border-b border-border">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-3xl font-semibold text-foreground tabular-nums">
+                    $
+                    {editingPrice === plan.name ? (
                       <input
                         type="number"
                         value={editValues[plan.name]}
                         onChange={(e) =>
                           setEditValues({
                             ...editValues,
-                            [plan.name]: parseInt(e.target.value),
+                            [plan.name]: parseInt(e.target.value) || 0,
                           })
                         }
-                        className="w-20 bg-input border border-border rounded text-foreground px-2 py-1"
+                        className="w-20 bg-input border border-border rounded px-2 py-0.5 text-lg text-foreground"
                         autoFocus
                       />
                     ) : (
                       plan.price
                     )}
                   </span>
-                  <span className="text-muted-foreground">/month</span>
+                  <span className="text-xs text-muted-foreground">/month</span>
                 </div>
                 <button
                   onClick={() =>
@@ -160,66 +147,62 @@ export default function PricingPage() {
                       ? handlePriceSave(plan.name)
                       : handlePriceEdit(plan.name, plan.price)
                   }
-                  className="text-xs text-primary hover:text-primary/80 transition-colors"
+                  className="mt-2 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {editingPrice === plan.name ? '✓ Save price' : '✎ Edit price'}
+                  {editingPrice === plan.name ? "Save price" : "Adjust price"}
                 </button>
               </div>
 
-              {/* Features */}
-              <ul className="space-y-4 mb-8">
+              <ul className="space-y-3 mb-6">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3">
-                    <Check className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-foreground">{feature}</span>
+                  <li key={feature} className="flex items-start gap-2.5">
+                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span className="text-xs text-foreground">{feature}</span>
                   </li>
                 ))}
               </ul>
+            </div>
 
-              {/* Button */}
-              <button
-                className={cn(
-                  'w-full py-3 rounded-lg font-semibold transition-all duration-300',
-                  plan.popular
-                    ? 'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20'
-                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border'
-                )}
-              >
-                {plan.buttonText}
-              </button>
+            <button
+              className={cn(
+                "w-full py-2.5 rounded-lg text-sm font-medium transition-colors",
+                plan.popular
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border"
+              )}
+            >
+              {plan.buttonText}
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-6">
+        <h2 className="text-base font-semibold text-foreground mb-4">
+          Frequently Asked Questions
+        </h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          {[
+            {
+              q: "Can I change my plan anytime?",
+              a: "Yes, you can upgrade or downgrade your workspace tier at any time with immediate effect.",
+            },
+            {
+              q: "What payment methods are supported?",
+              a: "All major credit cards and wire transfers for annual enterprise contracts.",
+            },
+            {
+              q: "How does API quota work?",
+              a: "You can connect your own RapidAPI key in Settings or use built-in public scrapers without limits.",
+            },
+          ].map((item, idx) => (
+            <div key={idx} className="space-y-1.5">
+              <h4 className="text-sm font-medium text-foreground">{item.q}</h4>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {item.a}
+              </p>
             </div>
           ))}
-        </div>
-
-        {/* FAQ Section */}
-        <div className="mt-24 max-w-3xl mx-auto">
-          <h2 className="text-2xl font-bold text-foreground mb-8 text-center">
-            Frequently Asked Questions
-          </h2>
-          <div className="space-y-4">
-            {[
-              {
-                q: 'Can I change my plan anytime?',
-                a: 'Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately.',
-              },
-              {
-                q: 'What payment methods do you accept?',
-                a: 'We accept all major credit cards, PayPal, and bank transfers for enterprise customers.',
-              },
-              {
-                q: 'Is there a free trial?',
-                a: 'Yes, you get 14 days free on Pro and Enterprise plans with full feature access.',
-              },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                className="glass rounded-lg p-6 border border-border/50"
-              >
-                <h4 className="font-semibold text-foreground mb-2">{item.q}</h4>
-                <p className="text-sm text-muted-foreground">{item.a}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>

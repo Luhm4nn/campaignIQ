@@ -286,6 +286,25 @@ export async function syncIntegrationPostsApi(
   return data;
 }
 
+export async function lookupFollowersApi(
+  provider: string,
+  username: string
+): Promise<{
+  ok: boolean;
+  followers: number;
+  mode?: string;
+  username?: string;
+  message?: string;
+}> {
+  const clean = username.trim().replace(/^@/, '');
+  const targetUrl = API_BASE_URL + '/integrations/' + provider.toLowerCase() + '/lookup-followers?username=' + encodeURIComponent(clean);
+  const res = await fetch(targetUrl);
+  if (!res.ok) {
+    throw new Error(await parseApiError(res));
+  }
+  return res.json();
+}
+
 export async function disconnectIntegrationApi(
   provider: string
 ): Promise<IntegrationConfigRead> {

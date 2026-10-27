@@ -37,8 +37,8 @@ import {
   Instagram,
   Twitter,
   AlertTriangle,
-  Zap,
   Globe,
+  Terminal,
 } from "lucide-react";
 import {
   API_BASE_URL,
@@ -55,10 +55,10 @@ import {
 import type { IntegrationConfigRead } from "@/lib/types";
 
 const DEFAULT_HOSTS: Record<string, string> = {
+  youtube: "youtube.com",
+  twitter: "twitter-api45.p.rapidapi.com",
   instagram: "instagram-scraper-api2.p.rapidapi.com",
   tiktok: "tiktok-scraper7.p.rapidapi.com",
-  twitter: "twitter-api45.p.rapidapi.com",
-  meta_graph: "graph.facebook.com",
 };
 
 export default function SettingsPage() {
@@ -288,33 +288,36 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Settings &amp; Deep Social Scraper Vault (RapidAPI)
+    <div className="space-y-6">
+      <div className="pb-2 border-b border-border">
+        <p className="text-xs font-medium text-muted-foreground mb-1">
+          System Configuration &amp; Integrations
+        </p>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          Settings &amp; Social Scraper Vault
         </h1>
-        <p className="text-muted-foreground">
-          Extrae métricas profundas en tiempo real de <b>Instagram</b>, <b>TikTok</b> y <b>Twitter / X</b> usando una única <code>X-RapidAPI-Key</code> (o scraper público directo) con cifrado en PostgreSQL y trazabilidad por <code>external_id</code>.
+        <p className="text-sm text-muted-foreground mt-0.5">
+          Extrae métricas en tiempo real de <b>Instagram</b>, <b>TikTok</b> y <b>Twitter / X</b> usando una única <code>X-RapidAPI-Key</code> (o scraper público directo) con cifrado en PostgreSQL y trazabilidad por <code>external_id</code>.
         </p>
       </div>
 
       {/* BÓVEDA DE EXTRACCIÓN PROFUNDA (INSTAGRAM, TIKTOK, TWITTER) */}
-      <Card className="border-primary/30 bg-card shadow-lg">
-        <CardHeader className="border-b border-border/40 bg-primary/5">
+      <Card className="border-border bg-card shadow-none">
+        <CardHeader className="border-b border-border">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-primary-foreground">
-                <Zap className="h-5 w-5" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 text-primary">
+                <Terminal className="h-4 w-4" />
               </div>
               <div>
-                <CardTitle className="text-lg flex items-center gap-2">
+                <CardTitle className="text-base flex items-center gap-2">
                   Motor de Extracción Profunda (Instagram, TikTok &amp; Twitter/X)
-                  <Badge className="bg-primary/20 text-primary border border-primary/30 text-xs">
-                    RapidAPI + Deep Scraper
+                  <Badge className="bg-primary/10 text-primary border border-primary/20 text-[11px] font-medium">
+                    RapidAPI + Scraper
                   </Badge>
                 </CardTitle>
-                <CardDescription>
-                  Una sola clave de RapidAPI sirve para todas las redes (se comparte y cifra automáticamente en PostgreSQL). ¡En TikTok y Twitter también funciona sin clave!
+                <CardDescription className="text-xs mt-0.5">
+                  Una sola clave de RapidAPI sirve para todas las redes (se comparte y cifra automáticamente en PostgreSQL). En TikTok y Twitter también funciona sin clave.
                 </CardDescription>
               </div>
             </div>
@@ -324,14 +327,14 @@ export default function SettingsPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setGuideOpen(!guideOpen)}
-                className="gap-1.5"
+                className="gap-1.5 text-xs"
               >
-                <BookOpen className="h-4 w-4 text-primary" />
-                {guideOpen ? "Ocultar Guía RapidAPI" : "Ver Guía de 30 Segundos"}
+                <BookOpen className="h-3.5 w-3.5 text-primary" />
+                {guideOpen ? "Ocultar Guía" : "Ver Guía de 30 Segundos"}
                 {guideOpen ? (
-                  <ChevronUp className="h-4 w-4" />
+                  <ChevronUp className="h-3.5 w-3.5" />
                 ) : (
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-3.5 w-3.5" />
                 )}
               </Button>
             </div>
@@ -352,28 +355,28 @@ export default function SettingsPage() {
                   key={item.provider}
                   type="button"
                   onClick={() => handleProviderSelect(item.provider)}
-                  className={`flex flex-col items-start justify-between p-4 rounded-xl border text-left transition-all ${
+                  className={`flex flex-col items-start justify-between p-4 rounded-lg border text-left transition-colors ${
                     isSelected
-                      ? "border-primary bg-primary/10 shadow-sm"
-                      : "border-border/50 bg-secondary/30 hover:border-border"
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-secondary/20 hover:bg-secondary/40"
                   }`}
                 >
                   <div className="flex items-center justify-between w-full mb-2">
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                       {item.provider.replace("_", " ")}
                     </span>
                     <Badge
                       variant="secondary"
                       className={
                         isConn
-                          ? "bg-success/20 text-success text-[10px]"
-                          : "bg-muted text-muted-foreground text-[10px]"
+                          ? "bg-success/15 text-success text-[10px]"
+                          : "bg-secondary text-muted-foreground text-[10px]"
                       }
                     >
                       {isConn ? "Listo" : "Sin Configurar"}
                     </Badge>
                   </div>
-                  <p className="text-sm font-semibold text-foreground line-clamp-1">
+                  <p className="text-sm font-medium text-foreground line-clamp-1">
                     {item.displayName}
                   </p>
                   {item.externalAccountName && (
@@ -388,43 +391,42 @@ export default function SettingsPage() {
 
           {/* GUÍA DE 30 SEGUNDOS PARA RAPIDAPI + DEEP SCRAPER */}
           {guideOpen && (
-            <div className="rounded-2xl border border-primary/30 bg-secondary/20 p-5 space-y-4">
+            <div className="rounded-lg border border-border bg-secondary/20 p-5 space-y-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-                  <Globe className="h-4 w-4 text-primary" />
+                <h3 className="text-xs font-semibold text-foreground flex items-center gap-2">
+                  <Globe className="h-3.5 w-3.5 text-primary" />
                   Guía Rápida (30 segundos): Cómo extraer métricas reales de Instagram, TikTok y Twitter/X
                 </h3>
                 <a
                   href="https://rapidapi.com/hub"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
+                  className="text-xs font-medium text-primary hover:underline flex items-center gap-1"
                 >
-                  Abrir RapidAPI Hub (Login con Google en 1 clic)
+                  Abrir RapidAPI Hub (Login con Google)
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
 
               <div className="grid gap-4 md:grid-cols-3 text-xs text-muted-foreground">
-                <div className="rounded-xl border border-primary/40 bg-card p-4 space-y-2">
+                <div className="rounded-lg border border-border bg-card p-4 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-foreground flex items-center gap-1.5">
-                      <Zap className="h-3.5 w-3.5 text-primary" />
-                      1. TikTok y Twitter/X (¡Funciona SIN API Key!)
+                    <span className="font-semibold text-foreground">
+                      1. TikTok y Twitter/X (Sin API Key)
                     </span>
-                    <Badge className="bg-success/20 text-success text-[10px]">
+                    <Badge className="bg-success/15 text-success text-[10px]">
                       0 Claves
                     </Badge>
                   </div>
                   <p className="leading-relaxed">
-                    Selecciona la pestaña <b>TikTok</b> o <b>Twitter / X</b> arriba, escribe cualquier <code>@usuario</code> real en el campo <b>&ldquo;@Usuario Objetivo&rdquo;</b> (ej: <code>@tiktok</code>, <code>@netflix</code>, <code>@vercel</code>, <code>@elonmusk</code> o tu propia cuenta) y haz clic directo en <b>&ldquo;Extraer Publicaciones y Métricas Ahora&rdquo;</b>. El scraper profundo trae vistas, likes, comentarios, guardados y compartidos reales al instante.
+                    Selecciona la pestaña <b>TikTok</b> o <b>Twitter / X</b> arriba, escribe cualquier <code>@usuario</code> real en el campo <b>&ldquo;@Usuario Objetivo&rdquo;</b> (ej: <code>@tiktok</code>, <code>@netflix</code>, <code>@vercel</code>) y haz clic directo en <b>&ldquo;Extraer Publicaciones y Métricas&rdquo;</b>.
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-border/50 bg-card p-4 space-y-2">
-                  <div className="font-bold text-foreground flex items-center gap-1.5">
-                    <Instagram className="h-3.5 w-3.5 text-pink-500" />
-                    2. Instagram (Con X-RapidAPI-Key en 30 seg)
+                <div className="rounded-lg border border-border bg-card p-4 space-y-2">
+                  <div className="font-semibold text-foreground flex items-center gap-1.5">
+                    <Instagram className="h-3.5 w-3.5 text-muted-foreground" />
+                    2. Instagram (Con X-RapidAPI-Key)
                   </div>
                   <ol className="list-decimal list-inside space-y-1 leading-relaxed">
                     <li>
@@ -435,30 +437,30 @@ export default function SettingsPage() {
                         rel="noreferrer"
                         className="text-primary underline font-medium"
                       >
-                        Instagram Scraper API2 en RapidAPI
+                        Instagram Scraper API2
                       </a>{" "}
-                      con tu cuenta de Google y toca <b>Subscribe to Test (Plan Basic $0/mes)</b>.
+                      y toca <b>Subscribe to Test ($0/mes)</b>.
                     </li>
                     <li>
-                      Copia el valor de <code>x-rapidapi-key</code> que aparece en el código de ejemplo.
+                      Copia el valor de <code>x-rapidapi-key</code> del ejemplo.
                     </li>
                     <li>
-                      Pégalo abajo en <b>X-RapidAPI-Key</b>: se cifra en PostgreSQL y sirve automáticamente para Instagram, TikTok y Twitter.
+                      Pégalo abajo en <b>X-RapidAPI-Key</b>: se cifra en PostgreSQL y sirve para todas las redes.
                     </li>
                   </ol>
                 </div>
 
-                <div className="rounded-xl border border-border/50 bg-card p-4 space-y-2">
-                  <div className="font-bold text-foreground flex items-center gap-1.5">
-                    <Twitter className="h-3.5 w-3.5 text-sky-400" />
-                    3. Qué métricas profundas extrae
+                <div className="rounded-lg border border-border bg-card p-4 space-y-2">
+                  <div className="font-semibold text-foreground flex items-center gap-1.5">
+                    <Twitter className="h-3.5 w-3.5 text-muted-foreground" />
+                    3. Qué métricas extrae
                   </div>
                   <p className="leading-relaxed">
                     Por cada post/reel/video/tweet obtiene:
-                    <br />• <b>Likes, Comentarios, Reposts/Shares y Guardados (Saves)</b> reales.
-                    <br />• <b>Reproducciones (`play_count` / `views`) y Alcance (`reach`)</b> reales.
+                    <br />• <b>Likes, Comentarios, Reposts/Shares y Saves</b> reales.
+                    <br />• <b>Reproducciones (`views`) y Alcance (`reach`)</b>.
                     <br />• <b>Seguidores actuales</b> del perfil para medir el crecimiento (`growth`).
-                    <br />• <b>Sentimiento VADER</b> + actualización por <code>external_id</code> sin duplicar.
+                    <br />• <b>Sentimiento VADER</b> + trazabilidad por <code>external_id</code>.
                   </p>
                 </div>
               </div>
@@ -467,12 +469,12 @@ export default function SettingsPage() {
 
           {statusFeedback && (
             <div
-              className={`p-4 rounded-xl border text-sm font-medium flex items-center gap-2 ${
+              className={`p-3.5 rounded-lg border text-xs font-medium flex items-center gap-2 ${
                 statusFeedback.type === "success"
-                  ? "bg-success/15 border-success/30 text-success"
+                  ? "bg-success/10 border-success/25 text-success"
                   : statusFeedback.type === "error"
-                  ? "bg-destructive/15 border-destructive/30 text-destructive"
-                  : "bg-primary/15 border-primary/30 text-primary"
+                  ? "bg-destructive/10 border-destructive/25 text-destructive"
+                  : "bg-primary/10 border-primary/25 text-primary"
               }`}
             >
               {statusFeedback.type === "error" ? (
@@ -486,27 +488,27 @@ export default function SettingsPage() {
 
           {/* FORMULARIO PRINCIPAL DE CONFIGURACIÓN Y EXTRACCIÓN */}
           <div className="grid gap-6 lg:grid-cols-2">
-            <div className="space-y-4 rounded-2xl border border-border/50 bg-secondary/10 p-5">
+            <div className="space-y-4 rounded-lg border border-border bg-secondary/10 p-5">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <Key className="h-4 w-4 text-primary" />
                     1. Cuenta Objetivo y Clave RapidAPI (Bóveda Cifrada)
                   </h4>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     Puedes scrapear cualquier cuenta pública ingresando solo su <code>@usuario</code>.
                   </p>
                 </div>
                 {activeIntegration.clientIdHash && (
                   <Badge variant="outline" className="text-[10px] font-mono">
-                    Blind Index: {activeIntegration.clientIdHash.slice(0, 10)}…
+                    Hash: {activeIntegration.clientIdHash.slice(0, 10)}…
                   </Badge>
                 )}
               </div>
 
               <FieldGroup>
                 <Field>
-                  <FieldLabel className="font-semibold text-primary">
+                  <FieldLabel className="font-medium text-foreground">
                     @Usuario Objetivo a Scrapear ({selectedProvider.toUpperCase()})
                   </FieldLabel>
                   <InputGroup>
@@ -527,7 +529,7 @@ export default function SettingsPage() {
                 <Field>
                   <FieldLabel className="flex items-center justify-between">
                     <span>
-                      X-RapidAPI-Key (Opcional en TikTok/Twitter, Recomendada en Instagram)
+                      X-RapidAPI-Key (Opcional en TikTok/Twitter, Recomendada en IG)
                     </span>
                     {activeIntegration.hasAccessToken && (
                       <span className="text-xs text-success font-mono">
@@ -569,7 +571,7 @@ export default function SettingsPage() {
                   disabled={busyAction !== null}
                   className="gap-2"
                 >
-                  <Lock className="h-4 w-4" />
+                  <Lock className="h-3.5 w-3.5" />
                   {busyAction === "save"
                     ? "Cifrando en PostgreSQL..."
                     : "Guardar en Bóveda Segura"}
@@ -583,7 +585,7 @@ export default function SettingsPage() {
                     disabled={busyAction !== null}
                     className="gap-1.5 text-destructive hover:text-destructive"
                   >
-                    <Unplug className="h-4 w-4" />
+                    <Unplug className="h-3.5 w-3.5" />
                     Limpiar
                   </Button>
                 )}
@@ -591,13 +593,13 @@ export default function SettingsPage() {
             </div>
 
             {/* COLUMNA 2: EXTRACCIÓN PROFUNDA EN 1 CLIC */}
-            <div className="space-y-4 rounded-2xl border border-border/50 bg-secondary/10 p-5 flex flex-col justify-between">
+            <div className="space-y-4 rounded-lg border border-border bg-secondary/10 p-5 flex flex-col justify-between">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
                       <RefreshCw className="h-4 w-4 text-primary" />
-                      2. Extracción Profunda de Publicaciones y Métricas
+                      2. Extracción de Publicaciones y Métricas
                     </h4>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       Extrae hasta 30 publicaciones reales de <b>{usernameInput || activeIntegration.externalAccountName || "@usuario"}</b>, calcula sentimiento VADER y actualiza métricas por <code>external_id</code>.
@@ -615,16 +617,16 @@ export default function SettingsPage() {
                   </Button>
                 </div>
 
-                <div className="rounded-xl border border-border/50 bg-card/60 p-3.5 text-xs space-y-1.5">
+                <div className="rounded-lg border border-border bg-card p-3.5 text-xs space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Red seleccionada:</span>
-                    <span className="font-semibold text-foreground uppercase">
+                    <span className="font-medium text-foreground uppercase">
                       {selectedProvider}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Cuenta objetivo:</span>
-                    <span className="font-mono text-primary font-semibold">
+                    <span className="font-mono text-primary font-medium">
                       {usernameInput ||
                         activeIntegration.externalAccountName ||
                         "No ingresada"}
@@ -640,17 +642,17 @@ export default function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2 pt-2">
+                <div className="space-y-2 pt-1">
                   <label className="text-xs font-medium text-foreground block">
                     Campaña destino para guardar los posts extraídos:
                   </label>
                   <select
                     value={selectedSyncCampaignId}
                     onChange={(e) => setSelectedSyncCampaignId(e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl bg-card border border-border text-sm text-foreground"
+                    className="w-full h-10 px-3 rounded-lg bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                   >
                     <option value="auto">
-                      ✨ Crear / Actualizar campaña automática para este @usuario
+                      Crear / Actualizar campaña automática para este @usuario
                     </option>
                     {campaigns.map((c) => (
                       <option key={c.id} value={String(c.id)}>
@@ -663,10 +665,10 @@ export default function SettingsPage() {
                 <Button
                   onClick={handleSyncPosts}
                   disabled={busyAction !== null}
-                  className="w-full gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground py-6 text-base font-semibold shadow-lg shadow-primary/20"
+                  className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90 py-5 text-sm font-medium"
                 >
                   <RefreshCw
-                    className={`h-5 w-5 ${
+                    className={`h-4 w-4 ${
                       busyAction === "sync" ? "animate-spin" : ""
                     }`}
                   />
@@ -676,7 +678,7 @@ export default function SettingsPage() {
                 </Button>
               </div>
 
-              <div className="rounded-xl bg-card/80 border border-border/50 p-3 text-xs text-muted-foreground flex items-center justify-between">
+              <div className="rounded-lg bg-card border border-border p-3 text-xs text-muted-foreground flex items-center justify-between">
                 <span>
                   Estado:{" "}
                   <strong className="text-foreground capitalize">
@@ -699,13 +701,13 @@ export default function SettingsPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          <Card className="border-border/50 bg-card">
+          <Card className="border-border bg-card shadow-none">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <User className="h-5 w-5 text-primary" />
+                <User className="h-4 w-4 text-primary" />
                 <CardTitle className="text-base">Profile Settings</CardTitle>
               </div>
-              <CardDescription>
+              <CardDescription className="text-xs">
                 Update your personal information in the database
               </CardDescription>
             </CardHeader>
@@ -759,23 +761,23 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 bg-card">
+          <Card className="border-border bg-card shadow-none">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Bell className="h-5 w-5 text-primary" />
+                <Bell className="h-4 w-4 text-primary" />
                 <CardTitle className="text-base">Notifications</CardTitle>
               </div>
-              <CardDescription>
+              <CardDescription className="text-xs">
                 Configure how you receive updates
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-foreground">
+                  <p className="text-sm font-medium text-foreground">
                     Email Notifications
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     Receive campaign updates via email
                   </p>
                 </div>
@@ -783,10 +785,10 @@ export default function SettingsPage() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-foreground">
+                  <p className="text-sm font-medium text-foreground">
                     Performance Alerts
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     Get notified when metrics change significantly
                   </p>
                 </div>
@@ -797,34 +799,34 @@ export default function SettingsPage() {
         </div>
 
         <div className="space-y-6">
-          <Card className="border-border/50 bg-card">
+          <Card className="border-border bg-card shadow-none">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Key className="h-5 w-5 text-primary" />
+                <Key className="h-4 w-4 text-primary" />
                 <CardTitle className="text-base">API Configuration</CardTitle>
               </div>
-              <CardDescription>
+              <CardDescription className="text-xs">
                 Backend service endpoint and interactive documentation
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="rounded-lg border border-border/50 bg-muted/30 p-4">
+              <div className="rounded-lg border border-border bg-secondary/30 p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-foreground">
+                  <span className="text-xs font-medium text-foreground">
                     Backend Endpoint
                   </span>
                   <Badge
                     variant="secondary"
                     className={
                       isConnected
-                        ? "bg-success/20 text-success"
-                        : "bg-destructive/20 text-destructive"
+                        ? "bg-success/15 text-success text-[10px]"
+                        : "bg-destructive/15 text-destructive text-[10px]"
                     }
                   >
                     {isConnected ? "Connected (PostgreSQL)" : "Disconnected"}
                   </Badge>
                 </div>
-                <code className="text-xs text-muted-foreground">
+                <code className="text-xs text-muted-foreground font-mono">
                   {API_BASE_URL}
                 </code>
               </div>
@@ -842,39 +844,39 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 bg-card">
+          <Card className="border-border bg-card shadow-none">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Settings className="h-5 w-5 text-primary" />
+                <Settings className="h-4 w-4 text-primary" />
                 <CardTitle className="text-base">Quick Actions</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
               <Button
                 variant="outline"
-                className="w-full justify-start gap-2"
+                className="w-full justify-start gap-2 text-xs"
                 asChild
               >
                 <a href={getExportCsvUrl()} target="_blank" rel="noreferrer">
-                  <Database className="h-4 w-4" />
+                  <Database className="h-3.5 w-3.5" />
                   Export Data (CSV)
                 </a>
               </Button>
               <Button
                 variant="outline"
-                className="w-full justify-start gap-2"
+                className="w-full justify-start gap-2 text-xs"
                 onClick={() => handleSyncPosts()}
                 disabled={busyAction !== null}
               >
-                <RefreshCw className="h-4 w-4" />
+                <RefreshCw className="h-3.5 w-3.5" />
                 Deep Sync Active Platform
               </Button>
               <Button
                 variant="outline"
-                className="w-full justify-start gap-2"
+                className="w-full justify-start gap-2 text-xs"
                 onClick={() => setGuideOpen(true)}
               >
-                <Shield className="h-4 w-4" />
+                <Shield className="h-3.5 w-3.5" />
                 Ver Guía RapidAPI &amp; Scraper
               </Button>
             </CardContent>

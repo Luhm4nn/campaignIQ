@@ -23,6 +23,7 @@ class Campaign(Base):
     start_date = Column(DateTime, nullable=False, default=utcnow_naive)
     end_date = Column(DateTime, nullable=True)
     external_id = Column(String, index=True, nullable=True)
+    target_keywords = Column(String, nullable=True)
     created_at = Column(DateTime, nullable=False, default=utcnow_naive)
 
     posts = relationship(

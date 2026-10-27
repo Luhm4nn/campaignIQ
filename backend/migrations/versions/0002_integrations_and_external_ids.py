@@ -1,6 +1,6 @@
 """Add integrations table and external_id indexes to campaigns and posts
 
-Revision ID: 0002_integrations_and_external_ids
+Revision ID: 0002_integrations
 Revises: 0001_initial
 Create Date: 2026-10-27 15:05:00.000000
 
@@ -9,7 +9,7 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-revision: str = "0002_integrations_and_external_ids"
+revision: str = "0002_integrations"
 down_revision: Union[str, None] = "0001_initial"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

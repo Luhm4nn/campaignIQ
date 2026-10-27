@@ -38,6 +38,16 @@ export function PostFormModal({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (open) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [open]);
+
+  useEffect(() => {
     if (editPost) {
       setCampaignId(editPost.campaignId);
       setContent(editPost.content);
@@ -116,22 +126,22 @@ export function PostFormModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60 backdrop-blur-xs"
         onClick={onClose}
       />
-      <div className="relative glass rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-8 space-y-6 border border-border/50">
+      <div className="relative rounded-xl bg-card max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-5 border border-border shadow-xl">
         <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-foreground">
+            <h2 className="text-lg font-semibold text-foreground">
               {editPost ? "Edit Post" : "Register New Post"}
             </h2>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground mt-0.5">
               VADER sentiment and engagement rate will be calculated automatically
             </p>
           </div>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
           >
             ✕
           </button>
@@ -146,13 +156,13 @@ export function PostFormModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {!editPost && (
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                 Campaign
               </label>
               <select
                 value={campaignId}
                 onChange={(e) => setCampaignId(Number(e.target.value))}
-                className="w-full h-11 px-3 rounded-xl bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full h-10 px-3 rounded-lg bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 {campaigns.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -164,7 +174,7 @@ export function PostFormModal({
           )}
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            <label className="block text-xs font-medium text-muted-foreground mb-1.5">
               Post Content / Copy
             </label>
             <textarea
@@ -172,19 +182,19 @@ export function PostFormModal({
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Write the publication text to analyze sentiment and engagement..."
-              className="w-full p-3 rounded-xl bg-input border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+              className="w-full p-3 rounded-lg bg-input border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                 Media Format
               </label>
               <select
                 value={mediaType}
                 onChange={(e) => setMediaType(e.target.value)}
-                className="w-full h-11 px-3 rounded-xl bg-input border border-border text-sm text-foreground capitalize focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full h-10 px-3 rounded-lg bg-input border border-border text-sm text-foreground capitalize focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 {mediaTypes.map((t) => (
                   <option key={t} value={t}>
@@ -195,21 +205,21 @@ export function PostFormModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                 Published Date & Time
               </label>
               <input
                 type="datetime-local"
                 value={publishedAt}
                 onChange={(e) => setPublishedAt(e.target.value)}
-                className="w-full h-11 px-3 rounded-xl bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full h-10 px-3 rounded-lg bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                 Likes
               </label>
               <input
@@ -217,11 +227,11 @@ export function PostFormModal({
                 min={0}
                 value={likes}
                 onChange={(e) => setLikes(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full h-10 px-3 rounded-lg bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                 Comments
               </label>
               <input
@@ -229,11 +239,11 @@ export function PostFormModal({
                 min={0}
                 value={comments}
                 onChange={(e) => setComments(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full h-10 px-3 rounded-lg bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                 Shares
               </label>
               <input
@@ -241,14 +251,14 @@ export function PostFormModal({
                 min={0}
                 value={shares}
                 onChange={(e) => setShares(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full h-10 px-3 rounded-lg bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                 Reach
               </label>
               <input
@@ -256,11 +266,11 @@ export function PostFormModal({
                 min={0}
                 value={reach}
                 onChange={(e) => setReach(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full h-10 px-3 rounded-lg bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                 Impressions
               </label>
               <input
@@ -268,24 +278,24 @@ export function PostFormModal({
                 min={0}
                 value={impressions}
                 onChange={(e) => setImpressions(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full h-10 px-3 rounded-lg bg-input border border-border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-3 pt-3">
             <button
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="flex-1 py-2.5 px-4 rounded-xl font-semibold bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all text-sm"
+              className="flex-1 py-2.5 px-4 rounded-lg font-medium bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border transition-colors text-sm"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="flex-1 py-2.5 px-4 rounded-xl font-semibold bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 transition-all text-sm"
+              className="flex-1 py-2.5 px-4 rounded-lg font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm"
             >
               {submitting
                 ? "Saving..."

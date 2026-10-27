@@ -9,7 +9,7 @@ import {
   Share2,
   TrendingUp,
   Calendar,
-  Sparkles,
+  Calculator,
   Trash2,
   Edit3,
 } from "lucide-react";
@@ -53,7 +53,7 @@ export default function PostDetailPage({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-muted-foreground">Loading post details...</p>
+        <p className="text-sm text-muted-foreground">Loading post details...</p>
       </div>
     );
   }
@@ -61,7 +61,7 @@ export default function PostDetailPage({
   if (!post) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <p className="text-muted-foreground">Post not found</p>
+        <p className="text-sm text-muted-foreground">Post not found</p>
         <Link href="/posts" className="text-primary hover:underline text-sm">
           Back to Posts
         </Link>
@@ -75,182 +75,172 @@ export default function PostDetailPage({
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="sticky top-0 z-20 border-b border-border/50 bg-background/80 backdrop-blur-md">
-        <div className="px-6 py-4 sm:px-12 lg:px-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link
-              href={`/campaigns/${post.campaignId}`}
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5 text-foreground" />
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                Post Details
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                {post.campaignName} &middot;{" "}
-                <span className="capitalize">{post.platform}</span>
-              </p>
-            </div>
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-border">
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/campaigns/${post.campaignId}`}
+            className="p-2 hover:bg-secondary rounded-lg border border-border transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4 text-foreground" />
+          </Link>
+          <div>
+            <h1 className="text-xl font-semibold text-foreground">
+              Post Details
+            </h1>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {post.campaignName} &middot;{" "}
+              <span className="capitalize">{post.platform}</span>
+            </p>
           </div>
+        </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setEditModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary text-sm font-medium text-foreground hover:bg-secondary/80 transition-all"
-            >
-              <Edit3 className="h-4 w-4" />
-              Edit Post
-            </button>
-            <button
-              onClick={handleDelete}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-destructive/15 border border-destructive/30 text-sm font-medium text-destructive hover:bg-destructive/25 transition-all"
-            >
-              <Trash2 className="h-4 w-4" />
-              Delete
-            </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setEditModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-secondary border border-border text-xs font-medium text-foreground hover:bg-secondary/80 transition-colors"
+          >
+            <Edit3 className="h-3.5 w-3.5" />
+            Edit Post
+          </button>
+          <button
+            onClick={handleDelete}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-destructive/10 border border-destructive/25 text-xs font-medium text-destructive hover:bg-destructive/20 transition-colors"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-6 space-y-5">
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xs font-medium uppercase px-2 py-0.5 rounded-md bg-secondary border border-border text-foreground">
+              {post.mediaType}
+            </span>
+            <span className="text-xs font-medium uppercase px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-primary">
+              Tier: {post.performanceTier}
+            </span>
+          </div>
+          <h2 className="text-lg font-medium text-foreground leading-relaxed mb-3">
+            {post.content}
+          </h2>
+          <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+            <Calendar className="h-3.5 w-3.5" />
+            Published on{" "}
+            {new Date(post.publishedAt).toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4 pt-5 border-t border-border">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Heart className="h-4 w-4 text-muted-foreground" />
+              <span className="text-xl font-semibold text-foreground tabular-nums">
+                {post.likes.toLocaleString()}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">Likes</p>
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <MessageCircle className="h-4 w-4 text-muted-foreground" />
+              <span className="text-xl font-semibold text-foreground tabular-nums">
+                {post.comments.toLocaleString()}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">Comments</p>
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Share2 className="h-4 w-4 text-muted-foreground" />
+              <span className="text-xl font-semibold text-foreground tabular-nums">
+                {post.shares.toLocaleString()}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">Shares</p>
           </div>
         </div>
       </div>
 
-      <div className="px-6 py-12 sm:px-12 lg:px-16">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="glass rounded-2xl overflow-hidden">
-            <div className="p-8 space-y-6">
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs font-semibold uppercase px-2.5 py-1 rounded-md bg-secondary text-foreground">
-                    {post.mediaType}
-                  </span>
-                  <span className="text-xs font-semibold uppercase px-2.5 py-1 rounded-md bg-primary/15 text-primary">
-                    Classification: {post.performanceTier}
-                  </span>
-                </div>
-                <h2 className="text-2xl font-bold text-foreground mb-2">
-                  {post.content}
-                </h2>
-                <p className="text-muted-foreground flex items-center gap-2 text-sm">
-                  <Calendar className="h-4 w-4" />
-                  Published on{" "}
-                  {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border/50">
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <Heart className="h-5 w-5 text-accent" />
-                    <span className="text-2xl font-bold text-foreground">
-                      {post.likes.toLocaleString()}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">Likes</p>
-                </div>
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <MessageCircle className="h-5 w-5 text-primary" />
-                    <span className="text-2xl font-bold text-foreground">
-                      {post.comments.toLocaleString()}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">Comments</p>
-                </div>
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <Share2 className="h-5 w-5 text-success" />
-                    <span className="text-2xl font-bold text-foreground">
-                      {post.shares.toLocaleString()}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">Shares</p>
-                </div>
-              </div>
-            </div>
+      <div>
+        <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-primary" />
+          Performance & NLP Metrics
+        </h3>
+        <div className="grid sm:grid-cols-3 gap-4">
+          <div className="rounded-xl border border-border bg-card p-5">
+            <p className="text-xs text-muted-foreground mb-1">
+              Engagement Rate
+            </p>
+            <p className="text-2xl font-semibold text-foreground tabular-nums">
+              {post.engagementRate}%
+            </p>
           </div>
-
-          <div>
-            <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              Performance & NLP Metrics
-            </h3>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="glass rounded-lg p-6 border border-border/50">
-                <p className="text-sm text-muted-foreground mb-2">
-                  Engagement Rate
-                </p>
-                <p className="text-3xl font-bold text-foreground">
-                  {post.engagementRate}%
-                </p>
-              </div>
-              <div className="glass rounded-lg p-6 border border-border/50">
-                <p className="text-sm text-muted-foreground mb-2">Reach</p>
-                <p className="text-3xl font-bold text-foreground">
-                  {post.reach.toLocaleString()}
-                </p>
-              </div>
-              <div className="glass rounded-lg p-6 border border-border/50">
-                <p className="text-sm text-muted-foreground mb-2">
-                  Impressions
-                </p>
-                <p className="text-3xl font-bold text-foreground">
-                  {post.impressions.toLocaleString()}
-                </p>
-              </div>
-              <div className="glass rounded-lg p-6 border border-border/50">
-                <p className="text-sm text-muted-foreground mb-2">
-                  Engagement Score
-                </p>
-                <p className="text-3xl font-bold text-primary">
-                  {post.engagementScore}/100
-                </p>
-              </div>
-              <div className="glass rounded-lg p-6 border border-border/50">
-                <p className="text-sm text-muted-foreground mb-2">
-                  VADER Sentiment
-                </p>
-                <p className="text-3xl font-bold text-foreground uppercase">
-                  {post.sentimentLabel}
-                </p>
-              </div>
-              <div className="glass rounded-lg p-6 border border-border/50">
-                <p className="text-sm text-muted-foreground mb-2">
-                  Compound Score
-                </p>
-                <p className="text-3xl font-bold text-foreground">
-                  {post.sentimentCompound}
-                </p>
-              </div>
-            </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <p className="text-xs text-muted-foreground mb-1">Reach</p>
+            <p className="text-2xl font-semibold text-foreground tabular-nums">
+              {post.reach.toLocaleString()}
+            </p>
           </div>
-
-          <div className="glass rounded-xl p-6 border border-border/50 space-y-2">
-            <div className="flex items-center gap-2 text-primary font-semibold">
-              <Sparkles className="h-4 w-4" />
-              <span>Formula Evaluation</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Engagement Rate = (({post.likes} + {post.comments} + {post.shares}
-              ) / {post.reach}) &times; 100 ={" "}
-              <span className="text-foreground font-semibold">
-                {post.engagementRate}%
-              </span>
-              . Relative campaign percentile classification:{" "}
-              <span className="text-foreground font-semibold uppercase">
-                {post.performanceTier}
-              </span>
-              .
+          <div className="rounded-xl border border-border bg-card p-5">
+            <p className="text-xs text-muted-foreground mb-1">Impressions</p>
+            <p className="text-2xl font-semibold text-foreground tabular-nums">
+              {post.impressions.toLocaleString()}
+            </p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <p className="text-xs text-muted-foreground mb-1">
+              Engagement Score
+            </p>
+            <p className="text-2xl font-semibold text-primary tabular-nums">
+              {post.engagementScore}/100
+            </p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <p className="text-xs text-muted-foreground mb-1">
+              VADER Sentiment
+            </p>
+            <p className="text-2xl font-semibold text-foreground capitalize">
+              {post.sentimentLabel}
+            </p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <p className="text-xs text-muted-foreground mb-1">
+              Compound Score
+            </p>
+            <p className="text-2xl font-semibold text-foreground tabular-nums">
+              {post.sentimentCompound}
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-5 space-y-1.5">
+        <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
+          <Calculator className="h-4 w-4 text-primary" />
+          <span>Formula Evaluation</span>
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Engagement Rate = (({post.likes} + {post.comments} + {post.shares}) /{" "}
+          {post.reach}) &times; 100 ={" "}
+          <span className="text-foreground font-medium">
+            {post.engagementRate}%
+          </span>
+          . Relative campaign percentile classification:{" "}
+          <span className="text-foreground font-medium uppercase">
+            {post.performanceTier}
+          </span>
+          .
+        </p>
       </div>
 
       <PostFormModal

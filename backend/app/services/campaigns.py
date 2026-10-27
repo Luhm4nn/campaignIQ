@@ -141,6 +141,7 @@ def serialize_campaign(campaign: Campaign) -> CampaignRead:
         shares=shares,
         engagementRate=engagement_rate,
         externalId=getattr(campaign, "external_id", None),
+        targetKeywords=getattr(campaign, "target_keywords", None),
     )
 
 
@@ -190,10 +191,38 @@ def create_campaign(db: Session, payload: CampaignCreate) -> CampaignRead:
         start_date=start_dt,
         end_date=end_dt,
         external_id=payload.externalId.strip() if payload.externalId else None,
+        target_keywords=payload.targetKeywords.strip() if payload.targetKeywords else None,
     )
     db.add(campaign)
     db.commit()
     db.refresh(campaign)
+
+    # Automatic scraping trigger if targetHandle or name contains @handle
+    handle_to_scrape = (payload.targetHandle or "").strip()
+    if not handle_to_scrape and "@" in payload.name:
+        for word in payload.name.split():
+            if word.startswith("@") and len(word) > 1:
+                handle_to_scrape = word
+                break
+
+    if handle_to_scrape and campaign.platform in ("youtube", "twitter", "instagram", "tiktok"):
+        try:
+            from app.services.integrations import sync_integration_posts
+            from app.schemas.integration import SyncRequest
+            sync_integration_posts(
+                db,
+                provider=campaign.platform,
+                payload=SyncRequest(
+                    campaignId=campaign.id,
+                    campaignName=handle_to_scrape,
+                    platform=campaign.platform,
+                ),
+            )
+            db.refresh(campaign)
+        except Exception as e:
+            # Continue gracefully even if immediate scrape fails
+            pass
+
     return serialize_campaign(campaign)
 
 
@@ -227,6 +256,8 @@ def update_campaign(
             campaign.start_date = parsed_start
     if payload.endDate is not None:
         campaign.end_date = parse_iso_datetime(payload.endDate)
+    if payload.targetKeywords is not None:
+        campaign.target_keywords = payload.targetKeywords.strip() if payload.targetKeywords else None
 
     db.commit()
     db.refresh(campaign)

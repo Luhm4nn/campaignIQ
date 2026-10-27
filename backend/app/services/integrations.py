@@ -1,3 +1,4 @@
+from app.services.youtube_scraper import extract_youtube_deep
 import json
 import os
 import re
@@ -29,17 +30,17 @@ from app.services.security import (
 )
 
 SUPPORTED_PROVIDERS: Dict[str, str] = {
-    "instagram": "Instagram (RapidAPI & Deep Scraper)",
-    "tiktok": "TikTok (RapidAPI & Deep Scraper)",
-    "twitter": "Twitter / X (RapidAPI & Deep Scraper)",
-    "meta_graph": "Meta Graph API Oficial (OAuth / Token)",
+    "youtube": "YouTube (100% Scraping Público RSS & Stats)",
+    "twitter": "Twitter / X (Deep Scraper FxTwitter / RapidAPI)",
+    "instagram": "Instagram (Deep Scraper & RapidAPI)",
+    "tiktok": "TikTok (Deep Scraper & RapidAPI)",
 }
 
 DEFAULT_RAPIDAPI_HOSTS: Dict[str, str] = {
+    "youtube": "youtube.com",
+    "twitter": "twitter-api45.p.rapidapi.com",
     "instagram": "instagram-scraper-api2.p.rapidapi.com",
     "tiktok": "tiktok-scraper7.p.rapidapi.com",
-    "twitter": "twitter-api45.p.rapidapi.com",
-    "meta_graph": "graph.facebook.com",
 }
 
 META_GRAPH_BASE_URL = "https://graph.facebook.com/v21.0"
@@ -71,7 +72,7 @@ def clean_username(raw: Optional[str]) -> str:
     if not raw:
         return ""
     val = raw.strip()
-    val = re.sub(r"^https?://(www\.)?(instagram\.com|tiktok\.com|twitter\.com|x\.com)/", "", val)
+    val = re.sub(r"^https?://(www\.)?(youtube\.com|instagram\.com|tiktok\.com|twitter\.com|x\.com)/", "", val)
     val = val.split("/")[0].split("?")[0]
     return val.lstrip("@").strip()
 
@@ -1109,6 +1110,44 @@ def _fetch_live_meta_graph_posts(
     return normalized, target_id, account_label, followers
 
 
+def lookup_account_followers(
+    db: Session,
+    provider: str,
+    username: str,
+) -> Dict[str, Any]:
+    norm_provider = (provider or '').strip().lower()
+    clean_user = clean_username(username)
+    if not clean_user:
+        return {'ok': False, 'followers': 0, 'message': 'Usuario no provisto'}
+
+    row = get_or_create_integration(db, norm_provider)
+    rapid_key = decrypt_secret(row.access_token_encrypted) or _get_shared_rapidapi_key(db)
+
+    try:
+        followers = 0
+        mode = 'direct'
+        if norm_provider == 'youtube':
+            _, followers, mode = extract_youtube_deep(clean_user)
+        elif norm_provider == 'tiktok':
+            _, followers, mode = _extract_tiktok_deep(clean_user, rapid_key, row.external_account_id)
+        elif norm_provider == 'twitter':
+            _, followers, mode = _extract_twitter_deep(clean_user, rapid_key, row.external_account_id)
+        elif norm_provider in ('instagram', 'facebook'):
+            _, followers, mode = _extract_instagram_deep(clean_user, rapid_key, row.external_account_id)
+        else:
+            return {'ok': False, 'followers': 0, 'message': f'Plataforma {norm_provider} no soportada'}
+
+        return {
+            'ok': True,
+            'followers': followers,
+            'mode': mode,
+            'username': f'@{clean_user}',
+            'message': f'Detectados {followers:,} seguidores para @{clean_user}.',
+        }
+    except Exception as exc:
+        return {'ok': False, 'followers': 0, 'message': str(exc)}
+
+
 def test_integration_connection(db: Session, provider: str) -> Dict[str, str | bool]:
     row = get_or_create_integration(db, provider)
     rapid_key = decrypt_secret(row.access_token_encrypted) or _get_shared_rapidapi_key(db)
@@ -1121,7 +1160,9 @@ def test_integration_connection(db: Session, provider: str) -> Dict[str, str | b
                 "mode": "missing_username",
                 "message": f"Ingresa el @usuario objetivo de {row.provider.capitalize()} (ej: @nike, @netflix o tu cuenta) y toca Guardar en Bóveda.",
             }
-        if row.provider == "tiktok":
+        if row.provider == "youtube":
+            posts, followers, mode = extract_youtube_deep(username)
+        elif row.provider == "tiktok":
             posts, followers, mode = _extract_tiktok_deep(username, rapid_key, row.external_account_id)
         elif row.provider == "twitter":
             posts, followers, mode = _extract_twitter_deep(username, rapid_key, row.external_account_id)
@@ -1173,7 +1214,34 @@ def sync_integration_posts(
 ) -> SyncResponse:
     row = get_or_create_integration(db, provider)
     rapid_key = decrypt_secret(row.access_token_encrypted) or _get_shared_rapidapi_key(db)
-    target_username = clean_username(payload.campaignName if payload.campaignName and payload.campaignName.startswith("@") else row.external_account_name)
+    raw_target = ""
+    if payload.campaignName:
+        # Check if campaignName has an @handle or is just a handle
+        for part in payload.campaignName.split():
+            if part.startswith("@"):
+                raw_target = part
+                break
+        if not raw_target and not payload.campaignId:
+            raw_target = payload.campaignName
+
+    if not raw_target and payload.campaignId:
+        from app.models.campaigns import Campaign
+        camp_row = db.query(Campaign).filter(Campaign.id == payload.campaignId).first()
+        if camp_row:
+            for part in (camp_row.description or "").split():
+                if part.startswith("@"):
+                    raw_target = part
+                    break
+            if not raw_target:
+                for part in (camp_row.name or "").split():
+                    if part.startswith("@"):
+                        raw_target = part
+                        break
+
+    if not raw_target:
+        raw_target = row.external_account_name or "NASA"
+
+    target_username = clean_username(raw_target)
 
     # Purge any old sandbox posts if present
     old_sandbox_posts = (
@@ -1186,7 +1254,11 @@ def sync_integration_posts(
     if old_sandbox_posts:
         db.commit()
 
-    if row.provider == "tiktok":
+    if row.provider == "youtube":
+        feed_items, followers_count, source_mode = extract_youtube_deep(target_username)
+        target_platform = "youtube"
+        account_label = f"@{clean_username(target_username)}"
+    elif row.provider == "tiktok":
         feed_items, followers_count, source_mode = _extract_tiktok_deep(
             username=target_username,
             rapidapi_key=rapid_key,
@@ -1272,8 +1344,52 @@ def sync_integration_posts(
     imported_count = 0
     updated_count = 0
 
+    # Date filter by campaign date range (start_date and end_date)
+    start_filter = campaign.start_date
+    end_filter = campaign.end_date
+
     for item in feed_items:
-        ext_id = item["external_id"]
+        # Check published_at against campaign dates
+        item_pub_str = item.get("published_at")
+        if item_pub_str and (start_filter or end_filter):
+            try:
+                # Normalize ISO string to naive datetime
+                pub_clean = item_pub_str.replace("Z", "+00:00")
+                item_dt = datetime.fromisoformat(pub_clean)
+                if item_dt.tzinfo is not None:
+                    item_dt = item_dt.astimezone(timezone.utc).replace(tzinfo=None)
+                
+                # Check if published before start_date (allowing start date day from 00:00)
+                if start_filter:
+                    day_start = start_filter.replace(hour=0, minute=0, second=0, microsecond=0)
+                    if item_dt < day_start:
+                        continue
+                
+                # Check if published after end_date (allowing end date day until 23:59:59)
+                if end_filter:
+                    day_end = end_filter.replace(hour=23, minute=59, second=59, microsecond=999999)
+                    if item_dt > day_end:
+                        continue
+            except Exception:
+                pass
+
+        # Keyword / Hashtag filter for multi-campaign differentiation
+        raw_keywords = getattr(campaign, "target_keywords", None)
+        if raw_keywords and raw_keywords.strip():
+            # e.g. "#artemis, lanzamiento, orion"
+            keywords = [k.strip().lower() for k in raw_keywords.replace(";", ",").split(",") if k.strip()]
+            if keywords:
+                post_text = (item.get("content") or "").lower()
+                matches_kw = False
+                for kw in keywords:
+                    clean_kw = kw.lstrip("#")
+                    if kw in post_text or clean_kw in post_text:
+                        matches_kw = True
+                        break
+                if not matches_kw:
+                    continue
+
+                ext_id = item["external_id"]
         existing = (
             db.query(Post)
             .filter(Post.campaign_id == campaign.id, Post.external_id == ext_id)

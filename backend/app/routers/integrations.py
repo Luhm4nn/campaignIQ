@@ -22,6 +22,7 @@ from app.services.integrations import (
     serialize_integration,
     sync_integration_posts,
     test_integration_connection,
+    lookup_account_followers,
 )
 
 router = APIRouter(prefix="/integrations", tags=["integrations"])
@@ -94,3 +95,12 @@ def sync_provider_posts(
     db: Session = Depends(get_db),
 ):
     return sync_integration_posts(db, provider, payload)
+
+
+@router.get('/{provider}/lookup-followers')
+def lookup_followers(
+    provider: str,
+    username: str = Query(...),
+    db: Session = Depends(get_db),
+):
+    return lookup_account_followers(db, provider, username)
