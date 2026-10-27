@@ -103,7 +103,13 @@ export function PostCard({ post, className }: PostCardProps) {
             >
               {post.sentimentLabel}
             </span>
+            {post.externalId && (
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-primary/10 text-primary border border-primary/20">
+                API Synced
+              </span>
+            )}
           </div>
+
           <div
             className={cn(
               "flex items-center gap-1 rounded-xl px-2.5 py-1 text-xs font-bold bg-gradient-to-r text-primary-foreground",

@@ -15,6 +15,7 @@ import {
   updateCampaignApi,
   deleteCampaignApi,
   getExportCsvUrl,
+  syncIntegrationPostsApi,
 } from "@/lib/api";
 import { cn, formatNumber } from "@/lib/utils";
 import {
@@ -34,6 +35,7 @@ import {
   ExternalLink,
   Plus,
   Trash2,
+  RefreshCw,
 } from "lucide-react";
 
 const platformIcons: Record<string, React.ReactNode> = {
@@ -67,6 +69,8 @@ export default function CampaignDetailPage({
   const [detail, setDetail] = useState<CampaignDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [postModalOpen, setPostModalOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncNotice, setSyncNotice] = useState<string | null>(null);
 
   const loadDetail = useCallback(async () => {
     if (isNaN(campaignId)) {
@@ -119,6 +123,31 @@ export default function CampaignDetailPage({
     await deleteCampaignApi(campaign.id);
     router.push("/campaigns");
   };
+
+  const handleSyncFromMetaGraph = async () => {
+    try {
+      setIsSyncing(true);
+      setSyncNotice(null);
+      const providerKey = ["instagram", "tiktok", "twitter"].includes(
+        campaign.platform
+      )
+        ? campaign.platform
+        : "instagram";
+      const res = await syncIntegrationPostsApi(providerKey, {
+        campaignId: campaign.id,
+        platform: campaign.platform,
+      });
+      setSyncNotice(res.message);
+      await loadDetail();
+    } catch (err) {
+      setSyncNotice(
+        err instanceof Error ? err.message : "Error syncing with API"
+      );
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
 
   return (
     <div className="space-y-8">
@@ -191,6 +220,17 @@ export default function CampaignDetailPage({
               <Trash2 className="h-4 w-4" />
               Delete
             </button>
+            <button
+              onClick={handleSyncFromMetaGraph}
+              disabled={isSyncing}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/15 border border-primary/30 text-sm font-medium text-primary hover:bg-primary/25 transition-all duration-300"
+            >
+              <RefreshCw
+                className={cn("h-4 w-4", isSyncing && "animate-spin")}
+              />
+              {isSyncing ? "Scraping API..." : "Deep Sync API"}
+            </button>
+
             <a
               href={getExportCsvUrl(campaign.id)}
               target="_blank"
@@ -209,7 +249,13 @@ export default function CampaignDetailPage({
             </button>
           </div>
         </div>
+        {syncNotice && (
+          <div className="p-3 rounded-xl bg-success/15 border border-success/30 text-xs font-medium text-success">
+            {syncNotice}
+          </div>
+        )}
       </div>
+
 
       <div className="grid gap-4 grid-cols-12">
         <div className="col-span-12 md:col-span-6 lg:col-span-2">

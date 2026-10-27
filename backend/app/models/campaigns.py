@@ -22,6 +22,7 @@ class Campaign(Base):
     followers_end = Column(Integer, nullable=False, default=0)
     start_date = Column(DateTime, nullable=False, default=utcnow_naive)
     end_date = Column(DateTime, nullable=True)
+    external_id = Column(String, index=True, nullable=True)
     created_at = Column(DateTime, nullable=False, default=utcnow_naive)
 
     posts = relationship(
@@ -42,6 +43,8 @@ class Post(Base):
         index=True,
         nullable=False,
     )
+    external_id = Column(String, index=True, nullable=True)
+    permalink = Column(String, nullable=True)
     content = Column(String, nullable=False)
     platform = Column(String, nullable=False, default="instagram")
     media_type = Column(String, nullable=False, default="image")
@@ -57,3 +60,4 @@ class Post(Base):
     engagement_score = Column(Integer, nullable=False, default=0)
 
     campaign = relationship("Campaign", back_populates="posts")
+

@@ -13,6 +13,7 @@ class CampaignCreate(BaseModel):
     followersStart: int = 0
     followersEnd: int = 0
     status: str = "active"
+    externalId: Optional[str] = None
 
 
 class CampaignUpdate(BaseModel):
@@ -49,6 +50,7 @@ class CampaignRead(BaseModel):
     comments: int
     shares: int
     engagementRate: float
+    externalId: Optional[str] = None
 
 
 class PostCreate(BaseModel):
@@ -62,6 +64,8 @@ class PostCreate(BaseModel):
     shares: int = 0
     reach: int = 0
     impressions: Optional[int] = None
+    externalId: Optional[str] = None
+    permalink: Optional[str] = None
 
 
 class PostUpdate(BaseModel):
@@ -93,6 +97,9 @@ class PostRead(BaseModel):
     sentimentCompound: float
     sentimentLabel: str
     performanceTier: str
+    externalId: Optional[str] = None
+    permalink: Optional[str] = None
+
 
 
 class InsightRead(BaseModel):

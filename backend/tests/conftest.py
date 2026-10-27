@@ -10,6 +10,7 @@ import app.main as main_module
 from app.db.dbsession import Base, engine, get_db, SessionLocal
 from app.models.users import User
 from app.models.campaigns import Campaign, Post
+from app.models.integrations import IntegrationConfig
 
 
 class InMemoryQuery:
@@ -78,11 +79,13 @@ class InMemoryRelationalSession:
             User: [],
             Campaign: [],
             Post: [],
+            IntegrationConfig: [],
         }
         self.counters: dict[Type[Any], int] = {
             User: 0,
             Campaign: 0,
             Post: 0,
+            IntegrationConfig: 0,
         }
 
     def execute(self, statement: Any) -> Any:
@@ -99,6 +102,11 @@ class InMemoryRelationalSession:
             now_naive = datetime.now(timezone.utc).replace(tzinfo=None)
             if isinstance(obj, User) and not getattr(obj, "created_at", None):
                 obj.created_at = now_naive
+            if isinstance(obj, IntegrationConfig):
+                if not getattr(obj, "created_at", None):
+                    obj.created_at = now_naive
+                if not getattr(obj, "updated_at", None):
+                    obj.updated_at = now_naive
             if isinstance(obj, Campaign):
                 if not getattr(obj, "created_at", None):
                     obj.created_at = now_naive
@@ -116,6 +124,7 @@ class InMemoryRelationalSession:
                     if obj not in parent.posts:
                         parent.posts.append(obj)
             self.store[model].append(obj)
+
 
     def delete(self, obj: Any) -> None:
         model = type(obj)

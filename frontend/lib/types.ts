@@ -37,6 +37,7 @@ export interface Campaign {
   comments: number;
   shares: number;
   engagementRate: number;
+  externalId?: string | null;
 }
 
 export interface Post {
@@ -57,6 +58,8 @@ export interface Post {
   sentimentCompound: number;
   sentimentLabel: "positivo" | "neutro" | "negativo";
   performanceTier: "buena" | "normal" | "mala";
+  externalId?: string | null;
+  permalink?: string | null;
 }
 
 export interface DailyMetric {
@@ -137,6 +140,7 @@ export interface CreateCampaignPayload {
   followersStart?: number;
   followersEnd?: number;
   status: string;
+  externalId?: string;
 }
 
 export interface UpdateCampaignPayload {
@@ -163,6 +167,8 @@ export interface CreatePostPayload {
   shares: number;
   reach: number;
   impressions?: number;
+  externalId?: string;
+  permalink?: string;
 }
 
 export interface UpdatePostPayload {
@@ -175,3 +181,47 @@ export interface UpdatePostPayload {
   reach?: number;
   impressions?: number;
 }
+
+export interface IntegrationConfigRead {
+  id: number;
+  provider: string;
+  displayName: string;
+  hasClientId: boolean;
+  hasClientSecret: boolean;
+  hasAccessToken: boolean;
+  clientIdMasked: string;
+  clientSecretMasked: string;
+  accessTokenMasked: string;
+  clientIdHash: string;
+  externalAccountId: string;
+  externalAccountName: string;
+  status: "connected" | "configured" | "disconnected" | string;
+  lastSyncAt?: string | null;
+  oauthCallbackUrl: string;
+}
+
+export interface IntegrationCredentialsPayload {
+  clientId?: string;
+  clientSecret?: string;
+  accessToken?: string;
+  externalAccountId?: string;
+  externalAccountName?: string;
+}
+
+export interface OAuthAuthorizeResponse {
+  provider: string;
+  authUrl: string;
+  mode: string;
+  state: string;
+}
+
+export interface SyncIntegrationResponse {
+  provider: string;
+  campaignId: number;
+  campaignName: string;
+  importedPosts: number;
+  updatedPosts: number;
+  sourceMode: string;
+  message: string;
+}
+

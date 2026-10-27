@@ -199,3 +199,209 @@ def test_verify_postgresql_connection_fails_when_server_unreachable(
     with pytest.raises(OperationalError):
         main_module.verify_postgresql_connection()
 
+
+def test_integrations_vault_oauth_and_external_id_sync(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+):
+    list_res = client.get("/integrations")
+    assert list_res.status_code == 200
+    items = list_res.json()
+    assert any(i["provider"] == "meta_graph" for i in items)
+
+    # Without an Access Token, sync must fail explicitly (no simulated data fallback)
+    no_token_sync = client.post("/integrations/meta_graph/sync", json={})
+    assert no_token_sync.status_code == 400
+
+    class MockMetaResponse:
+        def __init__(self, status_code: int, payload: dict):
+            self.status_code = status_code
+            self._payload = payload
+            self.text = str(payload)
+
+        def json(self):
+            return self._payload
+
+    def fake_requests_get(url: str, params: dict = None, timeout: int = 10):
+        if "/oauth/access_token" in url:
+            return MockMetaResponse(200, {"access_token": "EAALiveMetaToken998877"})
+        if "/me/accounts" in url:
+            return MockMetaResponse(
+                200,
+                {
+                    "data": [
+                        {
+                            "id": "10203040",
+                            "name": "CampaignIQ Page",
+                            "instagram_business_account": {
+                                "id": "17841400001",
+                                "username": "campaigniq_latam",
+                                "followers_count": 4850,
+                            },
+                        }
+                    ]
+                },
+            )
+        if "/17841400001/media" in url:
+            return MockMetaResponse(
+                200,
+                {
+                    "data": [
+                        {
+                            "id": "1800112233",
+                            "caption": "Excelente lanzamiento real desde Meta Graph API",
+                            "media_type": "VIDEO",
+                            "permalink": "https://www.instagram.com/p/RealPost1/",
+                            "timestamp": "2026-10-25T19:00:00+0000",
+                            "like_count": 320,
+                            "comments_count": 45,
+                        },
+                        {
+                            "id": "1800112234",
+                            "caption": "Nuevo carrusel de producto con gran crecimiento",
+                            "media_type": "CAROUSEL_ALBUM",
+                            "permalink": "https://www.instagram.com/p/RealPost2/",
+                            "timestamp": "2026-10-26T20:00:00+0000",
+                            "like_count": 210,
+                            "comments_count": 18,
+                        },
+                    ]
+                },
+            )
+        if "/insights" in url:
+            return MockMetaResponse(
+                200,
+                {
+                    "data": [
+                        {"name": "reach", "values": [{"value": 4200}]},
+                        {"name": "impressions", "values": [{"value": 5800}]},
+                        {"name": "shares", "values": [{"value": 29}]},
+                    ]
+                },
+            )
+        return MockMetaResponse(404, {"error": {"message": "Not found"}})
+
+    monkeypatch.setattr("app.services.integrations.requests.get", fake_requests_get)
+
+    cred_res = client.put(
+        "/integrations/meta_graph/credentials",
+        json={
+            "clientId": "123456789098765",
+            "clientSecret": "super_secret_meta_key_9988",
+        },
+    )
+    assert cred_res.status_code == 200
+    saved = cred_res.json()
+    assert saved["hasClientId"] is True
+    assert saved["hasClientSecret"] is True
+    assert saved["clientIdMasked"] == "••••••••8765"
+    assert saved["clientSecretMasked"] == "••••••••9988"
+    assert "super_secret_meta_key_9988" not in str(saved)
+    assert len(saved["clientIdHash"]) == 64
+
+    auth_res = client.get("/integrations/meta_graph/oauth/authorize")
+    assert auth_res.status_code == 200
+    auth_body = auth_res.json()
+    assert auth_body["provider"] == "meta_graph"
+    assert "facebook.com/v21.0/dialog/oauth" in auth_body["authUrl"]
+
+    cb_res = client.get(
+        f"/integrations/meta_graph/oauth/callback?code=live_meta_code&state={auth_body['state']}&format=json"
+    )
+    assert cb_res.status_code == 200
+    cb_body = cb_res.json()
+    assert cb_body["status"] == "connected"
+    assert cb_body["hasAccessToken"] is True
+    assert cb_body["externalAccountId"] == "17841400001"
+    assert cb_body["externalAccountName"] == "@campaigniq_latam"
+
+    sync1 = client.post("/integrations/meta_graph/sync", json={})
+    assert sync1.status_code == 200
+    s1_body = sync1.json()
+    assert s1_body["sourceMode"] == "live_meta_graph_api"
+    assert s1_body["importedPosts"] == 2
+    assert s1_body["updatedPosts"] == 0
+
+    # Second sync updates existing posts by external_id instead of duplicating
+    sync2 = client.post(
+        "/integrations/meta_graph/sync",
+        json={"campaignId": s1_body["campaignId"]},
+    )
+    assert sync2.status_code == 200
+    s2_body = sync2.json()
+    assert s2_body["importedPosts"] == 0
+    assert s2_body["updatedPosts"] == 2
+
+    # Test RapidAPI / Deep Scraper for Instagram, TikTok, and Twitter
+    def fake_scraper_get(url: str, headers: dict = None, params: dict = None, timeout: int = 10):
+        if "instagram-scraper-api2" in url:
+            return MockMetaResponse(
+                200,
+                {
+                    "data": {
+                        "follower_count": 95000,
+                        "items": [
+                            {
+                                "id": "998811",
+                                "code": "IGDeepCode1",
+                                "caption": {"text": "Excelente campaña en Instagram con gran éxito"},
+                                "like_count": 1400,
+                                "comment_count": 95,
+                                "reshare_count": 40,
+                                "play_count": 18500,
+                                "media_type": 2,
+                                "taken_at": 1761500000,
+                            }
+                        ],
+                    }
+                },
+            )
+        if "tiktok-scraper7" in url or "tikwm.com" in url:
+            return MockMetaResponse(
+                200,
+                {
+                    "data": {
+                        "videos": [
+                            {
+                                "video_id": "742991100",
+                                "title": "Increíble lanzamiento viral en TikTok",
+                                "digg_count": 8500,
+                                "comment_count": 420,
+                                "share_count": 610,
+                                "collect_count": 290,
+                                "play_count": 112000,
+                                "create_time": 1761503600,
+                            }
+                        ]
+                    }
+                },
+            )
+        return MockMetaResponse(404, {})
+
+    monkeypatch.setattr("app.services.integrations.requests.get", fake_scraper_get)
+
+    ig_save = client.put(
+        "/integrations/instagram/credentials",
+        json={
+            "accessToken": "rapidapi_secret_key_2026",
+            "externalAccountName": "@nike",
+        },
+    )
+    assert ig_save.status_code == 200
+    assert ig_save.json()["externalAccountName"] == "@nike"
+
+    ig_sync = client.post("/integrations/instagram/sync", json={})
+    assert ig_sync.status_code == 200
+    assert ig_sync.json()["importedPosts"] == 1
+
+    tt_save = client.put(
+        "/integrations/tiktok/credentials",
+        json={"externalAccountName": "@tiktok"},
+    )
+    assert tt_save.status_code == 200
+    tt_sync = client.post("/integrations/tiktok/sync", json={})
+    assert tt_sync.status_code == 200
+    assert tt_sync.json()["importedPosts"] == 1
+
+
+
+

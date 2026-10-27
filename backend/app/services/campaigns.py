@@ -58,6 +58,8 @@ def serialize_post(post: Post, tier: str = "normal") -> PostRead:
         sentimentCompound=round(post.sentiment_compound or 0.0, 3),
         sentimentLabel=post.sentiment_label or "neutro",
         performanceTier=tier,
+        externalId=getattr(post, "external_id", None),
+        permalink=getattr(post, "permalink", None),
     )
 
 
@@ -138,6 +140,7 @@ def serialize_campaign(campaign: Campaign) -> CampaignRead:
         comments=comments,
         shares=shares,
         engagementRate=engagement_rate,
+        externalId=getattr(campaign, "external_id", None),
     )
 
 
@@ -186,11 +189,13 @@ def create_campaign(db: Session, payload: CampaignCreate) -> CampaignRead:
         followers_end=max(0, payload.followersEnd or 0),
         start_date=start_dt,
         end_date=end_dt,
+        external_id=payload.externalId.strip() if payload.externalId else None,
     )
     db.add(campaign)
     db.commit()
     db.refresh(campaign)
     return serialize_campaign(campaign)
+
 
 
 def update_campaign(
@@ -285,8 +290,39 @@ def create_post(db: Session, payload: PostCreate) -> Optional[PostRead]:
         impressions=payload.impressions,
     )
 
+    external_id = payload.externalId.strip() if payload.externalId else None
+    permalink = payload.permalink.strip() if payload.permalink else None
+
+    if external_id:
+        existing_post = (
+            db.query(Post)
+            .filter(Post.campaign_id == campaign.id, Post.external_id == external_id)
+            .first()
+        )
+        if existing_post:
+            existing_post.content = payload.content.strip()
+            existing_post.platform = platform
+            existing_post.media_type = media_type
+            existing_post.published_at = published_dt
+            existing_post.likes = int(metrics["likes"])
+            existing_post.comments = int(metrics["comments"])
+            existing_post.shares = int(metrics["shares"])
+            existing_post.reach = int(metrics["reach"])
+            existing_post.impressions = int(metrics["impressions"])
+            existing_post.engagement_rate = float(metrics["engagement_rate"])
+            existing_post.sentiment_compound = float(metrics["sentiment_compound"])
+            existing_post.sentiment_label = str(metrics["sentiment_label"])
+            existing_post.engagement_score = int(metrics["engagement_score"])
+            if permalink:
+                existing_post.permalink = permalink
+            db.commit()
+            db.refresh(existing_post)
+            return get_post_by_id(db, existing_post.id)
+
     post = Post(
         campaign_id=campaign.id,
+        external_id=external_id,
+        permalink=permalink,
         content=payload.content.strip(),
         platform=platform,
         media_type=media_type,
@@ -305,6 +341,7 @@ def create_post(db: Session, payload: PostCreate) -> Optional[PostRead]:
     db.commit()
     db.refresh(post)
     return get_post_by_id(db, post.id)
+
 
 
 def update_post(

@@ -12,6 +12,8 @@ if project_root not in sys.path:
 from app.db.dbsession import Base, DATABASE_URL
 from app.models.users import User
 from app.models.campaigns import Campaign, Post
+from app.models.integrations import IntegrationConfig
+
 
 config = context.config
 

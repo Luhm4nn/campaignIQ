@@ -15,6 +15,10 @@ import type {
   UpdateCampaignPayload,
   CreatePostPayload,
   UpdatePostPayload,
+  IntegrationConfigRead,
+  IntegrationCredentialsPayload,
+  OAuthAuthorizeResponse,
+  SyncIntegrationResponse,
 } from "./types";
 
 export const API_BASE_URL =
@@ -192,12 +196,116 @@ export async function saveUserApi(payload: {
   return res.json();
 }
 
+async function parseApiError(res: Response): Promise<string> {
+  try {
+    const body = await res.json();
+    if (body && typeof body.detail === "string") {
+      return body.detail;
+    }
+  } catch {
+    // ignore JSON parse error
+  }
+  return `HTTP ${res.status}`;
+}
+
+export async function fetchIntegrationsApi(): Promise<IntegrationConfigRead[]> {
+  const res = await fetch(`${API_BASE_URL}/integrations`, {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error(await parseApiError(res));
+  }
+  return res.json();
+}
+
+export async function saveIntegrationCredentialsApi(
+  provider: string,
+  payload: IntegrationCredentialsPayload
+): Promise<IntegrationConfigRead> {
+  const res = await fetch(
+    `${API_BASE_URL}/integrations/${provider}/credentials`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+  if (!res.ok) {
+    throw new Error(await parseApiError(res));
+  }
+  return res.json();
+}
+
+export async function getOAuthAuthorizeUrlApi(
+  provider: string
+): Promise<OAuthAuthorizeResponse> {
+  const res = await fetch(
+    `${API_BASE_URL}/integrations/${provider}/oauth/authorize`,
+    { cache: "no-store" }
+  );
+  if (!res.ok) {
+    throw new Error(await parseApiError(res));
+  }
+  return res.json();
+}
+
+export async function testIntegrationConnectionApi(provider: string): Promise<{
+  ok: boolean;
+  mode: string;
+  accountName?: string;
+  externalAccountId?: string;
+  message: string;
+}> {
+  const res = await fetch(`${API_BASE_URL}/integrations/${provider}/test`, {
+    method: "POST",
+  });
+  if (!res.ok) {
+    throw new Error(await parseApiError(res));
+  }
+  return res.json();
+}
+
+export async function syncIntegrationPostsApi(
+  provider: string,
+  payload: {
+    campaignId?: number;
+    campaignName?: string;
+    platform?: string;
+  } = {}
+): Promise<SyncIntegrationResponse> {
+  const res = await fetch(`${API_BASE_URL}/integrations/${provider}/sync`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    throw new Error(await parseApiError(res));
+  }
+  const data = await res.json();
+  notifyDataUpdated();
+  return data;
+}
+
+export async function disconnectIntegrationApi(
+  provider: string
+): Promise<IntegrationConfigRead> {
+  const res = await fetch(`${API_BASE_URL}/integrations/${provider}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    throw new Error(await parseApiError(res));
+  }
+  return res.json();
+}
+
+
 export function getExportCsvUrl(campaignId?: number): string {
   if (campaignId !== undefined) {
     return `${API_BASE_URL}/export/campaign/${campaignId}/csv`;
   }
   return `${API_BASE_URL}/export/campaigns/csv`;
 }
+
 
 export function useCampaignData() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
