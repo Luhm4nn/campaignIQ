@@ -197,15 +197,16 @@ def create_campaign(db: Session, payload: CampaignCreate) -> CampaignRead:
     db.commit()
     db.refresh(campaign)
 
-    # Automatic scraping trigger if targetHandle or name contains @handle
+    # Automatic scraping trigger if targetHandle or name contains @handle (skip when called from sync_integration_posts itself)
+    is_internal_sync = bool(payload.externalId and payload.externalId.startswith("live_"))
     handle_to_scrape = (payload.targetHandle or "").strip()
-    if not handle_to_scrape and "@" in payload.name:
+    if not handle_to_scrape and "@" in payload.name and not is_internal_sync:
         for word in payload.name.split():
             if word.startswith("@") and len(word) > 1:
                 handle_to_scrape = word
                 break
 
-    if handle_to_scrape and campaign.platform in ("youtube", "twitter", "instagram", "tiktok"):
+    if handle_to_scrape and not is_internal_sync and campaign.platform in ("youtube", "twitter", "instagram", "tiktok"):
         try:
             from app.services.integrations import sync_integration_posts
             from app.schemas.integration import SyncRequest

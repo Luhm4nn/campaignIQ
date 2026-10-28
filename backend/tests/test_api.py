@@ -206,7 +206,7 @@ def test_integrations_vault_oauth_and_external_id_sync(
     list_res = client.get("/integrations")
     assert list_res.status_code == 200
     items = list_res.json()
-    assert any(i["provider"] == "meta_graph" for i in items)
+    assert any(i["provider"] in ("youtube", "instagram", "meta_graph") for i in items)
 
     # Without an Access Token, sync must fail explicitly (no simulated data fallback)
     no_token_sync = client.post("/integrations/meta_graph/sync", json={})

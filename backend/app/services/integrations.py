@@ -1153,7 +1153,7 @@ def test_integration_connection(db: Session, provider: str) -> Dict[str, str | b
     rapid_key = decrypt_secret(row.access_token_encrypted) or _get_shared_rapidapi_key(db)
     username = clean_username(row.external_account_name)
 
-    if row.provider in ("instagram", "tiktok", "twitter"):
+    if row.provider in ("youtube", "instagram", "tiktok", "twitter"):
         if not username:
             return {
                 "ok": False,
@@ -1225,7 +1225,6 @@ def sync_integration_posts(
             raw_target = payload.campaignName
 
     if not raw_target and payload.campaignId:
-        from app.models.campaigns import Campaign
         camp_row = db.query(Campaign).filter(Campaign.id == payload.campaignId).first()
         if camp_row:
             for part in (camp_row.description or "").split():
@@ -1331,6 +1330,7 @@ def sync_integration_posts(
                 followersStart=followers_count,
                 followersEnd=followers_count,
                 status="active",
+                startDate="2020-01-01T00:00:00Z",
                 externalId=ext_camp_key,
             ),
         )
@@ -1344,28 +1344,31 @@ def sync_integration_posts(
     imported_count = 0
     updated_count = 0
 
-    # Date filter by campaign date range (start_date and end_date)
+    # Date filter by campaign date range (only when end_date is explicitly set or start_date is not same-second creation default)
     start_filter = campaign.start_date
     end_filter = campaign.end_date
+    created_at_dt = getattr(campaign, "created_at", None)
+    has_explicit_date_range = bool(end_filter) or (
+        bool(start_filter)
+        and bool(created_at_dt)
+        and abs((start_filter - created_at_dt).total_seconds()) > 60
+    )
 
     for item in feed_items:
-        # Check published_at against campaign dates
+        # Check published_at against campaign dates when explicit range was set
         item_pub_str = item.get("published_at")
-        if item_pub_str and (start_filter or end_filter):
+        if item_pub_str and has_explicit_date_range:
             try:
-                # Normalize ISO string to naive datetime
                 pub_clean = item_pub_str.replace("Z", "+00:00")
                 item_dt = datetime.fromisoformat(pub_clean)
                 if item_dt.tzinfo is not None:
                     item_dt = item_dt.astimezone(timezone.utc).replace(tzinfo=None)
-                
-                # Check if published before start_date (allowing start date day from 00:00)
+
                 if start_filter:
                     day_start = start_filter.replace(hour=0, minute=0, second=0, microsecond=0)
                     if item_dt < day_start:
                         continue
-                
-                # Check if published after end_date (allowing end date day until 23:59:59)
+
                 if end_filter:
                     day_end = end_filter.replace(hour=23, minute=59, second=59, microsecond=999999)
                     if item_dt > day_end:
@@ -1376,7 +1379,6 @@ def sync_integration_posts(
         # Keyword / Hashtag filter for multi-campaign differentiation
         raw_keywords = getattr(campaign, "target_keywords", None)
         if raw_keywords and raw_keywords.strip():
-            # e.g. "#artemis, lanzamiento, orion"
             keywords = [k.strip().lower() for k in raw_keywords.replace(";", ",").split(",") if k.strip()]
             if keywords:
                 post_text = (item.get("content") or "").lower()
@@ -1389,7 +1391,7 @@ def sync_integration_posts(
                 if not matches_kw:
                     continue
 
-                ext_id = item["external_id"]
+        ext_id = item["external_id"]
         existing = (
             db.query(Post)
             .filter(Post.campaign_id == campaign.id, Post.external_id == ext_id)
