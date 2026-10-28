@@ -112,7 +112,7 @@ export default function CampaignDetailPage({
     try {
       setIsSyncing(true);
       setSyncNotice(null);
-      const providerKey = ["instagram", "tiktok", "twitter"].includes(
+      const providerKey = ["instagram", "tiktok", "twitter", "youtube"].includes(
         campaign.platform
       )
         ? campaign.platform
@@ -194,7 +194,7 @@ export default function CampaignDetailPage({
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={handleDeleteCampaign}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-destructive/10 border border-destructive/25 text-xs font-medium text-destructive hover:bg-destructive/20 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-destructive/10 border border-destructive/25 text-xs font-medium text-destructive hover:bg-destructive/20 transition-colors cursor-pointer"
             >
               <Trash2 className="h-3.5 w-3.5" />
               Delete
@@ -202,7 +202,7 @@ export default function CampaignDetailPage({
             <button
               onClick={handleSyncFromMetaGraph}
               disabled={isSyncing}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg btn-gradient text-xs font-medium text-white cursor-pointer"
             >
               <RefreshCw
                 className={cn("h-3.5 w-3.5", isSyncing && "animate-spin")}
@@ -214,7 +214,7 @@ export default function CampaignDetailPage({
               href={getExportCsvUrl(campaign.id)}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-secondary border border-border text-xs font-medium text-foreground hover:bg-secondary/80 transition-colors"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               Export CSV

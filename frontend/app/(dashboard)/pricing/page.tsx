@@ -97,82 +97,94 @@ export default function PricingPage() {
           <div
             key={plan.name}
             className={cn(
-              "rounded-xl border bg-card p-6 flex flex-col justify-between",
+              "rounded-xl border bg-card overflow-hidden flex flex-col justify-between glow-card",
               plan.popular
                 ? "border-primary/60 ring-1 ring-primary/30"
                 : "border-border"
             )}
           >
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-semibold text-foreground">
-                  {plan.name}
-                </h3>
-                {plan.popular && (
-                  <span className="text-[11px] font-medium text-primary px-2.5 py-0.5 rounded-md bg-primary/10 border border-primary/20">
-                    Recommended
-                  </span>
+              <div
+                className={cn(
+                  "h-1 w-full bg-gradient-to-r",
+                  plan.popular
+                    ? "from-primary via-accent to-primary"
+                    : "from-border via-muted-foreground/30 to-border"
                 )}
-              </div>
-              <p className="text-xs text-muted-foreground min-h-[32px]">
-                {plan.description}
-              </p>
-
-              <div className="my-6 pb-6 border-b border-border">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-3xl font-semibold text-foreground tabular-nums">
-                    $
-                    {editingPrice === plan.name ? (
-                      <input
-                        type="number"
-                        value={editValues[plan.name]}
-                        onChange={(e) =>
-                          setEditValues({
-                            ...editValues,
-                            [plan.name]: parseInt(e.target.value) || 0,
-                          })
-                        }
-                        className="w-20 bg-input border border-border rounded px-2 py-0.5 text-lg text-foreground"
-                        autoFocus
-                      />
-                    ) : (
-                      plan.price
-                    )}
-                  </span>
-                  <span className="text-xs text-muted-foreground">/month</span>
+              />
+              <div className="p-6 pb-0">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-lg font-semibold text-foreground">
+                    {plan.name}
+                  </h3>
+                  {plan.popular && (
+                    <span className="text-[11px] font-medium text-white px-2.5 py-0.5 rounded-md btn-gradient">
+                      Recommended
+                    </span>
+                  )}
                 </div>
-                <button
-                  onClick={() =>
-                    editingPrice === plan.name
-                      ? handlePriceSave(plan.name)
-                      : handlePriceEdit(plan.name, plan.price)
-                  }
-                  className="mt-2 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {editingPrice === plan.name ? "Save price" : "Adjust price"}
-                </button>
-              </div>
+                <p className="text-xs text-muted-foreground min-h-[32px]">
+                  {plan.description}
+                </p>
 
-              <ul className="space-y-3 mb-6">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2.5">
-                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                    <span className="text-xs text-foreground">{feature}</span>
-                  </li>
-                ))}
-              </ul>
+                <div className="my-6 pb-6 border-b border-border">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-3xl font-semibold text-foreground tabular-nums">
+                      $
+                      {editingPrice === plan.name ? (
+                        <input
+                          type="number"
+                          value={editValues[plan.name]}
+                          onChange={(e) =>
+                            setEditValues({
+                              ...editValues,
+                              [plan.name]: parseInt(e.target.value) || 0,
+                            })
+                          }
+                          className="w-20 bg-input border border-border rounded px-2 py-0.5 text-lg text-foreground"
+                          autoFocus
+                        />
+                      ) : (
+                        plan.price
+                      )}
+                    </span>
+                    <span className="text-xs text-muted-foreground">/month</span>
+                  </div>
+                  <button
+                    onClick={() =>
+                      editingPrice === plan.name
+                        ? handlePriceSave(plan.name)
+                        : handlePriceEdit(plan.name, plan.price)
+                    }
+                    className="mt-2 text-[11px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                  >
+                    {editingPrice === plan.name ? "Save price" : "Adjust price"}
+                  </button>
+                </div>
+
+                <ul className="space-y-3 mb-6">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2.5">
+                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <span className="text-xs text-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
-            <button
-              className={cn(
-                "w-full py-2.5 rounded-lg text-sm font-medium transition-colors",
-                plan.popular
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border"
-              )}
-            >
-              {plan.buttonText}
-            </button>
+            <div className="p-6 pt-0">
+              <button
+                className={cn(
+                  "w-full py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer",
+                  plan.popular
+                    ? "btn-gradient text-white"
+                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border"
+                )}
+              >
+                {plan.buttonText}
+              </button>
+            </div>
           </div>
         ))}
       </div>

@@ -147,38 +147,52 @@ export default function AnalyticsPage() {
                   return (
                     <div
                       key={platform}
-                      className="rounded-lg border border-border bg-secondary/20 p-4"
+                      className="rounded-lg border border-border bg-secondary/20 overflow-hidden glow-card"
                     >
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-secondary text-foreground">
-                            {platformIcons[platform] ||
-                              platformIcons.instagram}
+                      <div className="h-1 w-full bg-secondary/80 overflow-hidden">
+                        <div
+                          className={`h-full bg-gradient-to-r ${
+                            avgEngagement >= 85
+                              ? "from-success via-primary to-success"
+                              : avgEngagement >= 60
+                              ? "from-primary via-accent to-primary"
+                              : "from-warning via-destructive to-warning"
+                          }`}
+                          style={{ width: `${Math.max(20, Math.min(100, avgEngagement))}%` }}
+                        />
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-secondary text-foreground">
+                              {platformIcons[platform] ||
+                                platformIcons.instagram}
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-foreground capitalize">
+                                {platform}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {pStats.count} campaign
+                                {pStats.count > 1 ? "s" : ""}
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="text-sm font-medium text-foreground capitalize">
-                              {platform}
+                          <div className="text-right">
+                            <p className="text-sm font-semibold text-foreground tabular-nums">
+                              {formatNumber(pStats.reach)}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              {pStats.count} campaign
-                              {pStats.count > 1 ? "s" : ""}
+                              reach &middot; {avgEngagement} avg score
                             </p>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-sm font-semibold text-foreground tabular-nums">
-                            {formatNumber(pStats.reach)}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            reach &middot; {avgEngagement} avg score
-                          </p>
+                        <div className="mt-3 h-1.5 rounded-full bg-secondary overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
+                            style={{ width: `${reachPercent}%` }}
+                          />
                         </div>
-                      </div>
-                      <div className="mt-3 h-1.5 rounded-full bg-secondary overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-primary"
-                          style={{ width: `${reachPercent}%` }}
-                        />
                       </div>
                     </div>
                   );
@@ -218,26 +232,42 @@ export default function AnalyticsPage() {
               return (
                 <div
                   key={type}
-                  className="rounded-lg border border-border bg-secondary/20 p-4"
+                  className="rounded-lg border border-border bg-secondary/20 overflow-hidden glow-card"
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-medium text-foreground capitalize">
-                      {type}
-                    </span>
-                    <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-md border border-border tabular-nums">
-                      {typePosts.length} posts
-                    </span>
+                  <div className="h-1 w-full bg-secondary/80 overflow-hidden">
+                    <div
+                      className={`h-full bg-gradient-to-r ${
+                        avgScore >= 85
+                          ? "from-success via-primary to-success"
+                          : avgScore >= 60
+                          ? "from-primary via-accent to-primary"
+                          : avgScore > 0
+                          ? "from-warning via-destructive to-warning"
+                          : "from-border to-border"
+                      }`}
+                      style={{ width: `${avgScore > 0 ? Math.max(20, Math.min(100, avgScore)) : 100}%` }}
+                    />
                   </div>
-                  <p className="text-2xl font-semibold text-foreground tabular-nums">
-                    {avgScore}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Avg. engagement score
-                  </p>
-                  <div className="mt-3 pt-3 border-t border-border">
-                    <p className="text-xs font-medium text-muted-foreground tabular-nums">
-                      {formatNumber(totalLikes)} total likes
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-medium text-foreground capitalize">
+                        {type}
+                      </span>
+                      <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-md border border-border tabular-nums">
+                        {typePosts.length} posts
+                      </span>
+                    </div>
+                    <p className="text-2xl font-semibold text-foreground tabular-nums">
+                      {avgScore}
                     </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Avg. engagement score
+                    </p>
+                    <div className="mt-3 pt-3 border-t border-border">
+                      <p className="text-xs font-medium text-muted-foreground tabular-nums">
+                        {formatNumber(totalLikes)} total likes
+                      </p>
+                    </div>
                   </div>
                 </div>
               );

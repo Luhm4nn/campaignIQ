@@ -65,7 +65,7 @@ export default function PostsPage() {
 
         <button
           onClick={refresh}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-secondary border border-border text-sm font-medium text-foreground hover:bg-secondary/80 transition-colors self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg btn-gradient text-sm font-medium text-white self-start sm:self-auto cursor-pointer"
         >
           <RefreshCw className="h-4 w-4" />
           Refresh Feed
@@ -144,9 +144,9 @@ export default function PostsPage() {
         <div className="flex items-center gap-1 p-1 rounded-lg bg-secondary border border-border">
           <button
             className={cn(
-              "flex items-center justify-center h-7 w-7 rounded-md transition-colors",
+              "flex items-center justify-center h-7 w-7 rounded-md transition-all cursor-pointer",
               viewMode === "grid"
-                ? "bg-primary text-primary-foreground"
+                ? "btn-gradient text-white"
                 : "text-muted-foreground hover:text-foreground"
             )}
             onClick={() => setViewMode("grid")}
@@ -155,9 +155,9 @@ export default function PostsPage() {
           </button>
           <button
             className={cn(
-              "flex items-center justify-center h-7 w-7 rounded-md transition-colors",
+              "flex items-center justify-center h-7 w-7 rounded-md transition-all cursor-pointer",
               viewMode === "list"
-                ? "bg-primary text-primary-foreground"
+                ? "btn-gradient text-white"
                 : "text-muted-foreground hover:text-foreground"
             )}
             onClick={() => setViewMode("list")}

@@ -40,7 +40,19 @@ function InsightModal({ open, insight, onClose }: InsightModalProps) {
         className="absolute inset-0 bg-black/60 backdrop-blur-xs"
         onClick={onClose}
       />
-      <div className="relative rounded-xl bg-card border border-border max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-5 shadow-xl">
+      <div className="relative rounded-xl bg-card border border-border max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-xl">
+        <div
+          className={`h-1.5 w-full bg-gradient-to-r ${
+            insight.type === "success"
+              ? "from-success via-primary to-success"
+              : insight.type === "warning"
+              ? "from-warning via-destructive to-warning"
+              : insight.type === "tip"
+              ? "from-accent via-primary to-accent"
+              : "from-primary via-accent to-primary"
+          }`}
+        />
+        <div className="p-6 space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <h2 className="text-lg font-semibold text-foreground">
@@ -52,7 +64,7 @@ function InsightModal({ open, insight, onClose }: InsightModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 text-sm"
+            className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 text-sm cursor-pointer"
           >
             ✕
           </button>
@@ -109,10 +121,11 @@ function InsightModal({ open, insight, onClose }: InsightModalProps) {
         <div className="flex justify-end pt-2">
           <button
             onClick={onClose}
-            className="py-2 px-5 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="py-2 px-5 rounded-lg text-sm font-medium btn-gradient text-white cursor-pointer"
           >
             Close
           </button>
+        </div>
         </div>
       </div>
     </div>

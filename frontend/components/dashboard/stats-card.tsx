@@ -50,14 +50,35 @@ export function StatsCard({
     }
   };
 
+  const getTopBarGradient = () => {
+    switch (variant) {
+      case "primary":
+        return "from-primary via-primary/70 to-transparent";
+      case "success":
+        return "from-success via-primary/70 to-transparent";
+      case "warning":
+        return "from-warning via-warning/70 to-transparent";
+      case "accent":
+        return "from-accent via-primary/70 to-transparent";
+      default:
+        return "from-border via-border/50 to-transparent";
+    }
+  };
+
   return (
     <div
       className={cn(
-        "h-full rounded-xl border border-border bg-card transition-colors hover:border-border/80 flex flex-col justify-between",
+        "group relative overflow-hidden h-full rounded-xl border border-border bg-card glow-card flex flex-col justify-between",
         size === "large" ? "p-6" : "p-5",
         className
       )}
     >
+      <div
+        className={cn(
+          "absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r opacity-85 group-hover:opacity-100 transition-opacity",
+          getTopBarGradient()
+        )}
+      />
       <div className="flex items-start justify-between gap-3 h-full">
         <div className="space-y-2 flex-1 min-w-0 flex flex-col justify-between h-full">
           <p className="text-xs font-medium text-muted-foreground tracking-wide">
@@ -100,7 +121,7 @@ export function StatsCard({
         {Icon && (
           <div
             className={cn(
-              "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border",
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-transform duration-200 group-hover:scale-105",
               getIconStyles()
             )}
           >

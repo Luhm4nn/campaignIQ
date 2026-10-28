@@ -155,7 +155,9 @@ export default function NewCampaignPage() {
             <div
               key={s}
               className={`h-1 flex-1 rounded-full transition-colors ${
-                s <= step ? "bg-primary" : "bg-secondary"
+                s <= step
+                  ? "bg-gradient-to-r from-primary to-accent"
+                  : "bg-secondary"
               }`}
             />
           ))}
@@ -170,7 +172,9 @@ export default function NewCampaignPage() {
         )}
 
         {step === 1 && (
-          <div className="rounded-xl border border-border bg-card p-6 space-y-6 animate-fadeIn">
+          <div className="rounded-xl border border-border bg-card overflow-hidden animate-fadeIn">
+            <div className="h-1 w-full bg-gradient-to-r from-primary via-accent to-primary/50" />
+            <div className="p-6 space-y-6">
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-2">
                 Campaign Name
@@ -210,9 +214,9 @@ export default function NewCampaignPage() {
                     key={platform}
                     type="button"
                     onClick={() => handlePlatformSelect(platform)}
-                    className={`py-2.5 px-3 rounded-lg border text-sm font-medium transition-colors ${
+                    className={`py-2.5 px-3 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
                       formData.platform === platform
-                        ? "border-primary bg-primary/10 text-primary"
+                        ? "btn-gradient text-white border-transparent shadow-xs"
                         : "border-border bg-secondary/40 text-foreground hover:bg-secondary"
                     }`}
                   >
@@ -275,20 +279,23 @@ export default function NewCampaignPage() {
                     await autoFetchFollowers();
                   }
                 }}
-                className={`py-2.5 px-6 rounded-lg text-sm font-medium transition-colors ${
+                className={`py-2.5 px-6 rounded-lg text-sm font-medium transition-all ${
                   isStep1Complete
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                    ? "btn-gradient text-white cursor-pointer"
                     : "bg-secondary text-muted-foreground cursor-not-allowed"
                 }`}
               >
                 Continue
               </button>
             </div>
+            </div>
           </div>
         )}
 
         {step === 2 && (
-          <div className="rounded-xl border border-border bg-card p-6 space-y-6 animate-fadeIn">
+          <div className="rounded-xl border border-border bg-card overflow-hidden animate-fadeIn">
+            <div className="h-1 w-full bg-gradient-to-r from-primary via-accent to-primary/50" />
+            <div className="p-6 space-y-6">
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
                 <Target className="h-3.5 w-3.5" />
@@ -300,9 +307,9 @@ export default function NewCampaignPage() {
                     key={type}
                     type="button"
                     onClick={() => handleTypeSelect(type)}
-                    className={`py-2.5 px-3 rounded-lg border text-sm font-medium transition-colors ${
+                    className={`py-2.5 px-3 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
                       formData.campaignType === type
-                        ? "border-primary bg-primary/10 text-primary"
+                        ? "btn-gradient text-white border-transparent shadow-xs"
                         : "border-border bg-secondary/40 text-foreground hover:bg-secondary"
                     }`}
                   >
@@ -420,7 +427,7 @@ export default function NewCampaignPage() {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="py-2.5 px-5 rounded-lg text-sm font-medium bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80 transition-colors"
+                className="py-2.5 px-5 rounded-lg text-sm font-medium bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80 transition-colors cursor-pointer"
               >
                 Back
               </button>
@@ -428,20 +435,23 @@ export default function NewCampaignPage() {
                 type="button"
                 disabled={!isStep2Complete}
                 onClick={() => setStep(3)}
-                className={`py-2.5 px-6 rounded-lg text-sm font-medium transition-colors ${
+                className={`py-2.5 px-6 rounded-lg text-sm font-medium transition-all ${
                   isStep2Complete
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                    ? "btn-gradient text-white cursor-pointer"
                     : "bg-secondary text-muted-foreground cursor-not-allowed"
                 }`}
               >
                 Review
               </button>
             </div>
+            </div>
           </div>
         )}
 
         {step === 3 && (
-          <div className="rounded-xl border border-border bg-card p-6 space-y-6 animate-fadeIn">
+          <div className="rounded-xl border border-border bg-card overflow-hidden animate-fadeIn">
+            <div className="h-1 w-full bg-gradient-to-r from-primary via-accent to-primary/50" />
+            <div className="p-6 space-y-6">
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
                 <p className="text-xs font-medium text-muted-foreground mb-1">
@@ -509,7 +519,7 @@ export default function NewCampaignPage() {
                 type="button"
                 onClick={() => setStep(2)}
                 disabled={submitting}
-                className="py-2.5 px-5 rounded-lg text-sm font-medium bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80 transition-colors"
+                className="py-2.5 px-5 rounded-lg text-sm font-medium bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80 transition-colors cursor-pointer"
               >
                 Back
               </button>
@@ -517,11 +527,12 @@ export default function NewCampaignPage() {
                 type="button"
                 onClick={handleCreateCampaign}
                 disabled={submitting}
-                className="py-2.5 px-6 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors inline-flex items-center gap-2"
+                className="py-2.5 px-6 rounded-lg text-sm font-medium btn-gradient text-white inline-flex items-center gap-2 cursor-pointer"
               >
                 <Check className="h-4 w-4" />
                 {submitting ? "Creating..." : "Create Campaign"}
               </button>
+            </div>
             </div>
           </div>
         )}

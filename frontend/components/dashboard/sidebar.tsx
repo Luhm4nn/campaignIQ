@@ -65,12 +65,12 @@ export function Sidebar() {
     <aside className="fixed inset-y-0 left-0 z-40 flex w-[240px] flex-col border-r border-border bg-sidebar">
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 h-16 border-b border-border">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-xs">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg btn-gradient text-white shadow-xs">
           <Activity className="h-4 w-4" />
         </div>
         <div className="flex flex-col">
           <span className="text-sm font-semibold text-foreground tracking-tight leading-none">
-            CampaignIQ
+            Campaign<span className="text-gradient font-bold">IQ</span>
           </span>
           <span className="text-[11px] font-medium text-muted-foreground mt-1">
             Analytics Suite
@@ -94,10 +94,10 @@ export function Sidebar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "group flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    "group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-secondary text-foreground"
-                      : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
+                      ? "bg-secondary text-foreground shadow-xs"
+                      : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground hover:translate-x-0.5"
                   )}
                 >
                   <item.icon
@@ -110,7 +110,7 @@ export function Sidebar() {
                   />
                   <span>{item.label}</span>
                   {isActive && (
-                    <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
+                    <span className="ml-auto h-1.5 w-1.5 rounded-full bg-gradient-to-r from-primary to-accent" />
                   )}
                 </Link>
               );
@@ -123,7 +123,7 @@ export function Sidebar() {
           <p className="px-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70 mb-2">
             Workspace
           </p>
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             {actionItems.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -131,12 +131,12 @@ export function Sidebar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
                     item.variant === "primary"
-                      ? "bg-primary/10 text-primary hover:bg-primary/15 border border-primary/25"
+                      ? "btn-gradient text-white"
                       : isActive
                       ? "bg-secondary text-foreground"
-                      : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
+                      : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground hover:translate-x-0.5"
                   )}
                 >
                   <item.icon className="h-4 w-4 shrink-0" />

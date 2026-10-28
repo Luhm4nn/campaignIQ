@@ -44,23 +44,50 @@ interface PostCardProps {
 export function PostCard({ post, className }: PostCardProps) {
   const getScoreBadge = (score: number) => {
     if (score >= 85)
-      return "bg-success/10 text-success border-success/20";
+      return "bg-success/15 text-success border-success/30";
     if (score >= 60)
-      return "bg-primary/10 text-primary border-primary/20";
-    return "bg-warning/10 text-warning border-warning/20";
+      return "bg-primary/15 text-primary border-primary/30";
+    return "bg-warning/15 text-warning border-warning/30";
   };
+
+  const getTopBarGradient = (score: number) => {
+    if (score >= 85)
+      return "from-success via-primary to-success/80";
+    if (score >= 60)
+      return "from-primary via-primary/80 to-accent";
+    return "from-warning via-warning/80 to-destructive/80";
+  };
+
+  const getPerformanceLabel = (score: number) => {
+    if (score >= 85) return "High Performer";
+    if (score >= 60) return "Solid Engagement";
+    return "Needs Boost";
+  };
+
+  const barWidth = Math.max(18, Math.min(100, post.engagementScore));
 
   return (
     <Link
       href={`/posts/${post.id}`}
       className={cn(
-        "group block rounded-xl border border-border bg-card p-5 transition-colors hover:border-border/80 hover:bg-secondary/20",
+        "group relative block overflow-hidden rounded-xl border border-border bg-card p-5 pt-6 glow-card hover:bg-secondary/25 cursor-pointer",
         className
       )}
     >
+      {/* Top full-width performance line */}
+      <div className="absolute inset-x-0 top-0 h-1 bg-secondary/80 overflow-hidden">
+        <div
+          className={cn(
+            "h-full bg-gradient-to-r transition-all duration-500 group-hover:brightness-125",
+            getTopBarGradient(post.engagementScore)
+          )}
+          style={{ width: `${barWidth}%` }}
+        />
+      </div>
+
       <div className="flex items-start justify-between gap-3 mb-3.5">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <div className="flex items-center justify-center h-7 w-7 rounded-md border border-border bg-secondary text-muted-foreground">
+          <div className="flex items-center justify-center h-7 w-7 rounded-md border border-border bg-secondary text-muted-foreground group-hover:border-primary/40 group-hover:text-primary transition-colors">
             {platformIcons[post.platform] || platformIcons.instagram}
           </div>
           <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-secondary border border-border text-xs text-muted-foreground">
@@ -87,25 +114,30 @@ export function PostCard({ post, className }: PostCardProps) {
           )}
         </div>
 
-        <div
-          className={cn(
-            "flex items-center gap-0.5 rounded-md px-2 py-0.5 text-xs font-semibold border tabular-nums",
-            getScoreBadge(post.engagementScore)
-          )}
-        >
-          {post.engagementScore}
-          <span className="opacity-60 font-normal">/100</span>
+        <div className="flex flex-col items-end shrink-0">
+          <div
+            className={cn(
+              "flex items-center gap-0.5 rounded-md px-2 py-0.5 text-xs font-semibold border tabular-nums transition-transform duration-200 group-hover:scale-105",
+              getScoreBadge(post.engagementScore)
+            )}
+          >
+            {post.engagementScore}
+            <span className="opacity-60 font-normal">/100</span>
+          </div>
+          <span className="text-[10px] text-muted-foreground mt-0.5">
+            {getPerformanceLabel(post.engagementScore)}
+          </span>
         </div>
       </div>
 
-      <p className="text-sm text-foreground leading-relaxed line-clamp-3 mb-4">
+      <p className="text-sm text-foreground leading-relaxed line-clamp-3 mb-4 group-hover:text-foreground/95 transition-colors">
         {post.content}
       </p>
 
       <div className="flex items-center justify-between mb-3.5 text-xs">
         <div className="flex items-center gap-1.5 min-w-0">
           <span className="text-muted-foreground">Campaign:</span>
-          <span className="font-medium text-foreground truncate">
+          <span className="font-medium text-foreground truncate group-hover:text-primary transition-colors">
             {post.campaignName}
           </span>
         </div>
@@ -116,19 +148,19 @@ export function PostCard({ post, className }: PostCardProps) {
 
       <div className="flex items-center gap-5 border-t border-border pt-3.5">
         <div className="flex items-center gap-1.5 text-muted-foreground">
-          <Heart className="h-3.5 w-3.5" />
+          <Heart className="h-3.5 w-3.5 text-accent/80" />
           <span className="text-xs font-medium text-foreground tabular-nums">
             {formatNumber(post.likes)}
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-muted-foreground">
-          <MessageCircle className="h-3.5 w-3.5" />
+          <MessageCircle className="h-3.5 w-3.5 text-primary/80" />
           <span className="text-xs font-medium text-foreground tabular-nums">
             {formatNumber(post.comments)}
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-muted-foreground">
-          <Share2 className="h-3.5 w-3.5" />
+          <Share2 className="h-3.5 w-3.5 text-success/80" />
           <span className="text-xs font-medium text-foreground tabular-nums">
             {formatNumber(post.shares)}
           </span>
@@ -141,7 +173,7 @@ export function PostCard({ post, className }: PostCardProps) {
               day: "numeric",
             })}
           </span>
-          <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity ml-1" />
+          <ArrowUpRight className="h-3.5 w-3.5 text-primary opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ml-1" />
         </div>
       </div>
     </Link>

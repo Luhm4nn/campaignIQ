@@ -73,7 +73,7 @@ export default function DashboardPage() {
           </Link>
           <Link
             href="/campaigns/new"
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-primary text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg btn-gradient text-sm font-medium text-white"
           >
             <Plus className="h-4 w-4" />
             New Campaign
@@ -151,7 +151,7 @@ export default function DashboardPage() {
                 View all
               </Link>
             </div>
-            <div className="divide-y divide-border">
+            <div className="p-3.5 space-y-2.5">
               {topCampaigns.length === 0 ? (
                 <div className="py-12 px-4 text-center">
                   <p className="text-sm text-muted-foreground">
@@ -165,43 +165,66 @@ export default function DashboardPage() {
                   </Link>
                 </div>
               ) : (
-                topCampaigns.map((campaign, i) => (
-                  <Link
-                    key={campaign.id}
-                    href={`/campaigns/${campaign.id}`}
-                    className="group flex items-center gap-3.5 px-5 py-3.5 hover:bg-secondary/30 transition-colors"
-                  >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-secondary border border-border text-xs font-medium text-muted-foreground tabular-nums">
-                      {i + 1}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
-                        {campaign.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-0.5 capitalize">
-                        {campaign.postsCount} posts &middot; {campaign.platform}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-foreground tabular-nums">
-                        {campaign.engagementScore}
-                      </p>
-                      <p
-                        className={cn(
-                          "text-xs font-medium tabular-nums",
-                          campaign.growth > 0
-                            ? "text-success"
-                            : campaign.growth < 0
-                            ? "text-destructive"
-                            : "text-muted-foreground"
-                        )}
-                      >
-                        {campaign.growth > 0 ? "+" : ""}
-                        {campaign.growth}%
-                      </p>
-                    </div>
-                  </Link>
-                ))
+                topCampaigns.map((campaign, i) => {
+                  const barGradient =
+                    campaign.engagementScore >= 85
+                      ? "from-success via-primary to-success"
+                      : campaign.engagementScore >= 60
+                      ? "from-primary via-accent to-primary"
+                      : "from-warning via-destructive to-warning";
+                  return (
+                    <Link
+                      key={campaign.id}
+                      href={`/campaigns/${campaign.id}`}
+                      className="group relative flex flex-col rounded-lg border border-border bg-secondary/20 overflow-hidden glow-card cursor-pointer"
+                    >
+                      <div className="w-full h-1 bg-secondary/80 overflow-hidden">
+                        <div
+                          className={cn("h-full bg-gradient-to-r transition-all duration-500", barGradient)}
+                          style={{ width: `${Math.max(18, Math.min(100, campaign.engagementScore))}%` }}
+                        />
+                      </div>
+                      <div className="flex items-center gap-3.5 px-4 py-3">
+                        <span
+                          className={cn(
+                            "flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-xs font-semibold tabular-nums",
+                            i === 0
+                              ? "btn-gradient text-white border-0"
+                              : "bg-secondary border border-border text-muted-foreground"
+                          )}
+                        >
+                          {i + 1}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
+                            {campaign.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-0.5 capitalize">
+                            {campaign.postsCount} posts &middot; {campaign.platform}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-semibold text-foreground tabular-nums">
+                            {campaign.engagementScore}
+                          </p>
+                          <p
+                            className={cn(
+                              "text-xs font-medium tabular-nums",
+                              campaign.growth > 0
+                                ? "text-success"
+                                : campaign.growth < 0
+                                ? "text-destructive"
+                                : "text-muted-foreground"
+                            )}
+                          >
+                            {campaign.growth > 0 ? "+" : ""}
+                            {campaign.growth}%
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })
               )}
             </div>
           </div>

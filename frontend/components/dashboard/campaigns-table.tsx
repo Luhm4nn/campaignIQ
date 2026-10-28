@@ -52,7 +52,7 @@ export function CampaignsTable({
           </div>
           <Link
             href="/campaigns/new"
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-primary text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg btn-gradient text-sm font-medium text-white"
           >
             <Plus className="h-4 w-4" />
             New Campaign
@@ -73,7 +73,7 @@ export function CampaignsTable({
           </p>
           <Link
             href="/campaigns/new"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg btn-gradient text-xs font-medium text-white"
           >
             <Plus className="h-3.5 w-3.5" />
             Create First Campaign
@@ -81,6 +81,7 @@ export function CampaignsTable({
         </div>
       ) : (
         <div className="rounded-xl border border-border bg-card overflow-hidden">
+          <div className="h-[3px] w-full bg-gradient-to-r from-primary via-accent to-primary/50 opacity-80" />
           <div className="grid grid-cols-12 gap-4 px-5 py-3 border-b border-border bg-secondary/40">
             <div className="col-span-4 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Campaign
@@ -104,10 +105,27 @@ export function CampaignsTable({
               <Link
                 key={campaign.id}
                 href={`/campaigns/${campaign.id}`}
-                className="group grid grid-cols-12 gap-4 px-5 py-3.5 items-center transition-colors hover:bg-secondary/30"
+                className="group relative grid grid-cols-12 gap-4 px-5 py-3.5 items-center transition-all duration-200 hover:bg-secondary/40 hover:pl-6"
               >
+                <div
+                  className={cn(
+                    "absolute left-0 top-0 bottom-0 w-1 transition-opacity duration-200 opacity-75 group-hover:opacity-100",
+                    campaign.engagementScore >= 85
+                      ? "bg-gradient-to-b from-success to-primary"
+                      : campaign.engagementScore >= 60
+                      ? "bg-gradient-to-b from-primary to-accent"
+                      : "bg-gradient-to-b from-warning to-destructive"
+                  )}
+                />
                 <div className="col-span-4 flex items-center gap-3 min-w-0">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-secondary text-xs font-medium text-muted-foreground border border-border tabular-nums">
+                  <span
+                    className={cn(
+                      "flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-xs font-medium tabular-nums transition-transform duration-200 group-hover:scale-105",
+                      index === 0
+                        ? "btn-gradient text-white border-0"
+                        : "bg-secondary text-muted-foreground border border-border"
+                    )}
+                  >
                     {index + 1}
                   </span>
                   <div className="min-w-0">
@@ -164,7 +182,14 @@ export function CampaignsTable({
                   <div className="inline-flex items-center gap-2">
                     <div className="w-16 h-1.5 rounded-full bg-secondary overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-primary"
+                        className={cn(
+                          "h-full rounded-full",
+                          campaign.engagementScore >= 85
+                            ? "bg-gradient-to-r from-success to-primary"
+                            : campaign.engagementScore >= 60
+                            ? "bg-gradient-to-r from-primary to-accent"
+                            : "bg-gradient-to-r from-warning to-destructive"
+                        )}
                         style={{ width: `${campaign.engagementScore}%` }}
                       />
                     </div>
@@ -195,7 +220,7 @@ export function CampaignsTable({
                       {campaign.growth}%
                     </span>
                   </span>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground opacity-40 group-hover:opacity-100 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                 </div>
               </Link>
             ))}

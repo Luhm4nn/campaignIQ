@@ -98,14 +98,14 @@ export default function PostDetailPage({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setEditModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-secondary border border-border text-xs font-medium text-foreground hover:bg-secondary/80 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg btn-gradient text-xs font-medium text-white cursor-pointer"
           >
             <Edit3 className="h-3.5 w-3.5" />
             Edit Post
           </button>
           <button
             onClick={handleDelete}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-destructive/10 border border-destructive/25 text-xs font-medium text-destructive hover:bg-destructive/20 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-destructive/10 border border-destructive/25 text-xs font-medium text-destructive hover:bg-destructive/20 transition-colors cursor-pointer"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Delete
@@ -113,7 +113,20 @@ export default function PostDetailPage({
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-card p-6 space-y-5">
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <div className="w-full h-1.5 bg-secondary/80 overflow-hidden">
+          <div
+            className={`h-full bg-gradient-to-r ${
+              post.engagementScore >= 85
+                ? "from-success via-primary to-success"
+                : post.engagementScore >= 60
+                ? "from-primary via-accent to-primary"
+                : "from-warning via-destructive to-warning"
+            }`}
+            style={{ width: `${Math.max(20, Math.min(100, post.engagementScore))}%` }}
+          />
+        </div>
+        <div className="p-6 space-y-5">
         <div>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-xs font-medium uppercase px-2 py-0.5 rounded-md bg-secondary border border-border text-foreground">
@@ -169,6 +182,7 @@ export default function PostDetailPage({
             <p className="text-xs text-muted-foreground">Shares</p>
           </div>
         </div>
+        </div>
       </div>
 
       <div>
@@ -177,49 +191,67 @@ export default function PostDetailPage({
           Performance & NLP Metrics
         </h3>
         <div className="grid sm:grid-cols-3 gap-4">
-          <div className="rounded-xl border border-border bg-card p-5">
-            <p className="text-xs text-muted-foreground mb-1">
-              Engagement Rate
-            </p>
-            <p className="text-2xl font-semibold text-foreground tabular-nums">
-              {post.engagementRate}%
-            </p>
+          <div className="rounded-xl border border-border bg-card overflow-hidden glow-card">
+            <div className="h-[3px] w-full bg-gradient-to-r from-primary to-accent" />
+            <div className="p-5">
+              <p className="text-xs text-muted-foreground mb-1">
+                Engagement Rate
+              </p>
+              <p className="text-2xl font-semibold text-foreground tabular-nums">
+                {post.engagementRate}%
+              </p>
+            </div>
           </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <p className="text-xs text-muted-foreground mb-1">Reach</p>
-            <p className="text-2xl font-semibold text-foreground tabular-nums">
-              {post.reach.toLocaleString()}
-            </p>
+          <div className="rounded-xl border border-border bg-card overflow-hidden glow-card">
+            <div className="h-[3px] w-full bg-gradient-to-r from-success to-primary" />
+            <div className="p-5">
+              <p className="text-xs text-muted-foreground mb-1">Reach</p>
+              <p className="text-2xl font-semibold text-foreground tabular-nums">
+                {post.reach.toLocaleString()}
+              </p>
+            </div>
           </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <p className="text-xs text-muted-foreground mb-1">Impressions</p>
-            <p className="text-2xl font-semibold text-foreground tabular-nums">
-              {post.impressions.toLocaleString()}
-            </p>
+          <div className="rounded-xl border border-border bg-card overflow-hidden glow-card">
+            <div className="h-[3px] w-full bg-gradient-to-r from-accent to-primary" />
+            <div className="p-5">
+              <p className="text-xs text-muted-foreground mb-1">Impressions</p>
+              <p className="text-2xl font-semibold text-foreground tabular-nums">
+                {post.impressions.toLocaleString()}
+              </p>
+            </div>
           </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <p className="text-xs text-muted-foreground mb-1">
-              Engagement Score
-            </p>
-            <p className="text-2xl font-semibold text-primary tabular-nums">
-              {post.engagementScore}/100
-            </p>
+          <div className="rounded-xl border border-border bg-card overflow-hidden glow-card">
+            <div className="h-[3px] w-full bg-gradient-to-r from-primary to-accent" />
+            <div className="p-5">
+              <p className="text-xs text-muted-foreground mb-1">
+                Engagement Score
+              </p>
+              <p className="text-2xl font-semibold text-primary tabular-nums">
+                {post.engagementScore}/100
+              </p>
+            </div>
           </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <p className="text-xs text-muted-foreground mb-1">
-              VADER Sentiment
-            </p>
-            <p className="text-2xl font-semibold text-foreground capitalize">
-              {post.sentimentLabel}
-            </p>
+          <div className="rounded-xl border border-border bg-card overflow-hidden glow-card">
+            <div className="h-[3px] w-full bg-gradient-to-r from-success to-primary" />
+            <div className="p-5">
+              <p className="text-xs text-muted-foreground mb-1">
+                VADER Sentiment
+              </p>
+              <p className="text-2xl font-semibold text-foreground capitalize">
+                {post.sentimentLabel}
+              </p>
+            </div>
           </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <p className="text-xs text-muted-foreground mb-1">
-              Compound Score
-            </p>
-            <p className="text-2xl font-semibold text-foreground tabular-nums">
-              {post.sentimentCompound}
-            </p>
+          <div className="rounded-xl border border-border bg-card overflow-hidden glow-card">
+            <div className="h-[3px] w-full bg-gradient-to-r from-warning to-primary" />
+            <div className="p-5">
+              <p className="text-xs text-muted-foreground mb-1">
+                Compound Score
+              </p>
+              <p className="text-2xl font-semibold text-foreground tabular-nums">
+                {post.sentimentCompound}
+              </p>
+            </div>
           </div>
         </div>
       </div>

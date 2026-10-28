@@ -40,26 +40,31 @@ export function InsightCard({ insight, className, onClick }: InsightCardProps) {
         return {
           iconBg: "bg-success/10 border-success/20",
           icon: "text-success",
+          topBar: "from-success via-primary to-success/60",
         };
       case "warning":
         return {
           iconBg: "bg-warning/10 border-warning/20",
           icon: "text-warning",
+          topBar: "from-warning via-warning/80 to-destructive/60",
         };
       case "info":
         return {
           iconBg: "bg-primary/10 border-primary/20",
           icon: "text-primary",
+          topBar: "from-primary via-primary/80 to-accent/60",
         };
       case "tip":
         return {
           iconBg: "bg-accent/10 border-accent/20",
           icon: "text-accent",
+          topBar: "from-accent via-primary to-accent/60",
         };
       default:
         return {
           iconBg: "bg-secondary border-border",
           icon: "text-muted-foreground",
+          topBar: "from-primary to-accent",
         };
     }
   };
@@ -70,15 +75,22 @@ export function InsightCard({ insight, className, onClick }: InsightCardProps) {
     <button
       onClick={onClick}
       className={cn(
-        "group w-full text-left rounded-xl border border-border bg-card p-5 transition-colors hover:border-border/80 hover:bg-secondary/30",
+        "group relative overflow-hidden w-full text-left rounded-xl border border-border bg-card p-5 pt-6 glow-card hover:bg-secondary/30",
         onClick && "cursor-pointer",
         className
       )}
     >
+      <div
+        className={cn(
+          "absolute inset-x-0 top-0 h-1 bg-gradient-to-r opacity-90 group-hover:opacity-100 transition-opacity",
+          colors.topBar
+        )}
+      />
+
       <div className="flex items-start gap-3.5">
         <div
           className={cn(
-            "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border",
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-transform duration-200 group-hover:scale-105",
             colors.iconBg,
             colors.icon
           )}
@@ -88,7 +100,7 @@ export function InsightCard({ insight, className, onClick }: InsightCardProps) {
 
         <div className="flex-1 min-w-0 space-y-1.5">
           <div className="flex items-center justify-between gap-2">
-            <h4 className="text-sm font-semibold text-foreground leading-snug line-clamp-1">
+            <h4 className="text-sm font-semibold text-foreground leading-snug line-clamp-1 group-hover:text-primary transition-colors">
               {insight.title}
             </h4>
             {insight.metric && (
@@ -115,9 +127,9 @@ export function InsightCard({ insight, className, onClick }: InsightCardProps) {
           </p>
 
           {onClick && (
-            <div className="flex items-center gap-1 pt-1 text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+            <div className="flex items-center gap-1 pt-1 text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">
               <span>Inspect details</span>
-              <ArrowUpRight className="h-3 w-3" />
+              <ArrowUpRight className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </div>
           )}
         </div>
