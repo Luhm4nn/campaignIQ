@@ -19,6 +19,11 @@ test("contratos de endpoints en lib/api.ts coinciden con las rutas REST del back
   );
 
   assert.match(apiSource, /\/health/);
+  assert.match(apiSource, /\/auth\/login/);
+  assert.match(apiSource, /\/auth\/register/);
+  assert.match(apiSource, /\/auth\/refresh/);
+  assert.match(apiSource, /\/auth\/logout/);
+  assert.match(apiSource, /\/auth\/me/);
   assert.match(apiSource, /\/dashboard/);
   assert.match(apiSource, /\/campaigns/);
   assert.match(apiSource, /\/posts/);

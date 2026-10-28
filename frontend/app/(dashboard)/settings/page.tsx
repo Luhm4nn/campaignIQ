@@ -51,6 +51,8 @@ import {
   syncIntegrationPostsApi,
   disconnectIntegrationApi,
   useCampaignData,
+  fetchMeApi,
+  getStoredAuthUser,
 } from "@/lib/api";
 import type { IntegrationConfigRead } from "@/lib/types";
 
@@ -106,13 +108,27 @@ export default function SettingsPage() {
   }, [selectedProvider]);
 
   useEffect(() => {
-    fetchUsersApi()
-      .then((users) => {
-        if (users.length > 0) {
-          setName(users[0].name);
-          setEmail(users[0].email);
-          setCompany(users[0].company || "");
+    const cached = getStoredAuthUser();
+    if (cached) {
+      setName(cached.name);
+      setEmail(cached.email);
+      setCompany(cached.company || "");
+    }
+    fetchMeApi()
+      .then((me) => {
+        if (me) {
+          setName(me.name);
+          setEmail(me.email);
+          setCompany(me.company || "");
+          return;
         }
+        return fetchUsersApi().then((users) => {
+          if (users.length > 0) {
+            setName(users[0].name);
+            setEmail(users[0].email);
+            setCompany(users[0].company || "");
+          }
+        });
       })
       .catch(() => {});
     loadIntegrations();

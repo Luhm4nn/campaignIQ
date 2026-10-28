@@ -127,6 +127,38 @@ export interface UserProfile {
   name: string;
   email: string;
   company: string;
+  username?: string | null;
+  plan?: string;
+}
+
+export interface AuthUser {
+  id: number;
+  name: string;
+  email: string;
+  username?: string | null;
+  company: string;
+  plan: string;
+  isActive: boolean;
+}
+
+export interface LoginPayload {
+  identifier: string;
+  password: string;
+}
+
+export interface RegisterPayload {
+  name: string;
+  email: string;
+  password: string;
+  company?: string;
+  username?: string;
+}
+
+export interface AuthResponse {
+  user: AuthUser;
+  accessToken: string;
+  refreshToken: string;
+  tokenType: string;
 }
 
 export interface CreateCampaignPayload {

@@ -19,17 +19,183 @@ import type {
   IntegrationCredentialsPayload,
   OAuthAuthorizeResponse,
   SyncIntegrationResponse,
+  AuthUser,
+  AuthResponse,
+  LoginPayload,
+  RegisterPayload,
 } from "./types";
 
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 const DATA_UPDATED_EVENT = "campaign-iq:data-updated";
+const AUTH_UPDATED_EVENT = "campaign-iq:auth-updated";
+const ACCESS_TOKEN_STORAGE_KEY = "ciq_access_token";
+const REFRESH_TOKEN_STORAGE_KEY = "ciq_refresh_token";
+const AUTH_USER_STORAGE_KEY = "ciq_auth_user";
+
+let refreshInFlight: Promise<boolean> | null = null;
 
 export function notifyDataUpdated(): void {
   if (typeof window !== "undefined") {
     window.dispatchEvent(new Event(DATA_UPDATED_EVENT));
   }
+}
+
+export function notifyAuthUpdated(): void {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event(AUTH_UPDATED_EVENT));
+  }
+}
+
+export function getStoredAccessToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
+}
+
+export function getStoredRefreshToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(REFRESH_TOKEN_STORAGE_KEY);
+}
+
+export function getStoredAuthUser(): AuthUser | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(AUTH_USER_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as AuthUser) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function storeAuthSession(auth: AuthResponse): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, auth.accessToken);
+  window.localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, auth.refreshToken);
+  window.localStorage.setItem(AUTH_USER_STORAGE_KEY, JSON.stringify(auth.user));
+  notifyAuthUpdated();
+}
+
+export function clearAuthSession(): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+  window.localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
+  window.localStorage.removeItem(AUTH_USER_STORAGE_KEY);
+  notifyAuthUpdated();
+}
+
+function getAuthHeaders(extra?: Record<string, string>): Record<string, string> {
+  const headers: Record<string, string> = { ...(extra || {}) };
+  const token = getStoredAccessToken();
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
+async function doRefreshSession(): Promise<boolean> {
+  try {
+    const refreshToken = getStoredRefreshToken();
+    const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: refreshToken || undefined }),
+    });
+    if (!res.ok) {
+      clearAuthSession();
+      return false;
+    }
+    const data: AuthResponse = await res.json();
+    storeAuthSession(data);
+    return true;
+  } catch {
+    return false;
+  } finally {
+    refreshInFlight = null;
+  }
+}
+
+export function refreshAuthSession(): Promise<boolean> {
+  refreshInFlight ??= doRefreshSession();
+  return refreshInFlight;
+}
+
+export async function loginApi(payload: LoginPayload): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    throw new Error(await parseApiError(res));
+  }
+  const data: AuthResponse = await res.json();
+  storeAuthSession(data);
+  return data;
+}
+
+export async function registerApi(
+  payload: RegisterPayload
+): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    throw new Error(await parseApiError(res));
+  }
+  const data: AuthResponse = await res.json();
+  storeAuthSession(data);
+  return data;
+}
+
+export async function logoutApi(): Promise<void> {
+  const refreshToken = getStoredRefreshToken();
+  try {
+    await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: refreshToken || undefined }),
+    });
+  } catch {
+    // ignore network failure on logout
+  } finally {
+    clearAuthSession();
+  }
+}
+
+export async function fetchMeApi(): Promise<AuthUser | null> {
+  const res = await fetch(`${API_BASE_URL}/auth/me`, {
+    cache: "no-store",
+    credentials: "include",
+    headers: getAuthHeaders(),
+  });
+  if (res.status === 401) {
+    const refreshed = await refreshAuthSession();
+    if (!refreshed) return null;
+    const retryRes = await fetch(`${API_BASE_URL}/auth/me`, {
+      cache: "no-store",
+      credentials: "include",
+      headers: getAuthHeaders(),
+    });
+    if (!retryRes.ok) return null;
+    const user: AuthUser = await retryRes.json();
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(AUTH_USER_STORAGE_KEY, JSON.stringify(user));
+    }
+    return user;
+  }
+  if (!res.ok) return null;
+  const user: AuthUser = await res.json();
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(AUTH_USER_STORAGE_KEY, JSON.stringify(user));
+  }
+  return user;
 }
 
 export const emptyStats: DashboardStats = {

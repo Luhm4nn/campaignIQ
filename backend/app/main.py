@@ -16,6 +16,7 @@ from app.routers import insights as insights_router
 from app.routers import dashboard as dashboard_router
 from app.routers import export as export_router
 from app.routers import integrations as integrations_router
+from app.routers import auth as auth_router
 
 
 def verify_postgresql_connection() -> None:
@@ -35,6 +36,24 @@ def verify_postgresql_connection() -> None:
         connection.execute(
             text("ALTER TABLE posts ADD COLUMN IF NOT EXISTS permalink VARCHAR")
         )
+        connection.execute(
+            text("ALTER TABLE users ADD COLUMN IF NOT EXISTS username VARCHAR")
+        )
+        connection.execute(
+            text("ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR NOT NULL DEFAULT ''")
+        )
+        connection.execute(
+            text("ALTER TABLE users ADD COLUMN IF NOT EXISTS plan VARCHAR NOT NULL DEFAULT 'pro'")
+        )
+        connection.execute(
+            text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE")
+        )
+        connection.execute(
+            text("ALTER TABLE users ADD COLUMN IF NOT EXISTS failed_attempts INTEGER NOT NULL DEFAULT 0")
+        )
+        connection.execute(
+            text("ALTER TABLE users ADD COLUMN IF NOT EXISTS locked_until TIMESTAMP")
+        )
 
 
 
@@ -46,7 +65,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="CampaignIQ API", lifespan=lifespan)
 
-raw_origins = os.getenv("CORS_ORIGINS", "*")
+raw_origins = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001",
+)
 allowed_origins = (
     [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
     if raw_origins != "*"
@@ -56,6 +78,7 @@ allowed_origins = (
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -68,6 +91,7 @@ def health(db: Session = Depends(get_db)):
     return {"status": "ok", "database": "postgresql"}
 
 
+app.include_router(auth_router.router)
 app.include_router(dashboard_router.router)
 app.include_router(campaigns_router.router)
 app.include_router(posts_router.router)

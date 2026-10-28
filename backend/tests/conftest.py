@@ -8,7 +8,7 @@ from sqlalchemy import text
 
 import app.main as main_module
 from app.db.dbsession import Base, engine, get_db, SessionLocal
-from app.models.users import User
+from app.models.users import User, RefreshToken
 from app.models.campaigns import Campaign, Post
 from app.models.integrations import IntegrationConfig
 
@@ -24,12 +24,23 @@ class InMemoryQuery:
         for item in self.items:
             match = True
             for crit in criteria:
-                left_name = getattr(getattr(crit, "left", None), "name", None)
+                left = getattr(crit, "left", None)
+                left_name = getattr(left, "name", None)
+                is_lower_func = False
+                if left_name is None and getattr(left, "clauses", None):
+                    clauses = list(getattr(left, "clauses", []))
+                    if clauses:
+                        left_name = getattr(clauses[0], "name", None)
+                        is_lower_func = True
                 right_val = getattr(getattr(crit, "right", None), "value", None)
                 op_str = str(getattr(crit, "operator", ""))
                 if left_name is not None:
                     actual = getattr(item, left_name, None)
-                    if "ilike" in op_str.lower() or "like" in op_str.lower():
+                    if is_lower_func:
+                        if str(actual or "").lower() != str(right_val or "").lower():
+                            match = False
+                            break
+                    elif "ilike" in op_str.lower() or "like" in op_str.lower():
                         pattern = str(right_val or "").strip("%").lower()
                         if pattern not in str(actual or "").lower():
                             match = False
@@ -77,12 +88,14 @@ class InMemoryRelationalSession:
     def __init__(self) -> None:
         self.store: dict[Type[Any], List[Any]] = {
             User: [],
+            RefreshToken: [],
             Campaign: [],
             Post: [],
             IntegrationConfig: [],
         }
         self.counters: dict[Type[Any], int] = {
             User: 0,
+            RefreshToken: 0,
             Campaign: 0,
             Post: 0,
             IntegrationConfig: 0,
@@ -100,7 +113,7 @@ class InMemoryRelationalSession:
             self.counters[model] += 1
             obj.id = self.counters[model]
             now_naive = datetime.now(timezone.utc).replace(tzinfo=None)
-            if isinstance(obj, User) and not getattr(obj, "created_at", None):
+            if isinstance(obj, (User, RefreshToken)) and not getattr(obj, "created_at", None):
                 obj.created_at = now_naive
             if isinstance(obj, IntegrationConfig):
                 if not getattr(obj, "created_at", None):
