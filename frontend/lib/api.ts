@@ -30,11 +30,30 @@ export const API_BASE_URL =
 
 const DATA_UPDATED_EVENT = "campaign-iq:data-updated";
 const AUTH_UPDATED_EVENT = "campaign-iq:auth-updated";
-const ACCESS_TOKEN_STORAGE_KEY = "ciq_access_token";
-const REFRESH_TOKEN_STORAGE_KEY = "ciq_refresh_token";
-const AUTH_USER_STORAGE_KEY = "ciq_auth_user";
+const LEGACY_STORAGE_KEYS = [
+  "ciq_access_token",
+  "ciq_refresh_token",
+  "ciq_auth_user",
+];
 
 let refreshInFlight: Promise<boolean> | null = null;
+let currentAuthUser: AuthUser | null = null;
+
+function purgeLegacyLocalStorage(): void {
+  if (typeof window === "undefined") return;
+  try {
+    for (const key of LEGACY_STORAGE_KEYS) {
+      window.localStorage.removeItem(key);
+    }
+  } catch {
+    // ignore storage errors
+  }
+}
+
+// Immediately clean up any legacy localStorage items in the browser
+if (typeof window !== "undefined") {
+  purgeLegacyLocalStorage();
+}
 
 export function notifyDataUpdated(): void {
   if (typeof window !== "undefined") {
@@ -48,59 +67,34 @@ export function notifyAuthUpdated(): void {
   }
 }
 
-export function getStoredAccessToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return window.localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
-}
-
-export function getStoredRefreshToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return window.localStorage.getItem(REFRESH_TOKEN_STORAGE_KEY);
-}
-
 export function getStoredAuthUser(): AuthUser | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = window.localStorage.getItem(AUTH_USER_STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as AuthUser) : null;
-  } catch {
-    return null;
-  }
+  purgeLegacyLocalStorage();
+  return currentAuthUser;
 }
 
 export function storeAuthSession(auth: AuthResponse): void {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, auth.accessToken);
-  window.localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, auth.refreshToken);
-  window.localStorage.setItem(AUTH_USER_STORAGE_KEY, JSON.stringify(auth.user));
+  purgeLegacyLocalStorage();
+  currentAuthUser = auth.user;
   notifyAuthUpdated();
 }
 
 export function clearAuthSession(): void {
-  if (typeof window === "undefined") return;
-  window.localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
-  window.localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
-  window.localStorage.removeItem(AUTH_USER_STORAGE_KEY);
+  purgeLegacyLocalStorage();
+  currentAuthUser = null;
   notifyAuthUpdated();
 }
 
 function getAuthHeaders(extra?: Record<string, string>): Record<string, string> {
-  const headers: Record<string, string> = { ...(extra || {}) };
-  const token = getStoredAccessToken();
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-  return headers;
+  return { ...(extra || {}) };
 }
 
 async function doRefreshSession(): Promise<boolean> {
   try {
-    const refreshToken = getStoredRefreshToken();
     const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken: refreshToken || undefined }),
+      body: JSON.stringify({}),
     });
     if (!res.ok) {
       clearAuthSession();
@@ -154,13 +148,12 @@ export async function registerApi(
 }
 
 export async function logoutApi(): Promise<void> {
-  const refreshToken = getStoredRefreshToken();
   try {
     await fetch(`${API_BASE_URL}/auth/logout`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken: refreshToken || undefined }),
+      body: JSON.stringify({}),
     });
   } catch {
     // ignore network failure on logout
@@ -170,6 +163,7 @@ export async function logoutApi(): Promise<void> {
 }
 
 export async function fetchMeApi(): Promise<AuthUser | null> {
+  purgeLegacyLocalStorage();
   const res = await fetch(`${API_BASE_URL}/auth/me`, {
     cache: "no-store",
     credentials: "include",
@@ -185,16 +179,14 @@ export async function fetchMeApi(): Promise<AuthUser | null> {
     });
     if (!retryRes.ok) return null;
     const user: AuthUser = await retryRes.json();
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(AUTH_USER_STORAGE_KEY, JSON.stringify(user));
-    }
+    currentAuthUser = user;
+    notifyAuthUpdated();
     return user;
   }
   if (!res.ok) return null;
   const user: AuthUser = await res.json();
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(AUTH_USER_STORAGE_KEY, JSON.stringify(user));
-  }
+  currentAuthUser = user;
+  notifyAuthUpdated();
   return user;
 }
 
