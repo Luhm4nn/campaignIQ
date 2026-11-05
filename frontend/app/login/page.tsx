@@ -241,12 +241,12 @@ export default function LoginPage() {
 
             {/* Section 1: Hero Statement + Live Preview */}
             <section className="space-y-6 pt-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/80 border border-border text-xs text-muted-foreground">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/80 border border-border/80 text-xs text-muted-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                 <span className="h-2 w-2 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse" />
                 Live Scraping &middot; VADER NLP &middot; AI Insights
               </div>
 
-              <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-foreground leading-[1.12]">
+              <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-foreground leading-[1.12] text-balance">
                 Turn every social post into{" "}
                 <span className="text-gradient">
                   actionable intelligence
@@ -254,7 +254,7 @@ export default function LoginPage() {
                 in real time.
               </h1>
 
-              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed">
+              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed text-balance">
                 Connect any <b>Instagram</b>, <b>TikTok</b>, <b>YouTube</b>, or{" "}
                 <b>X / Twitter</b> account without complex setups. Spot top-performing
                 content at a glance, measure audience sentiment with NLP, and
@@ -263,14 +263,14 @@ export default function LoginPage() {
 
               {/* Quick KPI Strip */}
               <div className="grid sm:grid-cols-3 gap-3.5 pt-2">
-                <div className="rounded-xl border border-border bg-card/80 backdrop-blur-md overflow-hidden glow-card">
+                <div className="rounded-xl border border-border/80 bg-card/80 backdrop-blur-md overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                   <div className="h-1 w-full bg-gradient-to-r from-success via-primary to-success" />
                   <div className="p-4">
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                       <span>Live Scraping</span>
                       <Zap className="h-3.5 w-3.5 text-primary" />
                     </div>
-                    <p className="text-xl font-bold text-foreground">
+                    <p className="text-xl font-bold text-foreground tracking-tight">
                       4 Networks
                     </p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -279,14 +279,14 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card/80 backdrop-blur-md overflow-hidden glow-card">
+                <div className="rounded-xl border border-border/80 bg-card/80 backdrop-blur-md overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                   <div className="h-1 w-full bg-gradient-to-r from-primary via-accent to-primary" />
                   <div className="p-4">
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                       <span>NLP Engine</span>
                       <BarChart3 className="h-3.5 w-3.5 text-accent" />
                     </div>
-                    <p className="text-xl font-bold text-foreground">
+                    <p className="text-xl font-bold text-foreground tracking-tight">
                       VADER Score
                     </p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -295,14 +295,14 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card/80 backdrop-blur-md overflow-hidden glow-card">
+                <div className="rounded-xl border border-border/80 bg-card/80 backdrop-blur-md overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                   <div className="h-1 w-full bg-gradient-to-r from-accent via-primary to-success" />
                   <div className="p-4">
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                       <span>AI Intelligence</span>
                       <Sparkles className="h-3.5 w-3.5 text-primary" />
                     </div>
-                    <p className="text-xl font-bold text-foreground">
+                    <p className="text-xl font-bold text-foreground tracking-tight">
                       AI Analysis
                     </p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -313,7 +313,7 @@ export default function LoginPage() {
               </div>
 
               <div className="flex items-center gap-2 text-xs text-muted-foreground pt-2">
-                <ChevronDown className="h-4 w-4 text-primary animate-bounce" />
+                <ChevronDown className="h-4 w-4 text-primary animate-gentle-slide" />
                 <span>Scroll down to explore how it works</span>
               </div>
             </section>
@@ -325,12 +325,12 @@ export default function LoginPage() {
                   <span className="text-xs font-semibold uppercase tracking-wider text-primary">
                     01 &middot; Instant Visual Readability
                   </span>
-                  <h2 className="text-xl font-semibold text-foreground mt-1">
+                  <h2 className="text-xl font-semibold text-foreground mt-1 text-balance">
                     Spot top-performing posts immediately
                   </h2>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed text-balance">
                 Quickly identify which publications are driving real traction across your campaigns through a unified{" "}
                 <span className="text-foreground font-medium">
                   composite engagement index
@@ -340,8 +340,8 @@ export default function LoginPage() {
 
               <div className="grid sm:grid-cols-2 gap-4 pt-1">
                 {/* Sample High Performer Card */}
-                <div className="rounded-xl border border-border bg-card/90 overflow-hidden glow-card">
-                  <div className="h-1.5 w-full bg-secondary">
+                <div className="rounded-xl border border-border/80 bg-card/90 overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                  <div className="h-1.5 w-full bg-secondary/80">
                     <div
                       className="h-full bg-gradient-to-r from-success via-primary to-success"
                       style={{ width: "94%" }}
@@ -357,11 +357,11 @@ export default function LoginPage() {
                         94 pts
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground line-clamp-2">
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                       &ldquo;Introducing our next-generation platform with
                       real-time telemetry...&rdquo;
                     </p>
-                    <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-2 border-t border-border">
+                    <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-2.5 border-t border-border/70">
                       <span>ER: 8.4% &middot; Positive Sentiment</span>
                       <span className="text-success font-medium">
                         High Performer
@@ -371,8 +371,8 @@ export default function LoginPage() {
                 </div>
 
                 {/* Sample Solid Engagement Card */}
-                <div className="rounded-xl border border-border bg-card/90 overflow-hidden glow-card">
-                  <div className="h-1.5 w-full bg-secondary">
+                <div className="rounded-xl border border-border/80 bg-card/90 overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                  <div className="h-1.5 w-full bg-secondary/80">
                     <div
                       className="h-full bg-gradient-to-r from-primary via-accent to-primary"
                       style={{ width: "74%" }}
@@ -388,11 +388,11 @@ export default function LoginPage() {
                         74 pts
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground line-clamp-2">
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                       &ldquo;Deep dive into the key performance milestones for
                       this season...&rdquo;
                     </p>
-                    <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-2 border-t border-border">
+                    <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-2.5 border-t border-border/70">
                       <span>ER: 5.1% &middot; Positive Sentiment</span>
                       <span className="text-primary font-medium">
                         Solid Engagement
@@ -409,34 +409,34 @@ export default function LoginPage() {
                 <span className="text-xs font-semibold uppercase tracking-wider text-accent">
                   02 &middot; Auto-Scraping &amp; Hashtag Filtering
                 </span>
-                <h2 className="text-xl font-semibold text-foreground mt-1">
+                <h2 className="text-xl font-semibold text-foreground mt-1 text-balance">
                   Enter a @handle, filter by hashtag, and let the engine do the rest
                 </h2>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed text-balance">
                 When launching a campaign, CampaignIQ automatically fetches live
                 follower counts as your baseline, imports real posts, and tracks
                 organic audience growth over time.
               </p>
 
-              <div className="rounded-xl border border-border bg-card/85 p-5 space-y-3 glow-card">
+              <div className="rounded-xl border border-border/80 bg-card/85 p-5 space-y-3 glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary border border-border text-xs font-medium">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary/80 border border-border/80 text-xs font-medium text-foreground hover:bg-secondary transition-colors">
                     <Instagram className="h-3.5 w-3.5 text-primary" />{" "}
                     Instagram
                   </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary border border-border text-xs font-medium">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary/80 border border-border/80 text-xs font-medium text-foreground hover:bg-secondary transition-colors">
                     <Youtube className="h-3.5 w-3.5 text-destructive" />{" "}
                     YouTube
                   </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary border border-border text-xs font-medium">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary/80 border border-border/80 text-xs font-medium text-foreground hover:bg-secondary transition-colors">
                     <Twitter className="h-3.5 w-3.5 text-primary" /> Twitter / X
                   </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary border border-border text-xs font-medium">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary/80 border border-border/80 text-xs font-medium text-foreground hover:bg-secondary transition-colors">
                     <Globe className="h-3.5 w-3.5 text-accent" /> TikTok
                   </span>
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   Supports multi-campaign attribution on the same social account
                   by isolating posts that match your target hashtags or keywords.
                 </p>
@@ -449,18 +449,18 @@ export default function LoginPage() {
                 <span className="text-xs font-semibold uppercase tracking-wider text-primary">
                   03 &middot; AI-Driven Analysis &amp; Smart Reports
                 </span>
-                <h2 className="text-xl font-semibold text-foreground mt-1">
+                <h2 className="text-xl font-semibold text-foreground mt-1 text-balance">
                   AI-driven analysis based on your real campaign data
                 </h2>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed text-balance">
                 Turn raw engagement telemetry and VADER sentiment signals into
                 executive recommendations, optimal posting windows, and
                 automated performance summaries tailored to your audience.
               </p>
 
               <div className="grid sm:grid-cols-2 gap-3.5">
-                <div className="rounded-xl border border-border bg-card/85 overflow-hidden glow-card">
+                <div className="rounded-xl border border-border/80 bg-card/85 overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                   <div className="h-1 w-full bg-gradient-to-r from-primary to-accent" />
                   <div className="p-4 space-y-1.5">
                     <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
@@ -474,7 +474,7 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card/85 overflow-hidden glow-card">
+                <div className="rounded-xl border border-border/80 bg-card/85 overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                   <div className="h-1 w-full bg-gradient-to-r from-accent to-success" />
                   <div className="p-4 space-y-1.5">
                     <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
@@ -496,11 +496,11 @@ export default function LoginPage() {
                 <span className="text-xs font-semibold uppercase tracking-wider text-success">
                   04 &middot; BI &amp; Spreadsheet Ready
                 </span>
-                <h2 className="text-xl font-semibold text-foreground mt-1">
+                <h2 className="text-xl font-semibold text-foreground mt-1 text-balance">
                   Export clean CSVs for Power BI or Excel in one click
                 </h2>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed text-balance">
                 Need to blend campaign metrics into your company&apos;s BI
                 pipelines? Download structured, UTF-8 encoded datasets for
                 individual campaigns or your entire workspace, ready to plug
@@ -515,20 +515,20 @@ export default function LoginPage() {
              ================================================================= */}
           <div className="lg:col-span-5 pb-12 lg:py-0">
             <div className="lg:fixed lg:top-1/2 lg:-translate-y-1/2 lg:w-[min(36vw,500px)] xl:w-[510px] z-30">
-              <div className="relative rounded-2xl border border-border/90 bg-card/90 backdrop-blur-xl shadow-[0_24px_60px_rgba(0,0,0,0.55)] overflow-hidden">
+              <div className="relative rounded-2xl border border-border/80 bg-card/90 backdrop-blur-2xl shadow-[0_24px_60px_-15px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.08)] overflow-hidden">
                 {/* Top Gradient Accent Bar */}
                 <div className="h-1.5 w-full bg-gradient-to-r from-primary via-accent to-primary" />
 
                 <div className="p-6 sm:p-8 space-y-6">
                 {/* Mode Switcher Tabs (Login vs Register) */}
-                <div className="grid grid-cols-2 p-1 rounded-xl bg-secondary/80 border border-border">
+                <div className="grid grid-cols-2 p-1 rounded-xl bg-secondary/80 border border-border/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                   <button
                     type="button"
                     onClick={() => switchMode("login")}
                     className={cn(
                       "py-2.5 text-xs font-semibold rounded-lg transition-all cursor-pointer",
                       mode === "login"
-                        ? "btn-gradient text-white shadow-xs"
+                        ? "bg-card text-foreground shadow-xs border border-border/80"
                         : "text-muted-foreground hover:text-foreground"
                     )}
                   >
@@ -540,7 +540,7 @@ export default function LoginPage() {
                     className={cn(
                       "py-2.5 text-xs font-semibold rounded-lg transition-all cursor-pointer",
                       mode === "register"
-                        ? "btn-gradient text-white shadow-xs"
+                        ? "bg-card text-foreground shadow-xs border border-border/80"
                         : "text-muted-foreground hover:text-foreground"
                     )}
                   >
@@ -551,7 +551,7 @@ export default function LoginPage() {
                 {/* Modal Header */}
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold tracking-tight text-foreground">
+                    <h2 className="text-xl font-bold tracking-tight text-foreground text-balance">
                       {mode === "login"
                         ? "Welcome back!"
                         : regStep === 1
@@ -566,7 +566,7 @@ export default function LoginPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground leading-relaxed text-balance">
                     {mode === "login"
                       ? "Enter your email or username to access your analytics workspace."
                       : regStep === 1
@@ -585,14 +585,15 @@ export default function LoginPage() {
                         <button
                           key={s}
                           type="button"
+                          aria-label={`Go to step ${s}`}
                           onClick={() => {
                             if (s < regStep) setRegStep(s as 1 | 2 | 3);
                           }}
                           className={cn(
                             "h-1.5 flex-1 rounded-full transition-all duration-300",
                             s <= regStep
-                              ? "bg-gradient-to-r from-primary to-accent"
-                              : "bg-secondary"
+                              ? "bg-primary shadow-xs"
+                              : "bg-secondary/80"
                           )}
                         />
                       ))}
@@ -625,7 +626,7 @@ export default function LoginPage() {
 
                 {/* Error Alert */}
                 {error && (
-                  <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-destructive/15 border border-destructive/30 text-xs text-destructive animate-fadeIn">
+                  <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-destructive/15 border border-destructive/30 text-xs text-destructive animate-fadeIn shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                     <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                     <span>{error}</span>
                   </div>
@@ -648,7 +649,7 @@ export default function LoginPage() {
                           onChange={(e) => setIdentifier(e.target.value)}
                           placeholder="you@domain.com or @username"
                           autoComplete="username"
-                          className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-input border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                          className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-input/90 border border-border/80 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)] transition-all"
                         />
                       </div>
                     </div>
@@ -665,10 +666,11 @@ export default function LoginPage() {
                           onChange={(e) => setLoginPassword(e.target.value)}
                           placeholder="••••••••"
                           autoComplete="current-password"
-                          className="w-full h-11 pl-10 pr-10 rounded-xl bg-input border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                          className="w-full h-11 pl-10 pr-10 rounded-xl bg-input/90 border border-border/80 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)] transition-all"
                         />
                         <button
                           type="button"
+                          aria-label={showLoginPass ? "Hide password" : "Show password"}
                           onClick={() => setShowLoginPass(!showLoginPass)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                         >
@@ -731,7 +733,7 @@ export default function LoginPage() {
                               onChange={(e) => setRegName(e.target.value)}
                               placeholder="e.g., Alex Morgan"
                               autoFocus
-                              className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-input border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                              className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-input/90 border border-border/80 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)] transition-all"
                             />
                           </div>
                         </div>
@@ -747,7 +749,7 @@ export default function LoginPage() {
                               value={regEmail}
                               onChange={(e) => setRegEmail(e.target.value)}
                               placeholder="you@domain.com"
-                              className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-input border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                              className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-input/90 border border-border/80 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)] transition-all"
                             />
                           </div>
                         </div>
@@ -765,7 +767,7 @@ export default function LoginPage() {
                               value={regUsername}
                               onChange={(e) => setRegUsername(e.target.value)}
                               placeholder="alexmorgan"
-                              className="w-full h-11 pl-8 pr-3.5 rounded-xl bg-input border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                              className="w-full h-11 pl-8 pr-3.5 rounded-xl bg-input/90 border border-border/80 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)] transition-all"
                             />
                           </div>
                         </div>
@@ -800,12 +802,13 @@ export default function LoginPage() {
                               onChange={(e) => setRegPassword(e.target.value)}
                               placeholder="Minimum 6 characters"
                               autoFocus
-                              className="w-full h-11 pl-10 pr-10 rounded-xl bg-input border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                              className="w-full h-11 pl-10 pr-10 rounded-xl bg-input/90 border border-border/80 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)] transition-all"
                             />
                             <button
                               type="button"
+                              aria-label={showRegPass ? "Hide password" : "Show password"}
                               onClick={() => setShowRegPass(!showRegPass)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
                             >
                               {showRegPass ? (
                                 <EyeOff className="h-4 w-4" />
@@ -829,13 +832,13 @@ export default function LoginPage() {
                                 setRegConfirmPassword(e.target.value)
                               }
                               placeholder="Re-enter your password"
-                              className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-input border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                              className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-input/90 border border-border/80 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)] transition-all"
                             />
                           </div>
                         </div>
 
                         {/* Password Strength Indicator */}
-                        <div className="p-3 rounded-xl bg-secondary/40 border border-border space-y-2">
+                        <div className="p-3 rounded-xl bg-secondary/50 border border-border/80 space-y-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                           <div className="flex items-center justify-between text-[11px]">
                             <span className="text-muted-foreground">
                               Password strength
@@ -883,7 +886,7 @@ export default function LoginPage() {
                           <button
                             type="button"
                             onClick={() => setRegStep(1)}
-                            className="h-11 px-4 rounded-xl bg-secondary border border-border text-xs font-medium text-foreground hover:bg-secondary/80 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                            className="h-11 px-4 rounded-xl bg-secondary/80 border border-border/80 text-xs font-medium text-foreground hover:bg-secondary transition-colors inline-flex items-center gap-1.5 cursor-pointer shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
                           >
                             <ArrowLeft className="h-3.5 w-3.5" />
                             Back
@@ -919,13 +922,13 @@ export default function LoginPage() {
                               onChange={(e) => setRegCompany(e.target.value)}
                               placeholder="e.g., Acme Growth Studio"
                               autoFocus
-                              className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-input border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                              className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-input/90 border border-border/80 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)] transition-all"
                             />
                           </div>
                         </div>
 
                         {/* Summary + Pro Badge Card */}
-                        <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-2.5">
+                        <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
                               <Sparkles className="h-3.5 w-3.5 text-primary" />
@@ -947,7 +950,7 @@ export default function LoginPage() {
                             type="button"
                             onClick={() => setRegStep(2)}
                             disabled={loading}
-                            className="h-11 px-4 rounded-xl bg-secondary border border-border text-xs font-medium text-foreground hover:bg-secondary/80 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                            className="h-11 px-4 rounded-xl bg-secondary/80 border border-border/80 text-xs font-medium text-foreground hover:bg-secondary transition-colors inline-flex items-center gap-1.5 cursor-pointer shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
                           >
                             <ArrowLeft className="h-3.5 w-3.5" />
                             Back
