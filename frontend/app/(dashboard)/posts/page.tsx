@@ -146,7 +146,7 @@ export default function PostsPage() {
             className={cn(
               "flex items-center justify-center h-7 w-7 rounded-md transition-all cursor-pointer",
               viewMode === "grid"
-                ? "btn-gradient text-white"
+                ? "bg-card text-foreground shadow-xs border border-border/80"
                 : "text-muted-foreground hover:text-foreground"
             )}
             onClick={() => setViewMode("grid")}
@@ -157,7 +157,7 @@ export default function PostsPage() {
             className={cn(
               "flex items-center justify-center h-7 w-7 rounded-md transition-all cursor-pointer",
               viewMode === "list"
-                ? "btn-gradient text-white"
+                ? "bg-card text-foreground shadow-xs border border-border/80"
                 : "text-muted-foreground hover:text-foreground"
             )}
             onClick={() => setViewMode("list")}

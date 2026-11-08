@@ -178,7 +178,7 @@ export default function DashboardPage() {
                       href={`/campaigns/${campaign.id}`}
                       className="group relative flex flex-col rounded-lg border border-border bg-secondary/20 overflow-hidden glow-card cursor-pointer"
                     >
-                      <div className="w-full h-1 bg-secondary/80 overflow-hidden">
+                      <div className="w-full h-[2px] bg-secondary/80 overflow-hidden">
                         <div
                           className={cn("h-full bg-gradient-to-r transition-all duration-500", barGradient)}
                           style={{ width: `${Math.max(18, Math.min(100, campaign.engagementScore))}%` }}
@@ -189,7 +189,7 @@ export default function DashboardPage() {
                           className={cn(
                             "flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-xs font-semibold tabular-nums",
                             i === 0
-                              ? "btn-gradient text-white border-0"
+                              ? "bg-primary/20 text-primary border border-primary/30"
                               : "bg-secondary border border-border text-muted-foreground"
                           )}
                         >

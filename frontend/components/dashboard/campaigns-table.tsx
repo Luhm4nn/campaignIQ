@@ -81,7 +81,7 @@ export function CampaignsTable({
         </div>
       ) : (
         <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="h-[3px] w-full bg-gradient-to-r from-primary via-accent to-primary/50 opacity-80" />
+          <div className="h-[2px] w-full bg-gradient-to-r from-primary via-accent to-primary" />
           <div className="grid grid-cols-12 gap-4 px-5 py-3 border-b border-border bg-secondary/40">
             <div className="col-span-4 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Campaign
@@ -120,9 +120,9 @@ export function CampaignsTable({
                 <div className="col-span-4 flex items-center gap-3 min-w-0">
                   <span
                     className={cn(
-                      "flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-xs font-medium tabular-nums transition-transform duration-200 group-hover:scale-105",
+                      "flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-xs font-semibold tabular-nums transition-transform duration-200 group-hover:scale-105",
                       index === 0
-                        ? "btn-gradient text-white border-0"
+                        ? "bg-primary/20 text-primary border border-primary/30"
                         : "bg-secondary text-muted-foreground border border-border"
                     )}
                   >

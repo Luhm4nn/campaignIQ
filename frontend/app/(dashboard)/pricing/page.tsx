@@ -106,7 +106,7 @@ export default function PricingPage() {
             <div>
               <div
                 className={cn(
-                  "h-1 w-full bg-gradient-to-r",
+                  "h-[2px] w-full bg-gradient-to-r",
                   plan.popular
                     ? "from-primary via-accent to-primary"
                     : "from-border via-muted-foreground/30 to-border"
@@ -118,7 +118,7 @@ export default function PricingPage() {
                     {plan.name}
                   </h3>
                   {plan.popular && (
-                    <span className="text-[11px] font-medium text-white px-2.5 py-0.5 rounded-md btn-gradient">
+                    <span className="text-[11px] font-semibold text-primary px-2.5 py-0.5 rounded-md bg-primary/15 border border-primary/30">
                       Recommended
                     </span>
                   )}

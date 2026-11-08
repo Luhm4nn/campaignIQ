@@ -51,11 +51,9 @@ export function PostCard({ post, className }: PostCardProps) {
   };
 
   const getTopBarGradient = (score: number) => {
-    if (score >= 85)
-      return "from-success via-primary to-success/80";
-    if (score >= 60)
-      return "from-primary via-primary/80 to-accent";
-    return "from-warning via-warning/80 to-destructive/80";
+    if (score >= 85) return "from-success via-primary to-success";
+    if (score >= 60) return "from-primary via-accent to-primary";
+    return "from-warning via-destructive to-warning";
   };
 
   const getPerformanceLabel = (score: number) => {
@@ -75,7 +73,7 @@ export function PostCard({ post, className }: PostCardProps) {
       )}
     >
       {/* Top full-width performance line */}
-      <div className="absolute inset-x-0 top-0 h-1 bg-secondary/80 overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-secondary/80 overflow-hidden">
         <div
           className={cn(
             "h-full bg-gradient-to-r transition-all duration-500 group-hover:brightness-125",

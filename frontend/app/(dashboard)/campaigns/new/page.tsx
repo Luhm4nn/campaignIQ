@@ -173,7 +173,7 @@ export default function NewCampaignPage() {
 
         {step === 1 && (
           <div className="rounded-xl border border-border bg-card overflow-hidden animate-fadeIn">
-            <div className="h-1 w-full bg-gradient-to-r from-primary via-accent to-primary/50" />
+            <div className="h-[2px] w-full bg-gradient-to-r from-primary via-accent to-primary" />
             <div className="p-6 space-y-6">
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-2">
@@ -216,7 +216,7 @@ export default function NewCampaignPage() {
                     onClick={() => handlePlatformSelect(platform)}
                     className={`py-2.5 px-3 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
                       formData.platform === platform
-                        ? "btn-gradient text-white border-transparent shadow-xs"
+                        ? "border-primary bg-primary/10 text-primary font-semibold shadow-xs"
                         : "border-border bg-secondary/40 text-foreground hover:bg-secondary"
                     }`}
                   >
@@ -294,7 +294,7 @@ export default function NewCampaignPage() {
 
         {step === 2 && (
           <div className="rounded-xl border border-border bg-card overflow-hidden animate-fadeIn">
-            <div className="h-1 w-full bg-gradient-to-r from-primary via-accent to-primary/50" />
+            <div className="h-[2px] w-full bg-gradient-to-r from-primary via-accent to-primary" />
             <div className="p-6 space-y-6">
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
@@ -309,7 +309,7 @@ export default function NewCampaignPage() {
                     onClick={() => handleTypeSelect(type)}
                     className={`py-2.5 px-3 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
                       formData.campaignType === type
-                        ? "btn-gradient text-white border-transparent shadow-xs"
+                        ? "border-primary bg-primary/10 text-primary font-semibold shadow-xs"
                         : "border-border bg-secondary/40 text-foreground hover:bg-secondary"
                     }`}
                   >
@@ -450,7 +450,7 @@ export default function NewCampaignPage() {
 
         {step === 3 && (
           <div className="rounded-xl border border-border bg-card overflow-hidden animate-fadeIn">
-            <div className="h-1 w-full bg-gradient-to-r from-primary via-accent to-primary/50" />
+            <div className="h-[2px] w-full bg-gradient-to-r from-primary via-accent to-primary" />
             <div className="p-6 space-y-6">
             <div className="grid sm:grid-cols-2 gap-5">
               <div>

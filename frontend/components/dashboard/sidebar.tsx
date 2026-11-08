@@ -234,7 +234,7 @@ export function Sidebar() {
                       <p className="text-xs font-semibold text-foreground truncate">
                         {user.name}
                       </p>
-                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9px] font-bold uppercase btn-gradient text-white">
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-primary/20 text-primary border border-primary/30">
                         <Sparkles className="h-2.5 w-2.5" />
                         {user.plan || "pro"}
                       </span>
@@ -314,7 +314,7 @@ export function Sidebar() {
                       {user.email}
                     </p>
                   </div>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase btn-gradient text-white">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-primary/20 text-primary border border-primary/30">
                     {user.plan || "pro"}
                   </span>
                 </div>

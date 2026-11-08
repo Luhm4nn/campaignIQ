@@ -53,15 +53,15 @@ export function StatsCard({
   const getTopBarGradient = () => {
     switch (variant) {
       case "primary":
-        return "from-primary via-primary/70 to-transparent";
+        return "from-primary via-accent to-primary";
       case "success":
-        return "from-success via-primary/70 to-transparent";
+        return "from-success via-primary to-success";
       case "warning":
-        return "from-warning via-warning/70 to-transparent";
+        return "from-warning via-destructive to-warning";
       case "accent":
-        return "from-accent via-primary/70 to-transparent";
+        return "from-accent via-primary to-accent";
       default:
-        return "from-border via-border/50 to-transparent";
+        return "from-border via-border/60 to-border";
     }
   };
 
@@ -75,7 +75,7 @@ export function StatsCard({
     >
       <div
         className={cn(
-          "absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r opacity-85 group-hover:opacity-100 transition-opacity",
+          "absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r opacity-90 group-hover:opacity-100 transition-opacity",
           getTopBarGradient()
         )}
       />

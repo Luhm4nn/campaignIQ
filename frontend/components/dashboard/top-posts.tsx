@@ -40,9 +40,9 @@ export function TopPosts({ posts, limit = 5 }: TopPostsProps) {
   };
 
   const getTopBarGradient = (score: number) => {
-    if (score >= 85) return "from-success via-primary to-success/80";
-    if (score >= 60) return "from-primary via-primary/80 to-accent";
-    return "from-warning via-warning/80 to-destructive/80";
+    if (score >= 85) return "from-success via-primary to-success";
+    if (score >= 60) return "from-primary via-accent to-primary";
+    return "from-warning via-destructive to-warning";
   };
 
   return (
@@ -77,7 +77,7 @@ export function TopPosts({ posts, limit = 5 }: TopPostsProps) {
                 href={`/posts/${post.id}`}
                 className="group relative overflow-hidden flex gap-4 rounded-xl border border-border bg-secondary/20 p-4 pt-5 glow-card hover:bg-secondary/40 cursor-pointer"
               >
-                <div className="absolute inset-x-0 top-0 h-1 bg-secondary/80 overflow-hidden">
+                <div className="absolute inset-x-0 top-0 h-[2px] bg-secondary/80 overflow-hidden">
                   <div
                     className={cn(
                       "h-full bg-gradient-to-r transition-all duration-500 group-hover:brightness-125",
@@ -91,7 +91,7 @@ export function TopPosts({ posts, limit = 5 }: TopPostsProps) {
                   className={cn(
                     "flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-xs font-semibold tabular-nums mt-0.5",
                     index === 0
-                      ? "btn-gradient border-0 text-white"
+                      ? "bg-primary/20 text-primary border border-primary/30"
                       : "bg-secondary border border-border text-muted-foreground"
                   )}
                 >

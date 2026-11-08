@@ -24,6 +24,12 @@ import {
   ChevronDown,
   AlertCircle,
   Loader2,
+  TrendingUp,
+  Download,
+  Search,
+  CheckCircle2,
+  Sliders,
+  FileSpreadsheet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { loginApi, registerApi, fetchMeApi } from "@/lib/api";
@@ -167,31 +173,31 @@ export default function LoginPage() {
         <div
           className={cn(
             "absolute -top-36 -left-36 h-[38rem] w-[38rem] rounded-full blur-3xl transition-opacity duration-700",
-            isExiting ? "opacity-0" : "opacity-35"
+            isExiting ? "opacity-0" : "opacity-20"
           )}
           style={{
             background:
-              "radial-gradient(circle, oklch(0.76 0.14 190 / 0.45) 0%, transparent 70%)",
+              "radial-gradient(circle, oklch(0.76 0.14 190 / 0.28) 0%, transparent 70%)",
           }}
         />
         <div
           className={cn(
             "absolute top-1/3 left-1/4 h-[34rem] w-[34rem] rounded-full blur-3xl transition-opacity duration-700",
-            isExiting ? "opacity-0" : "opacity-25"
+            isExiting ? "opacity-0" : "opacity-15"
           )}
           style={{
             background:
-              "radial-gradient(circle, oklch(0.68 0.19 325 / 0.42) 0%, transparent 72%)",
+              "radial-gradient(circle, oklch(0.68 0.19 325 / 0.25) 0%, transparent 72%)",
           }}
         />
         <div
           className={cn(
             "absolute -bottom-40 right-10 h-[36rem] w-[36rem] rounded-full blur-3xl transition-opacity duration-700",
-            isExiting ? "opacity-0" : "opacity-30"
+            isExiting ? "opacity-0" : "opacity-20"
           )}
           style={{
             background:
-              "radial-gradient(circle, oklch(0.76 0.14 190 / 0.32) 0%, oklch(0.68 0.19 325 / 0.22) 45%, transparent 72%)",
+              "radial-gradient(circle, oklch(0.76 0.14 190 / 0.22) 0%, oklch(0.68 0.19 325 / 0.16) 45%, transparent 72%)",
           }}
         />
         {/* Subtle grid pattern with fade */}
@@ -239,11 +245,11 @@ export default function LoginPage() {
               </span>
             </div>
 
-            {/* Section 1: Hero Statement + Live Preview */}
+            {/* Hero Section */}
             <section className="space-y-6 pt-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/80 border border-border/80 text-xs text-muted-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
-                <span className="h-2 w-2 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse" />
-                Live Scraping &middot; VADER NLP &middot; AI Insights
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/80 border border-border/80 text-xs text-muted-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                <span>Live Extraction Engine &middot; VADER NLP &middot; AI Intelligence</span>
               </div>
 
               <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-foreground leading-[1.12] text-balance">
@@ -256,257 +262,426 @@ export default function LoginPage() {
 
               <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed text-balance">
                 Connect any <b>Instagram</b>, <b>TikTok</b>, <b>YouTube</b>, or{" "}
-                <b>X / Twitter</b> account without complex setups. Spot top-performing
-                content at a glance, measure audience sentiment with NLP, and
-                uncover your peak engagement windows.
+                <b>X / Twitter</b> account without credential sharing. Spot top-performing
+                creative immediately, score audience sentiment with NLP, and
+                export analysis-ready datasets in seconds.
               </p>
 
-              {/* Quick KPI Strip */}
-              <div className="grid sm:grid-cols-3 gap-3.5 pt-2">
-                <div className="rounded-xl border border-border/80 bg-card/80 backdrop-blur-md overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                  <div className="h-1 w-full bg-gradient-to-r from-success via-primary to-success" />
-                  <div className="p-4">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                      <span>Live Scraping</span>
-                      <Zap className="h-3.5 w-3.5 text-primary" />
+              {/* Integrated Live Intelligence Console Strip */}
+              <div className="rounded-2xl border border-border/80 bg-card/85 backdrop-blur-xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_12px_32px_-12px_rgba(0,0,0,0.6)]">
+                <div className="grid sm:grid-cols-3 gap-5 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+                  {/* Pod 1: Live Networks */}
+                  <div className="space-y-2.5 sm:pr-4">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-foreground flex items-center gap-1.5">
+                        <Zap className="h-3.5 w-3.5 text-primary" />
+                        Multi-Channel Sync
+                      </span>
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-success/15 text-success border border-success/30">
+                        Live 120ms
+                      </span>
                     </div>
-                    <p className="text-xl font-bold text-foreground tracking-tight">
-                      4 Networks
-                    </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      IG, TikTok, YouTube &amp; X with real metrics
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-secondary/80 border border-border/80 text-[11px] font-medium text-foreground">
+                        <Instagram className="h-3 w-3 text-primary" /> IG
+                      </span>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-secondary/80 border border-border/80 text-[11px] font-medium text-foreground">
+                        <Globe className="h-3 w-3 text-accent" /> TikTok
+                      </span>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-secondary/80 border border-border/80 text-[11px] font-medium text-foreground">
+                        <Youtube className="h-3 w-3 text-destructive" /> YT
+                      </span>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-secondary/80 border border-border/80 text-[11px] font-medium text-foreground">
+                        <Twitter className="h-3 w-3 text-primary" /> X
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground leading-tight">
+                      Automatic ingestion directly via public APIs &amp; scrapers.
                     </p>
                   </div>
-                </div>
 
-                <div className="rounded-xl border border-border/80 bg-card/80 backdrop-blur-md overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                  <div className="h-1 w-full bg-gradient-to-r from-primary via-accent to-primary" />
-                  <div className="p-4">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                      <span>NLP Engine</span>
-                      <BarChart3 className="h-3.5 w-3.5 text-accent" />
+                  {/* Pod 2: Sentiment Spectrum */}
+                  <div className="space-y-2.5 pt-4 sm:pt-0 sm:px-4">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-foreground flex items-center gap-1.5">
+                        <BarChart3 className="h-3.5 w-3.5 text-accent" />
+                        VADER NLP Polarity
+                      </span>
+                      <span className="font-mono text-xs font-bold text-primary">
+                        +0.84 Score
+                      </span>
                     </div>
-                    <p className="text-xl font-bold text-foreground tracking-tight">
-                      VADER Score
-                    </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      Automated polarity classification per post
+                    {/* Polarity Spectrum Track */}
+                    <div className="space-y-1">
+                      <div className="h-2 w-full rounded-full bg-secondary/90 overflow-hidden flex">
+                        <div className="h-full bg-success" style={{ width: "72%" }} title="72% Positive" />
+                        <div className="h-full bg-warning" style={{ width: "18%" }} title="18% Neutral" />
+                        <div className="h-full bg-destructive" style={{ width: "10%" }} title="10% Negative" />
+                      </div>
+                      <div className="flex justify-between text-[10px] text-muted-foreground">
+                        <span>72% Positive</span>
+                        <span>18% Neutral</span>
+                        <span>10% Negative</span>
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground leading-tight">
+                      Compound sentiment classification calculated per post.
                     </p>
                   </div>
-                </div>
 
-                <div className="rounded-xl border border-border/80 bg-card/80 backdrop-blur-md overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                  <div className="h-1 w-full bg-gradient-to-r from-accent via-primary to-success" />
-                  <div className="p-4">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                      <span>AI Intelligence</span>
-                      <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  {/* Pod 3: AI Intelligence Engine */}
+                  <div className="space-y-2.5 pt-4 sm:pt-0 sm:pl-4">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-foreground flex items-center gap-1.5">
+                        <Sparkles className="h-3.5 w-3.5 text-primary" />
+                        AI Analytics
+                      </span>
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/15 text-primary border border-primary/30 uppercase">
+                        Active
+                      </span>
                     </div>
-                    <p className="text-xl font-bold text-foreground tracking-tight">
-                      AI Analysis
+                    <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <TrendingUp className="h-3.5 w-3.5 text-success" />
+                      Executive Insights
                     </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      Smart reports &amp; data-driven recommendations
+                    <p className="text-[11px] text-muted-foreground leading-tight">
+                      Generates optimal posting windows &amp; creative winners.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 text-xs text-muted-foreground pt-2">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
                 <ChevronDown className="h-4 w-4 text-primary animate-gentle-slide" />
-                <span>Scroll down to explore how it works</span>
+                <span>Explore the four core capabilities below</span>
               </div>
             </section>
 
-            {/* Section 1: Instant Visual Readability & Engagement Index */}
-            <section className="space-y-4 pt-4 border-t border-border/60">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-                    01 &middot; Instant Visual Readability
-                  </span>
-                  <h2 className="text-xl font-semibold text-foreground mt-1 text-balance">
-                    Spot top-performing posts immediately
-                  </h2>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed text-balance">
-                Quickly identify which publications are driving real traction across your campaigns through a unified{" "}
-                <span className="text-foreground font-medium">
-                  composite engagement index
-                </span>{" "}
-                and automated performance tiering.
-              </p>
-
-              <div className="grid sm:grid-cols-2 gap-4 pt-1">
-                {/* Sample High Performer Card */}
-                <div className="rounded-xl border border-border/80 bg-card/90 overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                  <div className="h-1.5 w-full bg-secondary/80">
-                    <div
-                      className="h-full bg-gradient-to-r from-success via-primary to-success"
-                      style={{ width: "94%" }}
-                    />
-                  </div>
-                  <div className="p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground">
-                        <Instagram className="h-3.5 w-3.5 text-primary" />
-                        Q4 Product Launch Reel
-                      </span>
-                      <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-success/10 text-success border border-success/25">
-                        94 pts
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                      &ldquo;Introducing our next-generation platform with
-                      real-time telemetry...&rdquo;
-                    </p>
-                    <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-2.5 border-t border-border/70">
-                      <span>ER: 8.4% &middot; Positive Sentiment</span>
-                      <span className="text-success font-medium">
-                        High Performer
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sample Solid Engagement Card */}
-                <div className="rounded-xl border border-border/80 bg-card/90 overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                  <div className="h-1.5 w-full bg-secondary/80">
-                    <div
-                      className="h-full bg-gradient-to-r from-primary via-accent to-primary"
-                      style={{ width: "74%" }}
-                    />
-                  </div>
-                  <div className="p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground">
-                        <Youtube className="h-3.5 w-3.5 text-accent" />
-                        Full Keynote Walkthrough
-                      </span>
-                      <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-primary/10 text-primary border border-primary/25">
-                        74 pts
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                      &ldquo;Deep dive into the key performance milestones for
-                      this season...&rdquo;
-                    </p>
-                    <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-2.5 border-t border-border/70">
-                      <span>ER: 5.1% &middot; Positive Sentiment</span>
-                      <span className="text-primary font-medium">
-                        Solid Engagement
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Section 2: Multi-channel Auto-Scraping & Keywords */}
-            <section className="space-y-4 pt-4 border-t border-border/60">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-accent">
-                  02 &middot; Auto-Scraping &amp; Hashtag Filtering
-                </span>
-                <h2 className="text-xl font-semibold text-foreground mt-1 text-balance">
-                  Enter a @handle, filter by hashtag, and let the engine do the rest
+            {/* Section 1: Spot top-performing posts immediately */}
+            <section className="space-y-4 pt-6 border-t border-border/60">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-bold tracking-tight text-foreground text-balance">
+                  Spot top-performing posts immediately
                 </h2>
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed text-balance">
-                When launching a campaign, CampaignIQ automatically fetches live
-                follower counts as your baseline, imports real posts, and tracks
-                organic audience growth over time.
-              </p>
-
-              <div className="rounded-xl border border-border/80 bg-card/85 p-5 space-y-3 glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary/80 border border-border/80 text-xs font-medium text-foreground hover:bg-secondary transition-colors">
-                    <Instagram className="h-3.5 w-3.5 text-primary" />{" "}
-                    Instagram
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary/80 border border-border/80 text-xs font-medium text-foreground hover:bg-secondary transition-colors">
-                    <Youtube className="h-3.5 w-3.5 text-destructive" />{" "}
-                    YouTube
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary/80 border border-border/80 text-xs font-medium text-foreground hover:bg-secondary transition-colors">
-                    <Twitter className="h-3.5 w-3.5 text-primary" /> Twitter / X
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary/80 border border-border/80 text-xs font-medium text-foreground hover:bg-secondary transition-colors">
-                    <Globe className="h-3.5 w-3.5 text-accent" /> TikTok
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Supports multi-campaign attribution on the same social account
-                  by isolating posts that match your target hashtags or keywords.
+                <p className="text-sm text-muted-foreground leading-relaxed text-balance">
+                  No manual spreadsheet math. CampaignIQ benchmarks reach against engagement rate to isolate viral hits from baseline content in seconds.
                 </p>
               </div>
-            </section>
 
-            {/* Section 3: AI-Driven Analysis & Reports */}
-            <section className="space-y-4 pt-4 border-t border-border/60">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-                  03 &middot; AI-Driven Analysis &amp; Smart Reports
-                </span>
-                <h2 className="text-xl font-semibold text-foreground mt-1 text-balance">
-                  AI-driven analysis based on your real campaign data
-                </h2>
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed text-balance">
-                Turn raw engagement telemetry and VADER sentiment signals into
-                executive recommendations, optimal posting windows, and
-                automated performance summaries tailored to your audience.
-              </p>
-
-              <div className="grid sm:grid-cols-2 gap-3.5">
-                <div className="rounded-xl border border-border/80 bg-card/85 overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                  <div className="h-1 w-full bg-gradient-to-r from-primary to-accent" />
-                  <div className="p-4 space-y-1.5">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
-                      <Sparkles className="h-3.5 w-3.5 text-primary" />
-                      <span>Automated Executive Insights</span>
+              {/* Comparative Post Specimens */}
+              <div className="grid sm:grid-cols-2 gap-4 pt-2">
+                {/* Specimen A: High Performer */}
+                <div className="rounded-xl border border-border/80 bg-card/90 overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                  {/* Top Performance Rail */}
+                  <div className="h-1.5 w-full bg-secondary/80">
+                    <div className="h-full bg-success" style={{ width: "94%" }} />
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-secondary text-xs font-medium text-foreground">
+                        <Instagram className="h-3.5 w-3.5 text-primary" />
+                        Instagram Reel
+                      </span>
+                      <span className="px-2 py-0.5 rounded-md text-xs font-bold bg-success/15 text-success border border-success/30 font-mono">
+                        94 / 100
+                      </span>
                     </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Detects content format winners, audience sentiment shifts,
-                      and peak hourly interaction windows automatically.
-                    </p>
+
+                    <div>
+                      <p className="text-sm font-semibold text-foreground leading-snug">
+                        Q4 Flagship Platform Walkthrough
+                      </p>
+                      <p className="text-xs text-muted-foreground line-clamp-2 mt-1 leading-relaxed">
+                        &ldquo;Introducing our real-time social telemetry suite: monitor baseline audience shifts across all channels...&rdquo;
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 py-2 px-2.5 rounded-lg bg-secondary/40 border border-border/60 text-center font-mono text-xs">
+                      <div>
+                        <span className="block text-[10px] text-muted-foreground">Reach</span>
+                        <span className="font-semibold text-foreground">142.8K</span>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] text-muted-foreground">ER Rate</span>
+                        <span className="font-semibold text-success">8.4%</span>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] text-muted-foreground">VADER</span>
+                        <span className="font-semibold text-primary">+0.88</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] pt-1 text-muted-foreground">
+                      <span className="flex items-center gap-1 text-success font-medium">
+                        <CheckCircle2 className="h-3 w-3" /> Breakout Performance
+                      </span>
+                      <span>Top 2% of campaign</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-border/80 bg-card/85 overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                  <div className="h-1 w-full bg-gradient-to-r from-accent to-success" />
-                  <div className="p-4 space-y-1.5">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
-                      <BarChart3 className="h-3.5 w-3.5 text-accent" />
-                      <span>Data-Backed Recommendations</span>
+                {/* Specimen B: Baseline Content */}
+                <div className="rounded-xl border border-border/80 bg-card/90 overflow-hidden glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] opacity-90">
+                  {/* Top Benchmark Rail */}
+                  <div className="h-1.5 w-full bg-secondary/80">
+                    <div className="h-full bg-primary/70" style={{ width: "48%" }} />
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-secondary text-xs font-medium text-foreground">
+                        <Youtube className="h-3.5 w-3.5 text-destructive" />
+                        YouTube Keynote
+                      </span>
+                      <span className="px-2 py-0.5 rounded-md text-xs font-bold bg-secondary text-muted-foreground border border-border/80 font-mono">
+                        48 / 100
+                      </span>
                     </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Actionable next steps generated directly from empirical
-                      reach, engagement rate, and polarity scores.
-                    </p>
+
+                    <div>
+                      <p className="text-sm font-semibold text-foreground leading-snug">
+                        Quarterly Engineering Townhall
+                      </p>
+                      <p className="text-xs text-muted-foreground line-clamp-2 mt-1 leading-relaxed">
+                        &ldquo;Deep dive into the architectural milestones, API contracts, and infrastructure security roadmap...&rdquo;
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 py-2 px-2.5 rounded-lg bg-secondary/40 border border-border/60 text-center font-mono text-xs">
+                      <div>
+                        <span className="block text-[10px] text-muted-foreground">Reach</span>
+                        <span className="font-semibold text-foreground">28.4K</span>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] text-muted-foreground">ER Rate</span>
+                        <span className="font-semibold text-muted-foreground">2.4%</span>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] text-muted-foreground">VADER</span>
+                        <span className="font-semibold text-muted-foreground">+0.22</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] pt-1 text-muted-foreground">
+                      <span className="text-muted-foreground">Standard Baseline</span>
+                      <span>Average engagement</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </section>
 
-            {/* Section 4: Export CSVs for Power BI or Excel */}
-            <section className="space-y-4 pt-4 border-t border-border/60 pb-12">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-success">
-                  04 &middot; BI &amp; Spreadsheet Ready
-                </span>
-                <h2 className="text-xl font-semibold text-foreground mt-1 text-balance">
-                  Export clean CSVs for Power BI or Excel in one click
+            {/* Section 2: Auto-scrape @handles and isolate campaign hashtags */}
+            <section className="space-y-4 pt-6 border-t border-border/60">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-bold tracking-tight text-foreground text-balance">
+                  Auto-scrape @handles and isolate campaign hashtags
                 </h2>
+                <p className="text-sm text-muted-foreground leading-relaxed text-balance">
+                  Link any public profile without asking for credentials. CampaignIQ snapshots baseline followers on day one and isolates metrics only for publications that match your target campaign hashtags.
+                </p>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed text-balance">
-                Need to blend campaign metrics into your company&apos;s BI
-                pipelines? Download structured, UTF-8 encoded datasets for
-                individual campaigns or your entire workspace, ready to plug
-                straight into <b>Power BI</b>, <b>Excel</b>, or{" "}
-                <b>Looker Studio</b>.
-              </p>
+
+              {/* Target Channel Resolution Specimen */}
+              <div className="rounded-xl border border-border/80 bg-card/85 p-5 space-y-4 glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/70">
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary">
+                      <Search className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-mono font-semibold text-foreground">
+                        @acme_hq
+                      </span>
+                      <span className="block text-[11px] text-muted-foreground">
+                        1,420,000 baseline followers captured
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-muted-foreground">Filter:</span>
+                    <span className="px-2.5 py-1 rounded-md bg-secondary border border-border font-mono text-xs font-semibold text-primary">
+                      #LaunchCampaign26
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <div className="p-2.5 rounded-lg bg-secondary/50 border border-border/60 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <Instagram className="h-3.5 w-3.5 text-primary" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                    </div>
+                    <p className="text-xs font-semibold text-foreground">Instagram</p>
+                    <p className="text-[10px] text-muted-foreground">24 posts matched</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-lg bg-secondary/50 border border-border/60 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <Globe className="h-3.5 w-3.5 text-accent" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                    </div>
+                    <p className="text-xs font-semibold text-foreground">TikTok</p>
+                    <p className="text-[10px] text-muted-foreground">16 clips matched</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-lg bg-secondary/50 border border-border/60 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <Youtube className="h-3.5 w-3.5 text-destructive" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                    </div>
+                    <p className="text-xs font-semibold text-foreground">YouTube</p>
+                    <p className="text-[10px] text-muted-foreground">6 videos matched</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-lg bg-secondary/50 border border-border/60 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <Twitter className="h-3.5 w-3.5 text-primary" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                    </div>
+                    <p className="text-xs font-semibold text-foreground">X / Twitter</p>
+                    <p className="text-[10px] text-muted-foreground">8 threads matched</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Section 3: AI-driven analysis based on real campaign data */}
+            <section className="space-y-4 pt-6 border-t border-border/60">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-bold tracking-tight text-foreground text-balance">
+                  AI-driven analysis based on real campaign data
+                </h2>
+                <p className="text-sm text-muted-foreground leading-relaxed text-balance">
+                  Turn raw engagement telemetry and VADER polarity signals into clear executive recommendations, creative format winners, and optimal posting schedules.
+                </p>
+              </div>
+
+              {/* Executive AI Briefing Specimen */}
+              <div className="rounded-xl border border-border/80 bg-card/85 p-5 space-y-4 glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                <div className="flex items-center justify-between pb-3 border-b border-border/70">
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary">
+                      <Sparkles className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-semibold text-foreground">
+                        Executive Intelligence Briefing
+                      </span>
+                      <span className="block text-[11px] text-muted-foreground">
+                        Generated automatically from real post telemetry
+                      </span>
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/25 uppercase font-mono">
+                    Model: Synthesis
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/40 border border-border/60">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-success/15 text-success">
+                      <TrendingUp className="h-3 w-3" />
+                    </span>
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-semibold text-foreground">Creative Format Velocity</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Short-form video drove <b>3.4x higher comment retention</b> than static multi-image carousels across the same audience cohort.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/40 border border-border/60">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-primary/15 text-primary">
+                      <Sliders className="h-3 w-3" />
+                    </span>
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-semibold text-foreground">Timing Optimization</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Peak interaction windows cluster on <b>Thursdays between 18:30 and 21:00 UTC</b>, delivering +38% reach acceleration.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/40 border border-border/60">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent">
+                      <BarChart3 className="h-3 w-3" />
+                    </span>
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-semibold text-foreground">Sentiment Distribution</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        <b>89% positive sentiment</b> centered on usability demos; negative mentions were strictly confined to regional availability inquiries.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Section 4: One-click clean CSV exports for Power BI & Excel */}
+            <section className="space-y-4 pt-6 border-t border-border/60 pb-12">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-bold tracking-tight text-foreground text-balance">
+                  One-click clean CSV exports for Power BI &amp; Excel
+                </h2>
+                <p className="text-sm text-muted-foreground leading-relaxed text-balance">
+                  Need to blend campaign data into your company&apos;s data warehouse or executive spreadsheets? Export structured, UTF-8 encoded datasets with pre-computed metrics in one click.
+                </p>
+              </div>
+
+              {/* Data Table Specimen */}
+              <div className="rounded-xl border border-border/80 bg-card/85 p-5 space-y-3.5 glow-card shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                <div className="flex items-center justify-between pb-2 border-b border-border/70">
+                  <div className="flex items-center gap-2">
+                    <FileSpreadsheet className="h-4 w-4 text-success" />
+                    <span className="text-xs font-mono font-medium text-foreground">
+                      campaign_export_q4.csv
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-secondary border border-border text-xs font-medium text-foreground">
+                    <Download className="h-3 w-3 text-primary" />
+                    <span>Download Ready</span>
+                  </span>
+                </div>
+
+                {/* Tabular Rows Preview */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left font-mono text-[11px]">
+                    <thead>
+                      <tr className="text-muted-foreground border-b border-border/60">
+                        <th className="py-1.5 pr-4 font-medium">POST_ID</th>
+                        <th className="py-1.5 px-4 font-medium">NETWORK</th>
+                        <th className="py-1.5 px-4 font-medium text-right">REACH</th>
+                        <th className="py-1.5 px-4 font-medium text-right">ER_RATE</th>
+                        <th className="py-1.5 pl-4 font-medium text-right">VADER_SCORE</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/40 text-foreground">
+                      <tr>
+                        <td className="py-2 pr-4 text-muted-foreground">#post_9821</td>
+                        <td className="py-2 px-4">instagram</td>
+                        <td className="py-2 px-4 text-right">142,840</td>
+                        <td className="py-2 px-4 text-right text-success font-semibold">8.4%</td>
+                        <td className="py-2 pl-4 text-right text-primary font-semibold">+0.88</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 pr-4 text-muted-foreground">#post_9822</td>
+                        <td className="py-2 px-4">tiktok</td>
+                        <td className="py-2 px-4 text-right">98,200</td>
+                        <td className="py-2 px-4 text-right text-success font-semibold">6.2%</td>
+                        <td className="py-2 pl-4 text-right text-primary font-semibold">+0.74</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 pr-4 text-muted-foreground">#post_9823</td>
+                        <td className="py-2 px-4">youtube</td>
+                        <td className="py-2 px-4 text-right">28,400</td>
+                        <td className="py-2 px-4 text-right text-muted-foreground">2.4%</td>
+                        <td className="py-2 pl-4 text-right text-muted-foreground">+0.22</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </section>
           </div>
 
@@ -934,7 +1109,7 @@ export default function LoginPage() {
                               <Sparkles className="h-3.5 w-3.5 text-primary" />
                               Assigned Plan
                             </span>
-                            <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold btn-gradient text-white">
+                            <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold tracking-wide uppercase bg-primary/20 text-primary border border-primary/30">
                               UNLIMITED PRO
                             </span>
                           </div>

@@ -156,30 +156,30 @@
   }
 
   .btn-gradient {
-    background-color: var(--primary);
-    background-image: none;
-    color: var(--primary-foreground) !important;
+    background-image: linear-gradient(135deg, oklch(0.76 0.14 190) 0%, oklch(0.71 0.16 250) 65%, oklch(0.68 0.17 315) 100%);
+    color: oklch(0.99 0 0);
     text-shadow: none;
-    box-shadow: 0 1px 2px 0 oklch(0 0 0 / 0.35);
+    box-shadow: 0 1px 2px 0 oklch(0 0 0 / 0.4), inset 0 1px 0 0 oklch(1 0 0 / 0.18);
     transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .btn-gradient:hover {
     filter: brightness(1.06);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px -2px oklch(0 0 0 / 0.45);
+    box-shadow: 0 4px 14px -2px oklch(0 0 0 / 0.5), inset 0 1px 0 0 oklch(1 0 0 / 0.24);
   }
 
   .btn-gradient:active {
     transform: translateY(0);
+    filter: brightness(0.98);
   }
 
   .glow-primary {
-    box-shadow: 0 0 24px var(--glow-primary);
+    box-shadow: 0 0 16px var(--glow-primary);
   }
 
   .glow-accent {
-    box-shadow: 0 0 24px var(--glow-accent);
+    box-shadow: 0 0 16px var(--glow-accent);
   }
 
   .glow-card {
@@ -192,11 +192,9 @@
   }
 
   .glow-card:hover {
-    transform: translateY(-3px) scale(1.01);
-    border-color: oklch(0.35 0.03 240);
-    box-shadow:
-      0 12px 28px -8px oklch(0 0 0 / 0.65),
-      0 0 24px -8px var(--glow-primary);
+    transform: translateY(-2px);
+    border-color: oklch(0.32 0.02 240);
+    box-shadow: 0 10px 24px -6px oklch(0 0 0 / 0.6);
   }
 
   .gradient-mesh {

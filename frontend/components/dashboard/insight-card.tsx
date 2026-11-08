@@ -40,31 +40,31 @@ export function InsightCard({ insight, className, onClick }: InsightCardProps) {
         return {
           iconBg: "bg-success/10 border-success/20",
           icon: "text-success",
-          topBar: "from-success via-primary to-success/60",
+          topBar: "from-success via-primary to-success",
         };
       case "warning":
         return {
           iconBg: "bg-warning/10 border-warning/20",
           icon: "text-warning",
-          topBar: "from-warning via-warning/80 to-destructive/60",
+          topBar: "from-warning via-destructive to-warning",
         };
       case "info":
         return {
           iconBg: "bg-primary/10 border-primary/20",
           icon: "text-primary",
-          topBar: "from-primary via-primary/80 to-accent/60",
+          topBar: "from-primary via-accent to-primary",
         };
       case "tip":
         return {
           iconBg: "bg-accent/10 border-accent/20",
           icon: "text-accent",
-          topBar: "from-accent via-primary to-accent/60",
+          topBar: "from-accent via-primary to-accent",
         };
       default:
         return {
           iconBg: "bg-secondary border-border",
           icon: "text-muted-foreground",
-          topBar: "from-primary to-accent",
+          topBar: "from-primary via-accent to-primary",
         };
     }
   };
@@ -82,7 +82,7 @@ export function InsightCard({ insight, className, onClick }: InsightCardProps) {
     >
       <div
         className={cn(
-          "absolute inset-x-0 top-0 h-1 bg-gradient-to-r opacity-90 group-hover:opacity-100 transition-opacity",
+          "absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r opacity-90 group-hover:opacity-100 transition-opacity",
           colors.topBar
         )}
       />
