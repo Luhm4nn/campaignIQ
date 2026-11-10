@@ -31,6 +31,15 @@ def verify_postgresql_connection() -> None:
             text("ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS target_keywords VARCHAR")
         )
         connection.execute(
+            text("ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS user_id INTEGER")
+        )
+        connection.execute(
+            text("ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS ai_report_json TEXT")
+        )
+        connection.execute(
+            text("ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS ai_report_updated_at TIMESTAMP")
+        )
+        connection.execute(
             text("ALTER TABLE posts ADD COLUMN IF NOT EXISTS external_id VARCHAR")
         )
         connection.execute(

@@ -33,6 +33,25 @@ class CampaignUpdate(BaseModel):
     targetKeywords: Optional[str] = None
 
 
+class AIActionItem(BaseModel):
+    title: str
+    impact: str = "High"  # "High" | "Medium" | "Low"
+    action: str
+
+
+class AIExecutiveReportRead(BaseModel):
+    campaignId: Optional[int] = None
+    campaignName: str
+    executiveSummary: str
+    sentimentDiagnosis: str
+    winningContentPatterns: List[str] = Field(default_factory=list)
+    weaknessesAndRisks: List[str] = Field(default_factory=list)
+    tacticalRecommendations: List[AIActionItem] = Field(default_factory=list)
+    nextPostIdeas: List[str] = Field(default_factory=list)
+    generatedAt: str
+    modelUsed: str
+
+
 class CampaignRead(BaseModel):
     id: int
     name: str
@@ -56,6 +75,8 @@ class CampaignRead(BaseModel):
     engagementRate: float
     externalId: Optional[str] = None
     targetKeywords: Optional[str] = None
+    userId: Optional[int] = None
+    aiReport: Optional[AIExecutiveReportRead] = None
 
 
 class PostCreate(BaseModel):

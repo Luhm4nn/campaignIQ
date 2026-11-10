@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from app.db.dbsession import Base
+import app.models.users  # noqa: F401
 
 
 def utcnow_naive() -> datetime:
@@ -24,6 +25,9 @@ class Campaign(Base):
     end_date = Column(DateTime, nullable=True)
     external_id = Column(String, index=True, nullable=True)
     target_keywords = Column(String, nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), index=True, nullable=True)
+    ai_report_json = Column(String, nullable=True)
+    ai_report_updated_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, nullable=False, default=utcnow_naive)
 
     posts = relationship(

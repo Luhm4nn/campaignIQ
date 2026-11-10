@@ -15,6 +15,25 @@ export type MediaType = "image" | "video" | "text" | "carousel";
 
 export type InsightType = "success" | "warning" | "info" | "tip";
 
+export interface AIActionItem {
+  title: string;
+  impact: "High" | "Medium" | "Low" | string;
+  action: string;
+}
+
+export interface AIExecutiveReport {
+  campaignId?: number | null;
+  campaignName: string;
+  executiveSummary: string;
+  sentimentDiagnosis: string;
+  winningContentPatterns: string[];
+  weaknessesAndRisks: string[];
+  tacticalRecommendations: AIActionItem[];
+  nextPostIdeas: string[];
+  generatedAt: string;
+  modelUsed: string;
+}
+
 export interface Campaign {
   id: number;
   name: string;
@@ -38,6 +57,8 @@ export interface Campaign {
   engagementRate: number;
   externalId?: string | null;
   targetKeywords?: string | null;
+  userId?: number | null;
+  aiReport?: AIExecutiveReport | null;
 }
 
 export interface Post {

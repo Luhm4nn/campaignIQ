@@ -34,6 +34,7 @@ SUPPORTED_PROVIDERS: Dict[str, str] = {
     "twitter": "Twitter / X (Deep Scraper FxTwitter / RapidAPI)",
     "instagram": "Instagram (Deep Scraper & RapidAPI)",
     "tiktok": "TikTok (Deep Scraper & RapidAPI)",
+    "gemini": "Google Gemini AI (Executive Reports & NLP)",
 }
 
 DEFAULT_RAPIDAPI_HOSTS: Dict[str, str] = {
@@ -41,6 +42,7 @@ DEFAULT_RAPIDAPI_HOSTS: Dict[str, str] = {
     "twitter": "twitter-api45.p.rapidapi.com",
     "instagram": "instagram-scraper-api2.p.rapidapi.com",
     "tiktok": "tiktok-scraper7.p.rapidapi.com",
+    "gemini": "generativelanguage.googleapis.com",
 }
 
 META_GRAPH_BASE_URL = "https://graph.facebook.com/v21.0"
@@ -166,6 +168,16 @@ def _get_shared_rapidapi_key(db: Session) -> str:
             if tok:
                 return tok
     return ""
+
+
+def get_gemini_api_key(db: Session) -> str:
+    """Retrieve Gemini API key from encrypted vault (provider == 'gemini') or GEMINI_API_KEY env var."""
+    row = db.query(IntegrationConfig).filter(IntegrationConfig.provider == "gemini").first()
+    if row:
+        token = decrypt_secret(row.access_token_encrypted)
+        if token:
+            return token
+    return os.getenv("GEMINI_API_KEY", "").strip()
 
 
 def save_integration_credentials(
@@ -359,7 +371,18 @@ def _extract_instagram_deep(
             try:
                 resp = requests.get(url, headers=headers, params=params, timeout=12)
                 if resp.status_code != 200:
-                    errors.append(f"{url} -> HTTP {resp.status_code}")
+                    body_msg = ""
+                    try:
+                        body_json = resp.json()
+                        body_msg = body_json.get("message") or body_json.get("error") or ""
+                    except Exception:
+                        body_msg = resp.text[:80]
+                    if resp.status_code == 403 and "not subscribed" in str(body_msg).lower():
+                        errors.append(f"Tu X-RapidAPI-Key es válida pero debes suscribirte al plan de '{host}' en rapidapi.com (HTTP 403).")
+                    elif resp.status_code == 429:
+                        errors.append(f"Cuota de peticiones de RapidAPI excedida en {host} (HTTP 429).")
+                    else:
+                        errors.append(f"{url} -> HTTP {resp.status_code} ({body_msg})")
                     continue
                 body = resp.json()
                 raw_items = (
@@ -552,7 +575,18 @@ def _extract_tiktok_deep(
             try:
                 resp = requests.get(url, headers=headers, params=params, timeout=12)
                 if resp.status_code != 200:
-                    errors.append(f"{url} -> HTTP {resp.status_code}")
+                    body_msg = ""
+                    try:
+                        body_json = resp.json()
+                        body_msg = body_json.get("message") or body_json.get("error") or ""
+                    except Exception:
+                        body_msg = resp.text[:80]
+                    if resp.status_code == 403 and "not subscribed" in str(body_msg).lower():
+                        errors.append(f"Tu X-RapidAPI-Key es válida pero debes suscribirte al plan de '{host}' en rapidapi.com (HTTP 403).")
+                    elif resp.status_code == 429:
+                        errors.append(f"Cuota de peticiones de RapidAPI excedida en {host} (HTTP 429).")
+                    else:
+                        errors.append(f"{url} -> HTTP {resp.status_code} ({body_msg})")
                     continue
                 body = resp.json()
                 data_block = body.get("data", body)
@@ -768,7 +802,18 @@ def _extract_twitter_deep(
             try:
                 resp = requests.get(url, headers=headers, params=params, timeout=12)
                 if resp.status_code != 200:
-                    errors.append(f"{url} -> HTTP {resp.status_code}")
+                    body_msg = ""
+                    try:
+                        body_json = resp.json()
+                        body_msg = body_json.get("message") or body_json.get("error") or ""
+                    except Exception:
+                        body_msg = resp.text[:80]
+                    if resp.status_code == 403 and "not subscribed" in str(body_msg).lower():
+                        errors.append(f"Tu X-RapidAPI-Key es válida pero debes suscribirte al plan de '{host}' en rapidapi.com (HTTP 403).")
+                    elif resp.status_code == 429:
+                        errors.append(f"Cuota de peticiones de RapidAPI excedida en {host} (HTTP 429).")
+                    else:
+                        errors.append(f"{url} -> HTTP {resp.status_code} ({body_msg})")
                     continue
                 body = resp.json()
                 timeline = (
@@ -1152,6 +1197,37 @@ def test_integration_connection(db: Session, provider: str) -> Dict[str, str | b
     row = get_or_create_integration(db, provider)
     rapid_key = decrypt_secret(row.access_token_encrypted) or _get_shared_rapidapi_key(db)
     username = clean_username(row.external_account_name)
+
+    if row.provider == "gemini":
+        gemini_key = decrypt_secret(row.access_token_encrypted) or os.getenv("GEMINI_API_KEY", "").strip()
+        if not gemini_key:
+            return {
+                "ok": False,
+                "mode": "missing_api_key",
+                "message": "Ingresa tu GEMINI_API_KEY de Google AI Studio en el campo Access Token / Key y toca Guardar en Bóveda.",
+            }
+        try:
+            from google import genai
+            client = genai.Client(api_key=gemini_key)
+            test_resp = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents="Hello! Confirm connection with OK.",
+            )
+            row.status = "connected"
+            db.commit()
+            return {
+                "ok": True,
+                "mode": "gemini-2.5-flash",
+                "accountName": "Google Gemini 2.5 Flash",
+                "externalAccountId": "generativelanguage.googleapis.com",
+                "message": f"Conexión con Gemini API exitosa: {test_resp.text.strip()[:60]}",
+            }
+        except Exception as exc:
+            return {
+                "ok": False,
+                "mode": "gemini_error",
+                "message": f"Error validando GEMINI_API_KEY: {str(exc)}",
+            }
 
     if row.provider in ("youtube", "instagram", "tiktok", "twitter"):
         if not username:

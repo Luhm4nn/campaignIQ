@@ -61,6 +61,7 @@ const DEFAULT_HOSTS: Record<string, string> = {
   twitter: "twitter-api45.p.rapidapi.com",
   instagram: "instagram-scraper-api2.p.rapidapi.com",
   tiktok: "tiktok-scraper7.p.rapidapi.com",
+  gemini: "generativelanguage.googleapis.com",
 };
 
 export default function SettingsPage() {
@@ -359,7 +360,7 @@ export default function SettingsPage() {
 
         <CardContent className="p-6 space-y-6">
           {/* Selector de Red Social */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {(integrations.length > 0
               ? integrations
               : [activeIntegration]

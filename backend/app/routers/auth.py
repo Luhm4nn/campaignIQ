@@ -79,6 +79,26 @@ def get_current_user(
     return user
 
 
+def get_optional_current_user(
+    request: Request,
+    db: Session = Depends(get_db),
+) -> Optional[User]:
+    try:
+        token = _extract_access_token(request)
+        if not token:
+            return None
+        payload = auth_service.verify_access_token(token)
+        user_id = payload.get("userId")
+        if not user_id:
+            return None
+        user = db.query(User).filter(User.id == int(user_id)).first()
+        if not user or not user.is_active:
+            return None
+        return user
+    except Exception:
+        return None
+
+
 @router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)
 def register_endpoint(
     payload: RegisterRequest,

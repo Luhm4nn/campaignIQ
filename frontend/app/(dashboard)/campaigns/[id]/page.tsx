@@ -9,13 +9,14 @@ import { HourlyChart } from "@/components/dashboard/hourly-chart";
 import { TopPosts } from "@/components/dashboard/top-posts";
 import { InsightCard } from "@/components/dashboard/insight-card";
 import { CampaignDetailSkeleton } from "@/components/ui/skeleton";
-import type { CampaignDetail } from "@/lib/types";
+import type { CampaignDetail, AIExecutiveReport } from "@/lib/types";
 import {
   fetchCampaignDetail,
   updateCampaignApi,
   deleteCampaignApi,
   getExportCsvUrl,
   syncIntegrationPostsApi,
+  generateCampaignAiReportApi,
 } from "@/lib/api";
 import { cn, formatNumber } from "@/lib/utils";
 import {
@@ -34,6 +35,12 @@ import {
   Trash2,
   RefreshCw,
   Youtube,
+  Sparkles,
+  CheckCircle2,
+  AlertTriangle,
+  Lightbulb,
+  Loader2,
+  Bot,
 } from "lucide-react";
 
 const platformIcons: Record<string, React.ReactNode> = {
@@ -59,6 +66,9 @@ export default function CampaignDetailPage({
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
+  const [aiReport, setAiReport] = useState<AIExecutiveReport | null>(null);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [reportError, setReportError] = useState<string | null>(null);
 
   const loadDetail = useCallback(async () => {
     if (isNaN(campaignId)) {
@@ -69,6 +79,9 @@ export default function CampaignDetailPage({
       setIsLoading(true);
       const res = await fetchCampaignDetail(campaignId);
       setDetail(res);
+      if (res?.campaign?.aiReport) {
+        setAiReport(res.campaign.aiReport);
+      }
     } catch {
       setDetail(null);
     } finally {
@@ -132,6 +145,21 @@ export default function CampaignDetailPage({
     }
   };
 
+  const handleGenerateAiReport = async () => {
+    try {
+      setIsGeneratingReport(true);
+      setReportError(null);
+      const rep = await generateCampaignAiReportApi(campaign.id);
+      setAiReport(rep);
+    } catch (err) {
+      setReportError(
+        err instanceof Error ? err.message : "Error generating AI report"
+      );
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-3 pb-3 border-b border-border">
@@ -191,13 +219,29 @@ export default function CampaignDetailPage({
             </div>
           </div>
 
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap items-center">
             <button
               onClick={handleDeleteCampaign}
               className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-destructive/10 border border-destructive/25 text-xs font-medium text-destructive hover:bg-destructive/20 transition-colors cursor-pointer"
             >
               <Trash2 className="h-3.5 w-3.5" />
               Delete
+            </button>
+            <button
+              onClick={handleGenerateAiReport}
+              disabled={isGeneratingReport}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary/15 border border-primary/30 text-xs font-semibold text-primary hover:bg-primary/25 transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {isGeneratingReport ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+              ) : (
+                <Sparkles className="h-3.5 w-3.5" />
+              )}
+              {isGeneratingReport
+                ? "Consultando Google Gemini Flash..."
+                : aiReport
+                ? "Regenerar con IA"
+                : "Generar Reporte con IA"}
             </button>
             <button
               onClick={handleSyncFromMetaGraph}
@@ -226,7 +270,178 @@ export default function CampaignDetailPage({
             {syncNotice}
           </div>
         )}
+        {reportError && (
+          <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/30 space-y-1">
+            <div className="flex items-center gap-2 text-xs font-bold text-destructive">
+              <AlertTriangle className="h-4 w-4" />
+              Fallo de Conexión con IA
+            </div>
+            <p className="text-xs text-destructive/90">{reportError}</p>
+          </div>
+        )}
       </div>
+
+      {/* Real-time AI consultation progress banner */}
+      {isGeneratingReport && (
+        <div className="rounded-xl border border-primary/40 bg-primary/5 p-5 space-y-2 animate-pulse">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary border border-primary/30">
+              <Loader2 className="h-5 w-5 animate-spin" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                Consultando Google Gemini Flash
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono uppercase font-bold">
+                  En progreso
+                </span>
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Enviando dataset de rendimiento y análisis VADER a la API de Google para generar el diagnóstico estratégico...
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Executive Report Panel */}
+      {aiReport && (
+        <div className="rounded-xl border border-border bg-card overflow-hidden shadow-xs animate-fadeIn">
+          <div className="h-[2px] w-full bg-gradient-to-r from-primary via-accent to-primary" />
+          <div className="p-5 sm:p-6 space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 text-primary">
+                  <Sparkles className="h-4 w-4" />
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold text-foreground">
+                    AI Executive Growth Briefing
+                  </h2>
+                  <p className="text-xs text-muted-foreground">
+                    Generado el {new Date(aiReport.generatedAt).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+              <span className="self-start sm:self-auto px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-primary/15 text-primary border border-primary/30 uppercase tracking-wide flex items-center gap-1.5">
+                <Bot className="h-3 w-3" />
+                {aiReport.modelUsed.startsWith("gemini")
+                  ? `Google ${aiReport.modelUsed}`
+                  : "Fallback Analítico"}
+              </span>
+            </div>
+
+            <div className="grid lg:grid-cols-12 gap-5">
+              <div className="lg:col-span-7 space-y-4">
+                <div className="p-4 rounded-xl bg-secondary/30 border border-border space-y-2">
+                  <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                    Executive Summary
+                  </h3>
+                  <p className="text-xs text-foreground/90 leading-relaxed">
+                    {aiReport.executiveSummary}
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-secondary/30 border border-border space-y-2">
+                  <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                    Sentiment &amp; NLP Diagnosis
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {aiReport.sentimentDiagnosis}
+                  </p>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5 space-y-4">
+                <div className="p-4 rounded-xl bg-secondary/30 border border-border space-y-2.5">
+                  <h3 className="text-xs font-semibold text-success flex items-center gap-1.5 uppercase tracking-wider">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    Winning Content Patterns
+                  </h3>
+                  <ul className="space-y-1.5">
+                    {aiReport.winningContentPatterns.map((pat, idx) => (
+                      <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
+                        <span className="text-success mt-0.5">&bull;</span>
+                        <span>{pat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {aiReport.weaknessesAndRisks.length > 0 && (
+                  <div className="p-4 rounded-xl bg-secondary/30 border border-border space-y-2.5">
+                    <h3 className="text-xs font-semibold text-warning flex items-center gap-1.5 uppercase tracking-wider">
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                      Friction Points &amp; Risks
+                    </h3>
+                    <ul className="space-y-1.5">
+                      {aiReport.weaknessesAndRisks.map((w, idx) => (
+                        <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
+                          <span className="text-warning mt-0.5">&bull;</span>
+                          <span>{w}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {aiReport.tacticalRecommendations.length > 0 && (
+              <div className="space-y-2.5 pt-2 border-t border-border">
+                <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                  Tactical Action Plan
+                </h3>
+                <div className="grid md:grid-cols-3 gap-3">
+                  {aiReport.tacticalRecommendations.map((act, idx) => (
+                    <div key={idx} className="p-3.5 rounded-lg border border-border bg-secondary/20 space-y-1.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <h4 className="text-xs font-semibold text-foreground truncate">
+                          {act.title}
+                        </h4>
+                        <span
+                          className={cn(
+                            "px-1.5 py-0.2 rounded text-[10px] font-bold uppercase",
+                            act.impact.toLowerCase() === "high"
+                              ? "bg-destructive/15 text-destructive border border-destructive/25"
+                              : "bg-primary/15 text-primary border border-primary/25"
+                          )}
+                        >
+                          {act.impact}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {act.action}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {aiReport.nextPostIdeas.length > 0 && (
+              <div className="space-y-2 pt-2 border-t border-border">
+                <h3 className="text-xs font-semibold text-foreground flex items-center gap-1.5 uppercase tracking-wider">
+                  <Lightbulb className="h-3.5 w-3.5 text-accent" />
+                  Recommended Next Post Concepts
+                </h3>
+                <div className="grid sm:grid-cols-3 gap-3">
+                  {aiReport.nextPostIdeas.map((idea, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3 rounded-lg border border-border bg-card/60 text-xs text-foreground/90 flex items-start gap-2.5"
+                    >
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-primary/20 text-primary text-[10px] font-bold">
+                        {idx + 1}
+                      </span>
+                      <p className="leading-relaxed">{idea}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4 grid-cols-12">
         <div className="col-span-12 sm:col-span-6 lg:col-span-2">

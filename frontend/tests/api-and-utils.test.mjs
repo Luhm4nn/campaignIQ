@@ -28,6 +28,8 @@ test("contratos de endpoints en lib/api.ts coinciden con las rutas REST del back
   assert.match(apiSource, /\/campaigns/);
   assert.match(apiSource, /\/posts/);
   assert.match(apiSource, /\/users/);
+  assert.match(apiSource, /\/campaigns\/\$\{campaignId\}\/ai-report/);
+  assert.match(apiSource, /\/insights\/ai-briefing/);
   assert.match(apiSource, /\/export\/campaigns\/csv/);
   assert.match(apiSource, /\/export\/campaign\/\$\{campaignId\}\/csv/);
   assert.equal(apiSource.includes("mock-data"), false);

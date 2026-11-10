@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { InsightCard } from "@/components/dashboard/insight-card";
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { InsightsSkeleton } from "@/components/ui/skeleton";
-import { useCampaignData } from "@/lib/api";
+import { useCampaignData, generateWorkspaceAiBriefingApi } from "@/lib/api";
+import { cn } from "@/lib/utils";
 import {
   Lightbulb,
   TrendingUp,
@@ -13,8 +14,12 @@ import {
   Activity,
   Calendar,
   Clock,
+  Sparkles,
+  CheckCircle2,
+  Loader2,
+  Bot,
 } from "lucide-react";
-import type { Insight } from "@/lib/types";
+import type { Insight, AIExecutiveReport } from "@/lib/types";
 
 interface InsightModalProps {
   open: boolean;
@@ -135,6 +140,24 @@ function InsightModal({ open, insight, onClose }: InsightModalProps) {
 export default function InsightsPage() {
   const { insights: allInsights, isLoading } = useCampaignData();
   const [selectedInsight, setSelectedInsight] = useState<Insight | null>(null);
+  const [aiBriefing, setAiBriefing] = useState<AIExecutiveReport | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [briefingError, setBriefingError] = useState<string | null>(null);
+
+  const handleGenerateAiBriefing = async () => {
+    try {
+      setIsGenerating(true);
+      setBriefingError(null);
+      const rep = await generateWorkspaceAiBriefingApi();
+      setAiBriefing(rep);
+    } catch (err) {
+      setBriefingError(
+        err instanceof Error ? err.message : "Error generating AI briefing"
+      );
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   if (isLoading) {
     return <InsightsSkeleton />;
@@ -150,7 +173,7 @@ export default function InsightsPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-border">
         <div>
           <p className="text-xs font-medium text-muted-foreground mb-1">
-            Statistical & NLP Engine
+            Statistical &amp; NLP Engine
           </p>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Insights
@@ -160,14 +183,138 @@ export default function InsightsPage() {
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary border border-border self-start sm:self-auto">
-          <Activity className="h-3.5 w-3.5 text-primary" />
-          <span className="text-xs font-medium text-foreground">
-            Engine Active
-          </span>
-          <span className="h-1.5 w-1.5 rounded-full bg-success" />
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <button
+            onClick={handleGenerateAiBriefing}
+            disabled={isGenerating}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-primary/15 border border-primary/30 text-xs font-semibold text-primary hover:bg-primary/25 transition-colors cursor-pointer disabled:opacity-50"
+          >
+            {isGenerating ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+            ) : (
+              <Sparkles className="h-3.5 w-3.5" />
+            )}
+            {isGenerating
+              ? "Consultando Google Gemini Flash..."
+              : aiBriefing
+              ? "Regenerar Briefing con IA"
+              : "Generar Briefing con IA"}
+          </button>
+
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary border border-border self-start sm:self-auto">
+            <Activity className="h-3.5 w-3.5 text-primary" />
+            <span className="text-xs font-medium text-foreground">
+              Engine Active
+            </span>
+            <span className="h-1.5 w-1.5 rounded-full bg-success" />
+          </div>
         </div>
       </div>
+
+      {briefingError && (
+        <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/30 space-y-1">
+          <div className="flex items-center gap-2 text-xs font-bold text-destructive">
+            <AlertTriangle className="h-4 w-4" />
+            Fallo de Conexión con IA
+          </div>
+          <p className="text-xs text-destructive/90">{briefingError}</p>
+        </div>
+      )}
+
+      {/* Progress banner */}
+      {isGenerating && (
+        <div className="rounded-xl border border-primary/40 bg-primary/5 p-5 space-y-2 animate-pulse">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary border border-primary/30">
+              <Loader2 className="h-5 w-5 animate-spin" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                Consultando Google Gemini Flash
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono uppercase font-bold">
+                  En progreso
+                </span>
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Sintetizando rendimiento multi-canal y diagnósticos emocionales en Google AI Studio...
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cross-Channel AI Executive Briefing */}
+      {aiBriefing && (
+        <div className="rounded-xl border border-border bg-card overflow-hidden shadow-xs animate-fadeIn">
+          <div className="h-[2px] w-full bg-gradient-to-r from-primary via-accent to-primary" />
+          <div className="p-5 sm:p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 text-primary">
+                  <Sparkles className="h-4 w-4" />
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold text-foreground">
+                    Workspace Cross-Channel AI Briefing
+                  </h2>
+                  <p className="text-xs text-muted-foreground">
+                    Generado el {new Date(aiBriefing.generatedAt).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+              <span className="self-start sm:self-auto px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-primary/15 text-primary border border-primary/30 uppercase tracking-wide flex items-center gap-1.5">
+                <Bot className="h-3 w-3" />
+                {aiBriefing.modelUsed.startsWith("gemini")
+                  ? `Google ${aiBriefing.modelUsed}`
+                  : "Fallback Analítico"}
+              </span>
+            </div>
+
+            <div className="p-4 rounded-xl bg-secondary/30 border border-border space-y-1.5">
+              <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                Cross-Channel Executive Summary
+              </h3>
+              <p className="text-xs text-foreground/90 leading-relaxed">
+                {aiBriefing.executiveSummary}
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-secondary/30 border border-border space-y-2">
+                <h3 className="text-xs font-semibold text-success flex items-center gap-1.5 uppercase tracking-wider">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Cross-Channel Winning Patterns
+                </h3>
+                <ul className="space-y-1.5">
+                  {aiBriefing.winningContentPatterns.map((pat, idx) => (
+                    <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
+                      <span className="text-success mt-0.5">&bull;</span>
+                      <span>{pat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="p-4 rounded-xl bg-secondary/30 border border-border space-y-2">
+                <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                  Priority Strategic Actions
+                </h3>
+                <div className="space-y-2">
+                  {aiBriefing.tacticalRecommendations.slice(0, 2).map((act, idx) => (
+                    <div key={idx} className="text-xs">
+                      <div className="flex items-center gap-1.5 font-medium text-foreground">
+                        <span className="text-primary font-bold">&bull;</span>
+                        <span>{act.title}</span>
+                      </div>
+                      <p className="text-muted-foreground pl-3 mt-0.5">{act.action}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4 grid-cols-12">
         <div className="col-span-12 sm:col-span-6 lg:col-span-3">

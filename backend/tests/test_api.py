@@ -403,5 +403,100 @@ def test_integrations_vault_oauth_and_external_id_sync(
     assert tt_sync.json()["importedPosts"] == 1
 
 
+def test_gemini_ai_reports_and_briefing(client: TestClient, monkeypatch: pytest.MonkeyPatch):
+    # Mock Google GenAI client to return realistic JSON responses
+    class FakeGenerateResponse:
+        def __init__(self, payload: dict):
+            import json
+            self.text = json.dumps(payload)
 
+    class FakeModelsService:
+        def generate_content(self, model, contents, config=None):
+            return FakeGenerateResponse({
+                "campaignName": "Campaña AI Testing",
+                "executiveSummary": "Resumen ejecutivo generado por Gemini Flash",
+                "sentimentDiagnosis": "Diagnóstico de sentimiento positivo",
+                "winningContentPatterns": ["Patrón de video dinámico con hook en 3s"],
+                "weaknessesAndRisks": ["Baja frecuencia los fines de semana"],
+                "tacticalRecommendations": [
+                    {"title": "Acción Clave", "impact": "High", "action": "Publicar en hora pico"}
+                ],
+                "nextPostIdeas": ["Idea 1", "Idea 2"],
+            })
 
+    class FakeGenAIClient:
+        def __init__(self, api_key=None):
+            self.models = FakeModelsService()
+
+    monkeypatch.setattr("app.services.ai_reports.genai.Client", FakeGenAIClient)
+
+    # 1. Store gemini api key in the encrypted vault
+    vault_res = client.put(
+        "/integrations/gemini/credentials",
+        json={
+            "accessToken": "test-gemini-fake-key",
+            "externalAccountName": "gemini-flash",
+        },
+    )
+    assert vault_res.status_code == 200
+    assert vault_res.json()["provider"] == "gemini"
+
+    # 2. Create campaign
+    camp_res = client.post(
+        "/campaigns",
+        json={
+            "name": "Campaña AI Testing",
+            "description": "Validación de reportes ejecutivos con fallback analítico",
+            "platform": "instagram",
+            "campaignType": "Branding",
+            "status": "active",
+            "startDate": "2026-05-01",
+            "budget": 1500.0,
+            "followersStart": 2000,
+            "followersEnd": 2800,
+        },
+    )
+    assert camp_res.status_code == 201
+    campaign_id = camp_res.json()["id"]
+
+    # 3. Add a post
+    post_res = client.post(
+        "/posts",
+        json={
+            "campaignId": campaign_id,
+            "content": "Innovación y gran recepción con crecimiento acelerado",
+            "mediaType": "video",
+            "publishedAt": "2026-05-02T15:00:00",
+            "likes": 800,
+            "comments": 120,
+            "shares": 90,
+            "reach": 10000,
+            "impressions": 15000,
+        },
+    )
+    assert post_res.status_code == 201
+
+    # 4. Generate AI Report (will use mock Gemini)
+    report_res = client.post(f"/campaigns/{campaign_id}/ai-report")
+    assert report_res.status_code == 200
+    report_data = report_res.json()
+    assert "executiveSummary" in report_data
+    assert "sentimentDiagnosis" in report_data
+    assert "modelUsed" in report_data
+    assert len(report_data["tacticalRecommendations"]) >= 1
+
+    # 5. Fetch cached AI Report
+    get_report_res = client.get(f"/campaigns/{campaign_id}/ai-report")
+    assert get_report_res.status_code == 200
+    cached_data = get_report_res.json()
+    assert cached_data["executiveSummary"] == report_data["executiveSummary"]
+    assert cached_data["modelUsed"] == report_data["modelUsed"]
+
+    # 6. Workspace cross-channel AI briefing
+    briefing_res = client.post("/insights/ai-briefing")
+    assert briefing_res.status_code == 200
+    briefing_data = briefing_res.json()
+    assert "executiveSummary" in briefing_data
+    assert len(briefing_data["executiveSummary"]) > 0
+    assert briefing_data["campaignName"] == "Workspace Multi-Channel Briefing"
+    assert "modelUsed" in briefing_data

@@ -19,6 +19,7 @@ import type {
   IntegrationCredentialsPayload,
   OAuthAuthorizeResponse,
   SyncIntegrationResponse,
+  AIExecutiveReport,
   AuthUser,
   AuthResponse,
   LoginPayload,
@@ -473,6 +474,46 @@ export async function disconnectIntegrationApi(
     throw new Error(await parseApiError(res));
   }
   return res.json();
+}
+
+
+export async function generateCampaignAiReportApi(
+  campaignId: string | number
+): Promise<AIExecutiveReport> {
+  const res = await fetch(`${API_BASE_URL}/campaigns/${campaignId}/ai-report`, {
+    method: "POST",
+  });
+  if (!res.ok) {
+    throw new Error(await parseApiError(res));
+  }
+  const report = await res.json();
+  notifyDataUpdated();
+  return report;
+}
+
+
+export async function fetchCampaignAiReportApi(
+  campaignId: string | number
+): Promise<AIExecutiveReport | null> {
+  const res = await fetch(`${API_BASE_URL}/campaigns/${campaignId}/ai-report`);
+  if (!res.ok) {
+    if (res.status === 404) return null;
+    throw new Error(await parseApiError(res));
+  }
+  return res.json();
+}
+
+
+export async function generateWorkspaceAiBriefingApi(): Promise<AIExecutiveReport> {
+  const res = await fetch(`${API_BASE_URL}/insights/ai-briefing`, {
+    method: "POST",
+  });
+  if (!res.ok) {
+    throw new Error(await parseApiError(res));
+  }
+  const report = await res.json();
+  notifyDataUpdated();
+  return report;
 }
 
 

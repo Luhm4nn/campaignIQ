@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timezone
 from typing import List, Optional
 from sqlalchemy.orm import Session
@@ -8,6 +9,7 @@ from app.schemas.campaign import (
     CampaignUpdate,
     CampaignRead,
     CampaignDetailResponse,
+    AIExecutiveReportRead,
     PostCreate,
     PostUpdate,
     PostRead,
@@ -119,6 +121,14 @@ def serialize_campaign(campaign: Campaign) -> CampaignRead:
         else (str(campaign.end_date) if campaign.end_date else None)
     )
 
+    ai_report_obj = None
+    if getattr(campaign, "ai_report_json", None):
+        try:
+            ai_data = json.loads(campaign.ai_report_json)
+            ai_report_obj = AIExecutiveReportRead(**ai_data)
+        except Exception:
+            ai_report_obj = None
+
     return CampaignRead(
         id=campaign.id,
         name=campaign.name,
@@ -142,11 +152,16 @@ def serialize_campaign(campaign: Campaign) -> CampaignRead:
         engagementRate=engagement_rate,
         externalId=getattr(campaign, "external_id", None),
         targetKeywords=getattr(campaign, "target_keywords", None),
+        userId=getattr(campaign, "user_id", None),
+        aiReport=ai_report_obj,
     )
 
 
-def list_campaigns(db: Session) -> List[CampaignRead]:
-    campaigns = db.query(Campaign).order_by(Campaign.created_at.desc(), Campaign.id.desc()).all()
+def list_campaigns(db: Session, user_id: Optional[int] = None) -> List[CampaignRead]:
+    query = db.query(Campaign)
+    if user_id is not None:
+        query = query.filter((Campaign.user_id == user_id) | (Campaign.user_id.is_(None)))
+    campaigns = query.order_by(Campaign.created_at.desc(), Campaign.id.desc()).all()
     return [serialize_campaign(c) for c in campaigns]
 
 
@@ -172,7 +187,7 @@ def get_campaign_detail(db: Session, campaign_id: int) -> Optional[CampaignDetai
     )
 
 
-def create_campaign(db: Session, payload: CampaignCreate) -> CampaignRead:
+def create_campaign(db: Session, payload: CampaignCreate, user_id: Optional[int] = None) -> CampaignRead:
     start_dt = parse_iso_datetime(
         payload.startDate,
         fallback=datetime.now(timezone.utc).replace(tzinfo=None),
@@ -192,6 +207,7 @@ def create_campaign(db: Session, payload: CampaignCreate) -> CampaignRead:
         end_date=end_dt,
         external_id=payload.externalId.strip() if payload.externalId else None,
         target_keywords=payload.targetKeywords.strip() if payload.targetKeywords else None,
+        user_id=user_id,
     )
     db.add(campaign)
     db.commit()
