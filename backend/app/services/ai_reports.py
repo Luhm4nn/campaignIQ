@@ -25,7 +25,7 @@ def get_candidate_models() -> List[str]:
     candidates: List[str] = []
     if custom:
         candidates.append(custom)
-    for m in ["gemini-3.5-flash", "gemini-3.5-flash-lite"]:
+    for m in ["gemini-3.5-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite"]:
         if m not in candidates:
             candidates.append(m)
     return candidates
