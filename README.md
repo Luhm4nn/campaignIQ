@@ -197,6 +197,7 @@ Con el backend activo en `http://localhost:8000`, la documentación interactiva 
 | Luhmann Emiliano | 53224 |
 | Lezcano Diego | 53215 |
 | Sello Valentino | 51405 |
+| Oficialdegui Marcos | 51790 |
 
 ---
 
